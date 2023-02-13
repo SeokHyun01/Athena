@@ -11,7 +11,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.2" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.26.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.26.1" />
   </ItemGroup>
 
   <ItemGroup>
