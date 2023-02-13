@@ -35,7 +35,7 @@ builder.Services.AddDbContext<AthenaAppDbContext>(options =>
 	
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddDefaultTokenProviders().AddDefaultUI().AddEntityFrameworkStores<AthenaAppDbContext>();
-
+//
 var factory = new MqttFactory();
 builder.Services.AddSingleton<IMqttClient>(factory.CreateMqttClient());
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
