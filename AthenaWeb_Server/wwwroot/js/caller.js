@@ -1,4 +1,4 @@
-﻿class Camera {
+﻿class Caller {
     mediaStream;
     peerConnection;
     remoteVideo;
@@ -161,20 +161,20 @@
 }
 
 
-let camera;
+let caller;
 
 
 async function initializeCamera(connectionId, userId, cameraId) {
-    camera = new Camera(connectionId, userId, cameraId);
-    camera.addEventListeners();
+    caller = new Caller(connectionId, userId, cameraId);
+    caller.addEventListeners();
 
-    await camera.getMedia();
-    camera.createRTCPeerConnection();
+    await caller.getMedia();
+    caller.createRTCPeerConnection();
 }
 
 async function sendOffer() {
-    const offer = await camera.peerConnection.createOffer();
-    camera.peerConnection.setLocalDescription(offer);
+    const offer = await caller.peerConnection.createOffer();
+    caller.peerConnection.setLocalDescription(offer);
 
     console.log("Send offer");
     return JSON.stringify(offer);
@@ -184,11 +184,11 @@ async function sendAnswer(offer) {
     const jsonObject = JSON.parse(offer);
     const receivedOffer = new RTCSessionDescription(jsonObject);
 
-    camera.peerConnection.setRemoteDescription(receivedOffer);
+    caller.peerConnection.setRemoteDescription(receivedOffer);
     console.log("Receive offer");
 
-    const answer = await camera.peerConnection.createAnswer();
-    camera.peerConnection.setLocalDescription(answer);
+    const answer = await caller.peerConnection.createAnswer();
+    caller.peerConnection.setLocalDescription(answer);
 
     console.log("Send answer");
     return JSON.stringify(answer);
@@ -198,12 +198,12 @@ function receiveAnswer(answer) {
     const jsonObject = JSON.parse(answer);
     const receivedAnswer = new RTCSessionDescription(jsonObject);
 
-    camera.peerConnection.setRemoteDescription(receivedAnswer);
+    caller.peerConnection.setRemoteDescription(receivedAnswer);
     console.log("Receive answer");
 }
 
 function receiveIce(ice) {
     const receivedIce = JSON.parse(ice);
-    camera.peerConnection.addIceCandidate(receivedIce);
+    caller.peerConnection.addIceCandidate(receivedIce);
     console.log("Receive ice");
 }

@@ -1,0 +1,88 @@
+@page "/user/{userId:guid}/camera/{cameraId:int}/register"
+
+@inject IJSRuntime _Jsruntime
+@implements IAsyncDisposable
+
+<div>
+	<video id="remoteVideo" autoplay width="640" height="480"></video>
+	<video id="video"></video>
+	<button id="muteButton" class="btn btn-primary"> Mute</button>
+	<button id="cameraButton" class="btn btn-primary"> Turn Camera Off</button>
+	<select id="camerasSelect" class="form-control-sm"></select>
+	<canvas class="d-block" id="canvasOutput" width="640" height="480"></canvas>
+</div>
+
+@code {
+	[Parameter]
+	public Guid UserId { get; set; }
+
+	[Parameter]
+	public int CameraId { get; set; }
+
+	private HubConnection? hubConnection;
+	private string connectionId = "";
+	private string roomName = "";
+
+	private string url = "ictrobot.hknu.ac.kr:8093/hubs/signaling"; //서버의 주소 "************************"
+
+	protected override async Task OnAfterRenderAsync(bool firstRander)
+	{
+		if (firstRander)
+		{
+
+			// SignalR
+			hubConnection = new HubConnectionBuilder()
+			.WithUrl("wss://" + url, (opts) =>{
+				opts.HttpMessageHandlerFactory = (message) =>{
+					if (message is HttpClientHandler clientHandler){
+							// SSL 인증 무시
+							clientHandler.ServerCertificateCustomValidationCallback +=
+							(sender, certificate, chain, sslPolicyErrors) => { return true; };}
+							return message;};}).Build();
+
+			// SignalR Handler
+			hubConnection.On<string>("OnConnected", async (senderId) =>
+			{
+				connectionId = senderId;
+				await _Jsruntime.InvokeVoidAsync("initializeCamera", connectionId, UserId.ToString(), CameraId, url);
+			});
+
+			hubConnection.On("Welcome", async () =>
+			{
+				var offer = await _Jsruntime.InvokeAsync<string>("sendOffer");
+				await hubConnection.SendAsync("SendOffer", offer, roomName);
+			});
+
+			hubConnection.On<string>("ReceiveOffer", async (receivedOffer) =>
+			{
+				var answer = await _Jsruntime.InvokeAsync<string>("sendAnswer", receivedOffer);
+				await hubConnection.SendAsync("SendAnswer", answer, roomName);
+			});
+
+			hubConnection.On<string>("ReceiveAnswer", async (receivedAnswer) =>
+			{
+				await _Jsruntime.InvokeVoidAsync("receiveAnswer", receivedAnswer);
+			});
+
+			hubConnection.On<string>("ReceiveIce", async (receivedIce) =>
+			{
+				await _Jsruntime.InvokeVoidAsync("receiveIce", receivedIce);
+			});
+
+			await hubConnection.StartAsync();
+
+			roomName = $"{CameraId.ToString()}";
+			await hubConnection.SendAsync("JoinRoom", roomName);
+
+		}
+	}
+
+	// Dispose
+	public async ValueTask DisposeAsync()
+	{
+		if (hubConnection != null)
+		{
+			await hubConnection.DisposeAsync();
+		}
+	}
+}
