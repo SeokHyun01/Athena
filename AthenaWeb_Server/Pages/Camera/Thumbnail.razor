@@ -5,7 +5,7 @@
 <div class>
     @* <input type="checkbox" @onclick="bluetooth" value="setBluetooth"/>
     <label for="setBluetooth">블루투스 켜기</label>
- 
+
     <input type="checkbox" @onclick="Camshift" value="Camshift"/>
     <label for="Camshift">움직임 감지</label> *@
     <button class="btn btn-info btn-sm" @onclick="bluetooth">블루투스 켜기</button>
@@ -43,7 +43,7 @@
     public int cameraid { get; set; }
 
     //일단 이렇게 하드코딩
-    string UseridDarcy = "f9a4161a-9d05-41e2-9be7-a7a1c2d2f52c"; 
+    string UseridDarcy = "f9a4161a-9d05-41e2-9be7-a7a1c2d2f52c";
     //6b57a785-aabf-441a-a881-cb8f72dfdb2d -new : f9a4161a-9d05-41e2-9be7-a7a1c2d2f52c
     int CameraidDarcy = 1; // 9
     static bool isWebRTC = false;
@@ -74,6 +74,7 @@
     //순서 1.비디오를 킨다 2. MQTT 접속을한다 3. 썸네일 전송을 시작한다
     protected override async Task OnAfterRenderAsync(bool firstRander)
     {
+        await _Jsruntime.InvokeVoidAsync("dotnetHelper", DotNetObjectReference.Create(this), UseridDarcy, CameraidDarcy);
         if (firstRander)
         {
             await SetVideo();
@@ -105,12 +106,6 @@
     public async Task Camshift()
     {
         await _Jsruntime.InvokeVoidAsync("Camshift");
-    }
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        await _Jsruntime.InvokeVoidAsync("dotnetHelper", DotNetObjectReference.Create(this), UseridDarcy, CameraidDarcy);
     }
 
 }

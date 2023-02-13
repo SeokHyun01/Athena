@@ -1,6 +1,7 @@
 @page "/user/{userId:guid}/camera/{cameraId:int}/register"
 
 @inject IJSRuntime _Jsruntime
+@inject NavigationManager _navigationManager
 @implements IAsyncDisposable
 
 <div>
@@ -23,8 +24,6 @@
 	private string connectionId = "";
 	private string roomName = "";
 
-	private string url = "ictrobot.hknu.ac.kr:8093/hubs/signaling"; //서버의 주소 "************************"
-
 	protected override async Task OnAfterRenderAsync(bool firstRander)
 	{
 		if (firstRander)
@@ -32,7 +31,7 @@
 
 			// SignalR
 			hubConnection = new HubConnectionBuilder()
-			.WithUrl("wss://" + url, (opts) =>{
+			.WithUrl(_navigationManager.ToAbsoluteUri("/hubs/signaling"), (opts) =>{
 				opts.HttpMessageHandlerFactory = (message) =>{
 					if (message is HttpClientHandler clientHandler){
 							// SSL 인증 무시
@@ -44,7 +43,7 @@
 			hubConnection.On<string>("OnConnected", async (senderId) =>
 			{
 				connectionId = senderId;
-				await _Jsruntime.InvokeVoidAsync("initializeCamera", connectionId, UserId.ToString(), CameraId, url);
+				await _Jsruntime.InvokeVoidAsync("initializeCamera", connectionId, UserId.ToString(), CameraId);
 			});
 
 			hubConnection.On("Welcome", async () =>

@@ -337,8 +337,8 @@ window.dotnetHelper = (objRef, userId, cameraId) => {
 }
 
 //WebRTC 연결을 위한 객체 생성
-async function initializeCamera(connectionId, userId, cameraId, url) {
-    camera = new Camera(connectionId, userId, cameraId, url);
+async function initializeCamera(connectionId, userId, cameraId) {
+    camera = new Camera(connectionId, userId, cameraId);
     camera.addEventListeners();
 
     await camera.getMedia();
@@ -416,10 +416,9 @@ class Camera {
     mediaStream;
     peerConnection;
     remoteVideo;
-    url;
 
 
-    constructor(connectionId, userId, cameraId, url) {
+    constructor(connectionId, userId, cameraId) {
         this.localVideo = document.getElementById("video");
 
         this.muteButton = document.getElementById("muteButton");
@@ -429,7 +428,6 @@ class Camera {
         this.connectionId = connectionId;
         this.userId = userId;
         this.cameraId = cameraId;
-        this.url = url;
     }
 
     handleMuteClick() {
@@ -530,7 +528,7 @@ class Camera {
 
     async handleIce(data) {
         if (data && data.candidate) {
-            const connection = new signalR.HubConnectionBuilder().withUrl("http://" + url).build();
+            const connection = new signalR.HubConnectionBuilder().withUrl("/hubs/signaling").build();
             await connection.start();
 
             console.log(data.candidate);
