@@ -1,0 +1,82 @@
+﻿@page "/user"
+
+@inject UserManager<IdentityUser> _userManager
+@inject NavigationManager _navigationManager
+
+
+<div class="container my-5">
+	<h1 class="text-center">유저 리스트</h1>
+	@if (Users.Any())
+	{
+		<table class="table">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Email</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var user in Users)
+				{
+					<tr>
+						<td>@user.Id</td>
+						<td>@user.Email</td>
+						<td>
+							<NavLink href=@($"user/{user.Id}/camera") class="btn btn-primary my-2">카메라 관리</NavLink>
+							<button class="btn btn-danger my-2" @onclick="()=>HandleDelete(user)">삭제</button>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+	else
+	{
+		@if (IsLoading)
+		{
+			<div class="spinner-border text-primary" role="status"></div>
+		}
+
+		else
+		{
+			<p>No recrods found.</p>
+		}
+	}
+</div>
+
+
+@code {
+	private IEnumerable<IdentityUser> Users { get; set; } = new List<IdentityUser>();
+
+	private bool IsLoading { get; set; }
+
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await LoadUsers();
+		}
+	}
+
+	private async ValueTask LoadUsers()
+	{
+		IsLoading = true;
+		StateHasChanged();
+
+		Users = await _userManager.GetUsersInRoleAsync(SD.Role_Customer);
+
+		IsLoading = false;
+		StateHasChanged();
+	}
+
+	private async Task HandleDelete(IdentityUser user)
+	{
+		if (user is not null)
+		{
+			await _userManager.DeleteAsync(user);
+			await LoadUsers();
+		}
+	}
+}

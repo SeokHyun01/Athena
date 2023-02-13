@@ -1,0 +1,192 @@
+﻿@page "/user/{userId:guid}/camera"
+
+@inject NavigationManager _navigationManager
+@inject ICameraRepository _cameraRepository
+@inject IJSRuntime _jsRuntime
+@inject ILogger<CameraList> _logger
+
+@implements IAsyncDisposable
+
+
+<div class="container my-5">
+	<div class="form-group">
+		<h1 class="text-center">카메라 리스트</h1>
+	</div>
+	<div class="d-flex justify-content-end form-group">
+		<NavLink href=@($"user/{UserId.ToString()}/camera/create") class="btn btn-primary">카메라 생성하기</NavLink>
+	</div>
+	@if (Cameras.Any())
+	{
+		<table class="table">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Image</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var camera in Cameras)
+				{
+					<tr>
+						<td>@($"Camera {camera.Id}")</td>
+						<td>@(camera.Name)</td>
+						<td>
+							<div class="d-flex flex-column align-items-start">
+								<NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}") class="btn btn-primary mb-3">카메라 보기</NavLink>
+								<img height="255" id=@($"thumbnailImage{camera.Id}") />
+							</div>
+						</td>
+						<td>
+							<NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}/register") class="btn btn-primary">카메라 등록</NavLink>
+							<button class="btn btn-danger" @onclick="()=>HandleDelete(camera.Id)">삭제</button>
+							<input id=@($"angleInput{camera.Id}") type="range" value=@(camera.Angle) min="0" max="180" step="1" @onchange="(args)=>SetCameraAngle(args, camera.Id)" />
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+	else
+	{
+		@if (IsLoading)
+		{
+			<div class="spinner-border text-primary" role="status"></div>
+		}
+
+		else
+		{
+			<p>No recrods found.</p>
+		}
+	}
+</div>
+
+<style>
+	.form-group {
+		margin-bottom: 1rem;
+	}
+</style>
+
+
+@code {
+	[Parameter]
+	public Guid UserId { get; set; }
+
+	private bool IsLoading { get; set; }
+	private IEnumerable<CameraDTO> Cameras { get; set; } = new List<CameraDTO>();
+	private IMqttClient? MqttClient { get; set; }
+
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await LoadCameras(UserId.ToString());
+
+			var mqttFactory = new MqttFactory();
+			MqttClient = mqttFactory.CreateMqttClient();
+
+			MqttClient.ApplicationMessageReceivedAsync += async e =>
+			{
+				var payload = e.ApplicationMessage.Payload;
+				if (payload != null && payload.Length > 0)
+				{
+					if (e.ApplicationMessage.Topic == "camera/update/thumbnail")
+					{
+						UpdateCamera? updateCamera = JsonSerializer.Deserialize<UpdateCamera>(payload);
+						if (updateCamera != null)
+						{
+							var ImageId = $"thumbnailImage{updateCamera.CameraId}";
+							await _jsRuntime.InvokeVoidAsync("setImageSource", ImageId, updateCamera.Thumbnail);
+						}
+					}
+					else if (e.ApplicationMessage.Topic == "camera/update/degree/ack")
+					{
+						var updateCamera = JsonSerializer.Deserialize<UpdateCamera>(payload);
+						if (updateCamera != null)
+						{
+							var InputId = $"angleInput{updateCamera.CameraId}";
+							await _jsRuntime.InvokeVoidAsync("setInputDisabled", InputId, false);
+						}
+					}
+				}
+			};
+
+			var mqttClientOptions = new MqttClientOptionsBuilder()
+				.WithTcpServer("ictrobot.hknu.ac.kr", 8085)
+				.WithCleanSession(true)
+				.Build();
+			await MqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
+
+			var mqttSubscribeOptions = mqttFactory.CreateSubscribeOptionsBuilder()
+				.WithTopicFilter(
+				f =>
+				{
+					f.WithTopic("camera/update/thumbnail");
+				})
+				.WithTopicFilter(
+				f =>
+				{
+					f.WithTopic("camera/update/degree/ack");
+				})
+				.Build();
+			await MqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
+		}
+	}
+
+	private async ValueTask LoadCameras(string userId)
+	{
+		IsLoading = true;
+		StateHasChanged();
+
+		Cameras = await _cameraRepository.GetAll(userId);
+
+		IsLoading = false;
+		StateHasChanged();
+	}
+
+	private async Task HandleDelete(int cameraId)
+	{
+		if (cameraId > 0)
+		{
+			await _cameraRepository.Delete(cameraId);
+			await LoadCameras(UserId.ToString());
+		}
+	}
+
+	private async Task SetCameraAngle(ChangeEventArgs args, int cameraId)
+	{
+		if (args.Value != null)
+		{
+			var angle = int.Parse(args.Value.ToString());
+
+			var updateCamera = new UpdateCamera
+				{
+					CameraId = cameraId,
+					Degree = angle
+				};
+			var updateCameraJson = JsonSerializer.Serialize<UpdateCamera>(updateCamera);
+
+			if (MqttClient != null && MqttClient.IsConnected)
+			{
+				var applicationMessage = new MqttApplicationMessageBuilder()
+					.WithTopic("camera/update/degree/syn")
+					.WithPayload(updateCameraJson)
+					.Build();
+				await MqttClient.PublishAsync(applicationMessage, CancellationToken.None);
+
+				var InputId = $"angleInput{updateCamera.CameraId}";
+				await _jsRuntime.InvokeVoidAsync("setInputDisabled", InputId, true);
+			}
+		}
+	}
+
+	public async ValueTask DisposeAsync()
+	{
+		if (MqttClient != null && MqttClient.IsConnected)
+		{
+			await MqttClient.DisconnectAsync();
+		}
+	}
+}

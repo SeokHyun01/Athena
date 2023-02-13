@@ -1,0 +1,83 @@
+﻿@page "/login"
+
+@inject NavigationManager _navigationManager
+@inject IAuthenticationService _authSerivce
+@inject ILogger<Login> _logger
+
+
+<EditForm Model="SignInRequest" OnValidSubmit="LoginUser">
+	<DataAnnotationsValidator />
+	<div class="container mt-5">
+		<h2>Login</h2>
+		@if (ShowErrors)
+		{
+			<div>
+				@foreach (var error in Errors)
+				{
+					<p class="text-danger text-center">@error</p>
+				}
+			</div>
+		}
+		<div class="form-group">
+			<label for="email">Email address</label>
+			<InputText @bind-Value="SignInRequest.Email" type="email" class="form-control" id="email" />
+			<ValidationMessage For="(()=>SignInRequest.Email)"></ValidationMessage>
+		</div>
+		<div class="form-group">
+			<label for="password">Password</label>
+			<InputText @bind-Value="SignInRequest.Password" type="password" class="form-control" id="password" />
+			<ValidationMessage For="(()=>SignInRequest.Password)"></ValidationMessage>
+		</div>
+		<button type="submit" class="btn btn-primary">Sign In</button>
+		<a href="/register" class="btn btn-secondary">Sign Up</a>
+	</div>
+</EditForm>
+
+<style>
+	.form-group {
+		margin-bottom: 1rem;
+	}
+</style>
+
+
+@code {
+	private bool ShowErrors { get; set; }
+	private bool IsProcessing { get; set; } = false;
+
+	private SignInRequestDTO SignInRequest = new();
+
+	private string ReturnUrl { get; set; }
+	private string Errors { get; set; }
+
+
+	private async Task LoginUser()
+	{
+		ShowErrors = false;
+		IsProcessing = true;
+
+		var result = await _authSerivce.Login(SignInRequest);
+		_logger.LogInformation($"로그인 결과: {result.IsSucceeded}");
+		if (result.IsSucceeded)
+		{
+			var absoluteUri = new Uri(_navigationManager.Uri);
+			var queryParam = HttpUtility.ParseQueryString(absoluteUri.Query);
+			ReturnUrl = queryParam["returnUrl"];
+
+			if (string.IsNullOrEmpty(ReturnUrl))
+			{
+				_navigationManager.NavigateTo("/");
+			}
+			else
+			{
+				_navigationManager.NavigateTo("/" + ReturnUrl);
+			}
+		}
+		else
+		{
+			Errors = result.ErrorMessage;
+			ShowErrors = true;
+			await InvokeAsync(StateHasChanged);
+		}
+		IsProcessing = false;
+	}
+}

@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AthenaWeb_Client", "AthenaWeb_Client\AthenaWeb_Client.csproj", "{ED5BD557-E9EE-42E3-8CF6-C70AA43F3283}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AthenaWeb_API", "AthenaWeb_API\AthenaWeb_API.csproj", "{F311B5F9-C99D-47C9-8B54-4C09C18A9C2B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AthenaWeb_Server", "AthenaWeb_Server\AthenaWeb_Server.csproj", "{915132C9-220B-4C96-B525-80584BD6B049}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Athena_Business", "Athena_Business\Athena_Business.csproj", "{20EF62BD-EDBC-432A-ABE2-83004430D05A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Athena_Common", "Athena_Common\Athena_Common.csproj", "{1BF8108F-82F6-47A3-BD04-124D9A5D4D17}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Athena_DataAccess", "Athena_DataAccess\Athena_DataAccess.csproj", "{4CCEAF9A-8578-490C-88AE-76665261190F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Athena_Models", "Athena_Models\Athena_Models.csproj", "{195E4E73-B6A2-4E07-BD63-3E6E4C18508F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ED5BD557-E9EE-42E3-8CF6-C70AA43F3283}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED5BD557-E9EE-42E3-8CF6-C70AA43F3283}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED5BD557-E9EE-42E3-8CF6-C70AA43F3283}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED5BD557-E9EE-42E3-8CF6-C70AA43F3283}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F311B5F9-C99D-47C9-8B54-4C09C18A9C2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F311B5F9-C99D-47C9-8B54-4C09C18A9C2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F311B5F9-C99D-47C9-8B54-4C09C18A9C2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F311B5F9-C99D-47C9-8B54-4C09C18A9C2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{915132C9-220B-4C96-B525-80584BD6B049}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{915132C9-220B-4C96-B525-80584BD6B049}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{915132C9-220B-4C96-B525-80584BD6B049}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{915132C9-220B-4C96-B525-80584BD6B049}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20EF62BD-EDBC-432A-ABE2-83004430D05A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20EF62BD-EDBC-432A-ABE2-83004430D05A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20EF62BD-EDBC-432A-ABE2-83004430D05A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20EF62BD-EDBC-432A-ABE2-83004430D05A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BF8108F-82F6-47A3-BD04-124D9A5D4D17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BF8108F-82F6-47A3-BD04-124D9A5D4D17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BF8108F-82F6-47A3-BD04-124D9A5D4D17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BF8108F-82F6-47A3-BD04-124D9A5D4D17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CCEAF9A-8578-490C-88AE-76665261190F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CCEAF9A-8578-490C-88AE-76665261190F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CCEAF9A-8578-490C-88AE-76665261190F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CCEAF9A-8578-490C-88AE-76665261190F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{195E4E73-B6A2-4E07-BD63-3E6E4C18508F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{195E4E73-B6A2-4E07-BD63-3E6E4C18508F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{195E4E73-B6A2-4E07-BD63-3E6E4C18508F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{195E4E73-B6A2-4E07-BD63-3E6E4C18508F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FE779B5B-F702-4BDC-912E-5722BFA10751}
+	EndGlobalSection
+EndGlobal

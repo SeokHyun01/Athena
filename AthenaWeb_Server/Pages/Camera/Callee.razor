@@ -1,0 +1,42 @@
+﻿@page "/user/{userId:guid}/camera/{cameraId:int}/register"
+
+@inject IJSRuntime _jsRuntime
+
+
+<div class="container my-5">
+	<div class="row">
+		<div class="col-6">
+			<video id="localVideo" autoplay width="640" height="480"></video>
+		</div>
+		<div class="col-6">
+			<canvas id="outputCanvas"></canvas>
+		</div>
+	</div>
+	<div class="row my-1">
+		<div class="col-12">
+			<button id="muteButton" class="btn btn-primary"> Mute</button>
+			<button id="cameraButton" class="btn btn-primary"> Turn Camera Off</button>
+			<select id="camerasSelect" class="form-control-sm"></select>
+		</div>
+	</div>
+	<div class="row my-2">
+		<div class="col-12">
+			<video id="remoteVideo" autoplay width="640" height="480"></video>
+		</div>
+	</div>
+</div>
+
+
+@code {
+	[Parameter]
+	public Guid UserId { get; set; }
+
+	[Parameter]
+	public int CameraId { get; set; }
+
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		await _jsRuntime.InvokeVoidAsync("initializeBackgroundSubtractor", UserId.ToString(), CameraId);
+	}
+}

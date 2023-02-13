@@ -1,0 +1,66 @@
+﻿@page "/user/{userId:guid}/camera/create"
+
+@inject ICameraRepository _cameraRepository
+@inject NavigationManager _navigationManager
+
+
+<EditForm Model="Camera" OnValidSubmit="InsertCamera">
+	<DataAnnotationsValidator />
+	<div class="container mt-5">
+		@if (ShowError)
+		{
+			<div>
+				<p class="text-danger text-center">@Error</p>
+			</div>
+		}
+		<div class="form-group">
+			<label for="cameraName">카메라 이름</label>
+			<InputText @bind-Value="Camera.Name" class="form-control" id="cameraName" />
+			<ValidationMessage For="(()=>Camera.Name)"></ValidationMessage>
+		</div>
+		<button type="submit" class="btn btn-primary">카메라 @Action</button>
+		<NavLink href=@($"user/{UserId.ToString()}/camera") class="btn btn-secondary">돌아가기</NavLink>
+	</div>
+</EditForm>
+
+<style>
+	.form-group {
+		margin-bottom: 1rem;
+	}
+</style>
+
+
+@code {
+	[Parameter]
+	public Guid UserId { get; set; }
+
+	private string Action { get; set; } = "생성하기";
+	private bool IsLoading { get; set; }
+
+	private CameraDTO Camera { get; set; } = new();
+
+	private bool ShowError { get; set; }
+	private string Error { get; set; }
+
+
+	private async Task InsertCamera()
+	{
+		ShowError = false;
+		IsLoading = true;
+		await InvokeAsync(StateHasChanged);
+
+		Camera.UserId = UserId.ToString();
+		try
+		{
+			await _cameraRepository.Create(Camera);
+			_navigationManager.NavigateTo($"user/{UserId}/camera");
+
+		}
+		catch (Exception ex)
+		{
+			Error = $"타입 \'{ex.GetType().FullName}\'의 에러가 발생했습니다: {ex.Message}";
+			ShowError = true;
+			await InvokeAsync(StateHasChanged);
+		}
+	}
+}
