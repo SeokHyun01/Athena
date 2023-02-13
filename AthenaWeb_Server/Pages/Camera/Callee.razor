@@ -1,4 +1,4 @@
-﻿@page "/user/{userId:guid}/camera/{cameraId:int}/register"
+﻿@*@page "/user/{userId:guid}/camera/{cameraId:int}/register"
 
 @inject IJSRuntime _jsRuntime
 
@@ -39,4 +39,4 @@
 	{
 		await _jsRuntime.InvokeVoidAsync("initializeBackgroundSubtractor", UserId.ToString(), CameraId);
 	}
-}
+}*@
