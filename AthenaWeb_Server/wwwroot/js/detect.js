@@ -21,6 +21,8 @@ let _Dotnet;  //전역변수로 dotnet 객체 할당
 let camera;
 let _userId;
 let _cameraId;
+let _isCamshift = false;
+let _isTfjs = false;
 
 const TOPIC_MOTOR = "camera/update/degree/syn";
 const TOPIC_MOTOR_ACK = "camera/update/degree/ack";
@@ -38,6 +40,9 @@ window.SetMqtt = () => {
     let client = new Paho.MQTT.Client("ictrobot.hknu.ac.kr", Number(8090), client_id);
     client.connect({ useSSL: true, onSuccess: onConnect }); //connect the client using SSL 
 
+    let video = document.getElementById("video");
+    let canvasOutput = document.getElementById('canvasOutput');
+    let fireCanvas = document.getElementById('fireCanvas');
 
     function onConnect() {
         //구독할 각종 토픽들을 구독한다
@@ -71,7 +76,18 @@ window.SetMqtt = () => {
             //webrtc 연결
             try {
                 let data = JSON.parse(message.payloadString);
-                if (data.CameraId == _cameraId) {
+                if (data.CameraId == _cameraId) { 
+
+                    if(canvasOutput.getAttribute("hidden") == null){ 
+                        canvasOutput.setAttribute("hidden", true);  
+                    }
+
+                    if(fireCanvas.getAttribute("hidden") == null){
+                        fireCanvas.setAttribute("hidden", true);
+                    }
+
+                    video.removeAttribute("hidden");
+
                     //webRTC 연결을 시작한다.
                     _Dotnet.invokeMethodAsync("showWebRTC", true);
                 }
@@ -83,6 +99,17 @@ window.SetMqtt = () => {
             try {
                 let data = JSON.parse(message.payloadString);
                 if (data.CameraId == _cameraId) {
+                    
+                    if(canvasOutput.getAttribute("hidden") != null && _isCamshift == true){
+                        canvasOutput.removeAttribute("hidden");
+                        video.setAttribute("hidden", true);
+                    }
+
+                    if(fireCanvas.getAttribute("hidden") != null && _isTfjs == true){
+                        fireCanvas.removeAttribute("hidden");
+                        video.setAttribute("hidden", true);
+                    }
+
                     //webRTC 연결을 종료한다.
                     _Dotnet.invokeMethodAsync("showWebRTC", false);
                 }
@@ -128,16 +155,12 @@ window.SendThumbnail = () => {
 
 window.reload = () => {
     location.reload();
-}  
-
-window.check = (isCamshift, isTfjs) => {
-    if (isCamshift || isTfjs) {
-        document.getElementById('video').setAttribute('hidden', true);
-    }
 }
 
 //opencv.js 를 이용한 움직임 감지
-window.Camshift = () => {
+window.Camshift = (isCamshift) => {
+    _isCamshift = isCamshift;
+
     // 일정 시간이 지나면, mqtt 전송
     let time = new Date();
     let time1 = time.getTime();
@@ -222,7 +245,7 @@ window.Camshift = () => {
             time2 = new Date().getTime();
             intervalTime = (time2 - time1) / 1000;
             count++;
-        }else{
+        } else {
             isMotion = false;
         }
         try {
@@ -297,7 +320,9 @@ window.Camshift = () => {
 }
 
 //tfjs를 이용한 화재 인식 
-window.tfjs = () => {
+window.tfjs = (isTfjs) => {
+    _isTfjs = isTfjs;
+
     const TF_FPS = 40;
 
     const tfDate = new Date();
@@ -604,7 +629,9 @@ class Camera {
 
     constructor(connectionId, userId, cameraId) {
         this.localVideo = document.getElementById("video");
-        this.localVideo.removeAttribute("hidden");
+        // if (this.localVideo.getAttribute("hidden") != null) {
+        //     this.localVideo.removeAttribute("hidden");
+        // }
         this.muteButton = document.getElementById("muteButton");
         this.cameraButton = document.getElementById("cameraButton");
         this.camerasSelect = document.getElementById("camerasSelect");
