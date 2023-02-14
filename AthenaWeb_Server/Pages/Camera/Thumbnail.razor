@@ -45,6 +45,9 @@
     //6b57a785-aabf-441a-a881-cb8f72dfdb2d -new : f9a4161a-9d05-41e2-9be7-a7a1c2d2f52c
     int CameraidDarcy = 1; // 9
     static bool isWebRTC = false;
+    bool isCamshift = false;
+    bool isTfjs = false;
+
 
     //썸넬의 크기 426:240 (16:9)의 형태
     private int width = 426;
@@ -97,6 +100,12 @@
     public void showWebRTC(bool boolWebRTC)
     {
         isWebRTC = boolWebRTC;
+
+          if (!isWebRTC)
+        {
+            await _Jsruntime.InvokeVoidAsync("check", isCamshift, isTfjs);
+        }
+        
         StateHasChanged();
     }
 

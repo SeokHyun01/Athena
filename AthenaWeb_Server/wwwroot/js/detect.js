@@ -130,6 +130,12 @@ window.reload = () => {
     location.reload();
 }  
 
+window.check = (isCamshift, isTfjs) => {
+    if (isCamshift || isTfjs) {
+        document.getElementById('video').setAttribute('hidden', true);
+    }
+}
+
 //opencv.js 를 이용한 움직임 감지
 window.Camshift = () => {
     // 일정 시간이 지나면, mqtt 전송
