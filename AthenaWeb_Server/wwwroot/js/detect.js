@@ -29,6 +29,7 @@ const TOPIC_WEBRTC_FIN = "call/stop";
 const TOPIC_PREVIEW = "camera/update/thumbnail";
 const TOPIC_PICTURE_TO_VIDEO = "camera/update/pictureToVideo";
 const TOPIC_MOTION = "camera/update/motion";
+const TOPIC_DETECT = "event/create";
 
 //MQTT On
 window.SetMqtt = () => {
@@ -134,6 +135,7 @@ window.Camshift = () => {
     let intervalTime;
     let isFirst = true;
     let count = 0;
+    let isMotion = false;
 
     let video = document.querySelector("#video", willReadFrequently = true);
     let canvasOutput = document.querySelector("#canvasOutput", willReadFrequently = true);;
@@ -202,11 +204,14 @@ window.Camshift = () => {
 
             cv.rectangle(src, point1, point2, [0, 0, 255, 255], 1);
             cv.putText(src, "Motion Detected", new cv.Point(10, 10), cv.FONT_HERSHEY_SIMPLEX, 0.3, [0, 0, 255, 255]);
+            isMotion = true;
 
             //시간 차이 계산 (단위 : s)
             time2 = new Date().getTime();
             intervalTime = (time2 - time1) / 1000;
             count++;
+        }else{
+            isMotion = false;
         }
         try {
 
@@ -229,7 +234,10 @@ window.Camshift = () => {
             }
 
             cv.imshow(canvasOutput, src);
-            time1 = time2;
+
+            if (isMotion) {
+                time1 = time2;
+            }
 
         } catch (err) {
             console.log(err);
@@ -254,7 +262,7 @@ window.Camshift = () => {
         data.UserId = _userId;
         data.CameraId = _cameraId;
         data.Created = new Date().toISOString();
-        data.Image = canvasOutput.toDataURL("image/jpeg", 0.7).replace("data:image/jpeg;base64,", ""); //앞에 붙는 문자열 제거
+        data.Image = canvasOutput.toDataURL("image/jpeg", 0.7); //앞에 붙는 문자열 제거
 
         message = new Paho.MQTT.Message(JSON.stringify(data));  //썸네일 내용 CameraId, Thumbnail
         message.destinationName = TOPIC_MOTION;    //보낼 토픽
@@ -276,6 +284,168 @@ window.Camshift = () => {
     async_motion_detect(); // 비동기로 움직임 감지 시작
 }
 
+//tfjs를 이용한 화재 인식 
+window.tfjs = () => {
+    const TF_FPS = 40;
+
+    const tfDate = new Date();
+    let tfTime1 = tfDate.getTime();
+    let tfTime2;
+    let tfIntervalTime;
+    let fireCount = 0;
+    let tfIsFirst = true;
+
+    let video = document.getElementById('video');
+    let fireCanvas = document.getElementById('fireCanvas');
+    let flippedCanvas = document.createElement('canvas');
+    fireCanvas.width = video.width; fireCanvas.height = video.height; flippedCanvas.width = video.width; flippedCanvas.height = video.height; //캔버스 크기 설정
+
+
+    tf.loadGraphModel('model/model.json').then(model => {
+        setInterval(() => {
+            tf.engine().startScope(); //메모리 관리를 위한 스코프 시작
+            detect(model);
+            tf.engine().endScope(); //스코프 종료
+        }, 1000 / TF_FPS);
+    });
+
+    function detect(model) {
+        let fCtx = flippedCanvas.getContext('2d');
+        fCtx.scale(-1, 1);
+        fCtx.drawImage(video, -video.width, 0, video.width, video.height); //이미지를 그림
+        const _imgData = fCtx.getImageData(0, 0, 640, 640); //이미지 데이터를 가져온다.
+
+        let ctx = fireCanvas.getContext('2d');
+        //단, 640 x 640 의 캔버스를 화면에는 비디오의 크기에 맞게 축소한다.
+        ctx.drawImage(flippedCanvas, 0, 0, video.width, video.height);
+
+        const tensor = tf.tidy(() => {
+            return tf.browser.fromPixels(_imgData).div(255.0).expandDims(0); //이미지를 텐서로 변환한다.
+        });
+
+        excute(model, tensor, ctx);
+    }
+
+    function excute(model, tensor, ctx) {
+        model.executeAsync(tensor,).then(result => { //모델을 통해 예측한다.
+            const [boxes, scores, classes, numDetections] = result;
+            const boxes_data = boxes.dataSync(); //박스의 좌표
+            const scores_data = scores.dataSync(); //박스의 점수
+            const classes_data = classes.dataSync(); //박스의 클래스
+            const numDetections_data = numDetections.dataSync()[0]; //박스의 갯수
+            tf.dispose(result); //메모리 해제
+
+            var i;
+            for (i = 0; i < numDetections_data; i++) {
+                let [x1, y1, x2, y2] = boxes_data.slice(i * 4, (i + 1) * 4); //박스의 좌표
+                // //비율을 수정한다. 426:240 -> 640:640 이므로 426/640 = 0.667 비율을 곱한다. 240/640 = 0.375 비율을 곱한다.
+                x1 = x1 * 640;
+                y1 = y1 * 640;
+                x2 = x2 * 640;
+                y2 = y2 * 640;
+
+                const width = x2 - x1; //박스의 넓이
+                const height = y2 - y1; //박스의 높이
+                let klass = ""; //박스의 클래스
+                if (classes_data[i] == 1) {
+                    klass = "smoke";
+                } else {
+                    klass = "fire";
+                }
+                const score = (scores_data[i] * 100).toFixed() + "%"; //박스의 점수
+
+                //박스를 그린다.
+                if (klass == "smoke") {
+                    ctx.lineWidth = "3";  //선의 두께 
+                    ctx.strokeStyle = "gray";  //선의 색
+                    ctx.strokeRect(x1, y1, width, height);  //선을 그린다.
+
+                    ctx.font = "20px Arial"; //글자의 크기와 폰트
+                    ctx.fillStyle = "gray"; //글자의 색
+                    ctx.fillText(klass + " " + score, x1, y1); //글자를 그린다.
+                } else {
+                    ctx.lineWidth = "3";
+                    ctx.strokeStyle = "red";
+                    ctx.strokeRect(x1, y1, width, height);
+
+                    ctx.font = "20px Arial";
+                    ctx.fillStyle = "red";
+                    ctx.fillText(klass + " " + score, x1, y1);
+                }
+            }
+            //만약 화재가 감지되면 fireCount를 증가시킨다.
+            if (numDetections_data > 0) {
+                fireCount++;
+                tfTime2 = tfDate.getTime();
+                tfIntervalTime = (tfTime2 - tfTime1) / 1000;
+            }
+
+            //만약 5분이내 5번 이상 화재가 감지되면 mqtt로 화재를 전송한다.
+            if (tfIntervalTime < 300 && fireCount > 5) {
+                sendDetect(boxes_data, classes_data, numDetections_data);
+                fireCount = 0;
+            } else if (tfIntervalTime > 300) {
+                fireCount = 0;
+            }
+
+            //만약 5초안에 객체가 이어서 감지되지 않으면 서버에 더이상 동일한 상황이 없다고 전송한다.
+            let stopTfIntervalTime = (new Date().getDate() - tfTime1) / 1000;
+            if (stopTfIntervalTime > 5 && tfIsFirst) {
+                sendtfStop();
+            } else if (stopTfIntervalTime < 5 && !tfIsFirst) {
+                tfIsFirst = true;
+            }
+
+            if (numDetections_data > 0) {
+                tfTime1 = tfTime2;
+            }
+
+        });
+    }
+
+    async function sendDetect(boxes_data, classes_data, numDetections_data) {
+        let detections = [];
+        //json 배열 만들기
+        for (var i = 0; i < numDetections_data; i++) {
+            let [x1, y1, x2, y2] = boxes_data.slice(i * 4, (i + 1) * 4);
+            let klass = "";
+            if (classes_data[i] == 1) {
+                klass = "fire";
+            } else {
+                klass = "smoke";
+            }
+            detections.push({
+                "Left": x1,
+                "Top": y1,
+                "Right": x2,
+                "Bottom": y2,
+                "Label": klass
+            });
+        }
+
+        let data = new Object();
+        data.UserId = _userId;
+        data.CameraId = _cameraId;
+        data.Created = new Date().toISOString();
+        data.Image = flippedCanvas.toDataURL("image/jpeg", 0.7);
+        data.EventDetails = detections;
+
+        message = new Paho.MQTT.Message(JSON.stringify(data));
+        message.destinationName = TOPIC_DETECT;    //보낼 토픽
+        _client.send(message);  // MQTT로 썸네일 전송
+    }
+
+    async function sendtfStop() {
+        let data = new Object();
+        data.UserId = _userId;
+        data.CameraId = _cameraId;
+        data.Stop = "stop";
+
+        message = new Paho.MQTT.Message(JSON.stringify(data));
+        message.destinationName = TOPIC_PICTURE_TO_VIDEO;
+        _client.send(message);
+    }
+}
 
 //블루투스 켜기 
 window.SetBluetooth = () => {
@@ -325,91 +495,6 @@ window.SetBluetooth = () => {
             });
         });
 
-    }
-
-}
-
-//tfjs를 이용한 화재 인식 
-window.tfjs = () => {
-    const FPS = 40;
-    let video = document.getElementById('video');
-    let fireCanvas = document.getElementById('fireCanvas');
-    let flippedCanvas = document.createElement('canvas');
-    fireCanvas.width = video.width; fireCanvas.height = video.height; flippedCanvas.width = video.width; flippedCanvas.height = video.height; //캔버스 크기 설정
-
-    tf.loadGraphModel('model/model.json').then(model => {
-        setInterval(() => {
-            tf.engine().startScope(); //메모리 관리를 위한 스코프 시작
-            detect(model);
-            tf.engine().endScope(); //스코프 종료
-        }, 1000 / FPS);
-    });
-
-    function detect(model) {
-        let fCtx = flippedCanvas.getContext('2d');
-        fCtx.scale(-1, 1);
-        fCtx.drawImage(video, -video.width, 0, video.width, video.height); //이미지를 그림
-        const _imgData = fCtx.getImageData(0, 0, 640, 640); //이미지 데이터를 가져온다.
-
-        let ctx = fireCanvas.getContext('2d');
-        //단, 640 x 640 의 캔버스를 화면에는 비디오의 크기에 맞게 축소한다.
-        ctx.drawImage(flippedCanvas, 0, 0, video.width, video.height);
-
-        const tensor = tf.tidy(() => {
-            return tf.browser.fromPixels(_imgData).div(255.0).expandDims(0); //이미지를 텐서로 변환한다.
-            });
-
-       excute(model, tensor, ctx);
-    }
-
-    function excute(model, tensor, ctx){
-        model.executeAsync(tensor,).then(result => { //모델을 통해 예측한다.
-            const [boxes, scores, classes, numDetections] = result;
-            const boxes_data = boxes.dataSync(); //박스의 좌표
-            const scores_data = scores.dataSync(); //박스의 점수
-            const classes_data = classes.dataSync(); //박스의 클래스
-            const numDetections_data = numDetections.dataSync()[0]; //박스의 갯수
-            tf.dispose(result); //메모리 해제
-
-            var i;
-            for (i = 0; i < numDetections_data; i++) {
-                let [x1, y1, x2, y2] = boxes_data.slice(i * 4, (i + 1) * 4); //박스의 좌표
-                // //비율을 수정한다. 426:240 -> 640:640 이므로 426/640 = 0.667 비율을 곱한다. 240/640 = 0.375 비율을 곱한다.
-                x1 = x1 * 640;
-                y1 = y1 * 640;
-                x2 = x2 * 640;
-                y2 = y2 * 640;
-
-                const width = x2 - x1; //박스의 넓이
-                const height = y2 - y1; //박스의 높이
-                let klass = ""; //박스의 클래스
-                if (classes_data[i] == 1) {
-                    klass = "smoke";
-                } else {
-                    klass = "fire";
-                }
-                const score = (scores_data[i] * 100).toFixed() + "%"; //박스의 점수
-
-                //박스를 그린다.
-                if (klass == "smoke") {
-                    ctx.lineWidth = "3";  //선의 두께 
-                    ctx.strokeStyle = "gray";  //선의 색
-                    ctx.strokeRect(x1, y1, width, height);  //선을 그린다.
-
-                    ctx.font = "20px Arial"; //글자의 크기와 폰트
-                    ctx.fillStyle = "gray"; //글자의 색
-                    ctx.fillText(klass + " " + score, x1, y1); //글자를 그린다.
-                } else {
-                    ctx.lineWidth = "3";
-                    ctx.strokeStyle = "red";
-                    ctx.strokeRect(x1, y1, width, height);
-
-                    ctx.font = "20px Arial";
-                    ctx.fillStyle = "red";
-                    ctx.fillText(klass + " " + score, x1, y1);
-                }
-            }
-        });
     }
 
 }
