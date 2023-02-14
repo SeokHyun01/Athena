@@ -100,7 +100,6 @@
     public async ValueTask showWebRTC(bool boolWebRTC)
     {
         isWebRTC = boolWebRTC;
-        Console.WriteLine("isWebRTC : " + isWebRTC);
           if (!isWebRTC)
         {
             await _Jsruntime.InvokeVoidAsync("check", isCamshift, isTfjs);
@@ -119,6 +118,7 @@
 
         if (isChecked)
         {
+            isCamshift = true;
             await _Jsruntime.InvokeVoidAsync("Camshift");
         }else{
             await _Jsruntime.InvokeVoidAsync("reload");
@@ -134,6 +134,7 @@
 
         if (isChecked)
         {
+            isTfjs = true;
             await _Jsruntime.InvokeVoidAsync("tfjs");
         }else{
             await _Jsruntime.InvokeVoidAsync("reload");
