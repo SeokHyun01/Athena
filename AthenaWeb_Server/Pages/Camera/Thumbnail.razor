@@ -97,7 +97,7 @@
     }
 
     [JSInvokable]
-    public void showWebRTC(bool boolWebRTC)
+    public async ValueTask showWebRTC(bool boolWebRTC)
     {
         isWebRTC = boolWebRTC;
 
@@ -106,7 +106,7 @@
             await _Jsruntime.InvokeVoidAsync("check", isCamshift, isTfjs);
         }
         
-        StateHasChanged();
+       await InvokeAsync(StateHasChanged);
     }
 
   
