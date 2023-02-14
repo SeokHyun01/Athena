@@ -4,11 +4,11 @@
 
 <div>
     <button class="btn btn-info btn-sm" @onclick="bluetooth">블루투스 켜기</button>
-    <button class="btn btn-info btn-sm" @onclick="Camshift">움직임 감지</button>
-    <button class="btn btn-info btn-sm" @onclick="tfjs">화재 감지</button>
+    <input type="checkbox" id="camshiftCheckbox" @onchange="@(e => Camshift(e))" />
+    <label for="camshiftCheckbox">움직임 감지</label>
+    <input type="checkbox" id="tfjsCheckbox" @onchange="@(e => tfjs(e))" />
+    <label for="tfjsCheckbox">화재 검출</label>
 </div>
-
-
 
 
 <div class="col">
@@ -22,16 +22,15 @@
     }
 
     @* opencv.js 를 이용한 움직임 감지 *@
-    <canvas id="canvasOutput"></canvas>
+    <canvas id="canvasOutput" hidden></canvas>
 
     @* tfjs 를 이용한 화재 감지 *@
-    <canvas id="fireCanvas"></canvas>
-	
+    <canvas id="fireCanvas" hidden></canvas>
+
     @* 썸네일 전송하는 캔버스 *@
     <canvas hidden id="canvas_image"></canvas>
 
 </div>
-
 
 
 @code {
@@ -101,16 +100,35 @@
         StateHasChanged();
     }
 
+  
     //opencv.js를 사용한 움직임 감지
-    public async Task Camshift()
+    public async Task Camshift(ChangeEventArgs eventArgs)
     {
-        await _Jsruntime.InvokeVoidAsync("Camshift");
+        if (eventArgs.Value == null) return;
+
+        bool isChecked = (bool)eventArgs.Value;
+
+        if (isChecked)
+        {
+            await _Jsruntime.InvokeVoidAsync("Camshift");
+        }else{
+            await _Jsruntime.InvokeVoidAsync("reload");
+        }
     }
 
-    //tensorflow.js를 사용한 화재 감지
-    public async Task tfjs()
+      //tensorflow.js를 사용한 화재 감지
+    public async Task tfjs(ChangeEventArgs eventArgs)
     {
-        await _Jsruntime.InvokeVoidAsync("tfjs");
+        if (eventArgs.Value == null) return;
+
+        bool isChecked = (bool)eventArgs.Value;
+
+        if (isChecked)
+        {
+            await _Jsruntime.InvokeVoidAsync("tfjs");
+        }else{
+            await _Jsruntime.InvokeVoidAsync("reload");
+        }
     }
 
 }

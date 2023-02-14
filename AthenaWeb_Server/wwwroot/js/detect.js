@@ -126,6 +126,10 @@ window.SendThumbnail = () => {
     }
 }
 
+window.reload = () => {
+    location.reload();
+}  
+
 //opencv.js 를 이용한 움직임 감지
 window.Camshift = () => {
     // 일정 시간이 지나면, mqtt 전송
@@ -138,7 +142,9 @@ window.Camshift = () => {
     let isMotion = false;
 
     let video = document.querySelector("#video", willReadFrequently = true);
+    video.setAttribute('hidden', true);
     let canvasOutput = document.querySelector("#canvasOutput", willReadFrequently = true);;
+    canvasOutput.removeAttribute('hidden');
 
     let cap = new cv.VideoCapture(video);
     let img_first = new cv.Mat(video.height, video.width, cv.CV_8UC4); let img_first_gray = new cv.Mat();
@@ -296,7 +302,9 @@ window.tfjs = () => {
     let tfIsFirst = true;
 
     let video = document.getElementById('video');
+    video.setAttribute('hidden', true);
     let fireCanvas = document.getElementById('fireCanvas');
+    fireCanvas.removeAttribute('hidden');
     let flippedCanvas = document.createElement('canvas');
     fireCanvas.width = video.width; fireCanvas.height = video.height; flippedCanvas.width = video.width; flippedCanvas.height = video.height; //캔버스 크기 설정
 
