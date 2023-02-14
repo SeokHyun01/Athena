@@ -131,6 +131,7 @@ window.reload = () => {
 }  
 
 window.check = (isCamshift, isTfjs) => {
+    console.log(isCamshift, isTfjs);
     if (isCamshift || isTfjs) {
         document.getElementById('video').setAttribute('hidden', true);
     }
