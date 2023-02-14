@@ -2,19 +2,18 @@
 
 @inject IJSRuntime _Jsruntime
 
-<div class>
-    @* <input type="checkbox" @onclick="bluetooth" value="setBluetooth"/>
-    <label for="setBluetooth">블루투스 켜기</label>
-
-    <input type="checkbox" @onclick="Camshift" value="Camshift"/>
-    <label for="Camshift">움직임 감지</label> *@
+<div>
     <button class="btn btn-info btn-sm" @onclick="bluetooth">블루투스 켜기</button>
     <button class="btn btn-info btn-sm" @onclick="Camshift">움직임 감지</button>
+    <button class="btn btn-info btn-sm" @onclick="tfjs">화재 감지</button>
 </div>
 
 
-<div class="row">
+
+
+<div class="col">
     <video id="video" autoplay width="426" height="240"></video>
+
     @if (isWebRTC)
     {
         <div id="displayWebRTC">
@@ -22,17 +21,17 @@
         </div>
     }
 
-</div>
-
-
-<div>
     @* opencv.js 를 이용한 움직임 감지 *@
     <canvas id="canvasOutput"></canvas>
 
+    @* tfjs 를 이용한 화재 감지 *@
+    <canvas id="fireCanvas"></canvas>
+	
     @* 썸네일 전송하는 캔버스 *@
     <canvas hidden id="canvas_image"></canvas>
 
 </div>
+
 
 
 @code {
@@ -106,6 +105,12 @@
     public async Task Camshift()
     {
         await _Jsruntime.InvokeVoidAsync("Camshift");
+    }
+
+    //tensorflow.js를 사용한 화재 감지
+    public async Task tfjs()
+    {
+        await _Jsruntime.InvokeVoidAsync("tfjs");
     }
 
 }

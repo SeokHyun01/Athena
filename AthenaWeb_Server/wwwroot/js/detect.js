@@ -329,6 +329,91 @@ window.SetBluetooth = () => {
 
 }
 
+//tfjs를 이용한 화재 인식 
+window.tfjs = () => {
+    const FPS = 40;
+    let video = document.getElementById('video');
+    let fireCanvas = document.getElementById('fireCanvas');
+    let flippedCanvas = document.createElement('canvas');
+    fireCanvas.width = video.width; fireCanvas.height = video.height; flippedCanvas.width = video.width; flippedCanvas.height = video.height; //캔버스 크기 설정
+
+    tf.loadGraphModel('model/model.json').then(model => {
+        setInterval(() => {
+            tf.engine().startScope(); //메모리 관리를 위한 스코프 시작
+            detect(model);
+            tf.engine().endScope(); //스코프 종료
+        }, 1000 / FPS);
+    });
+
+    function detect(model) {
+        let fCtx = flippedCanvas.getContext('2d');
+        fCtx.scale(-1, 1);
+        fCtx.drawImage(video, -video.width, 0, video.width, video.height); //이미지를 그림
+        const _imgData = fCtx.getImageData(0, 0, 640, 640); //이미지 데이터를 가져온다.
+
+        let ctx = fireCanvas.getContext('2d');
+        //단, 640 x 640 의 캔버스를 화면에는 비디오의 크기에 맞게 축소한다.
+        ctx.drawImage(flippedCanvas, 0, 0, video.width, video.height);
+
+        const tensor = tf.tidy(() => {
+            return tf.browser.fromPixels(_imgData).div(255.0).expandDims(0); //이미지를 텐서로 변환한다.
+            });
+
+       excute(model, tensor, ctx);
+    }
+
+    function excute(model, tensor, ctx){
+        model.executeAsync(tensor,).then(result => { //모델을 통해 예측한다.
+            const [boxes, scores, classes, numDetections] = result;
+            const boxes_data = boxes.dataSync(); //박스의 좌표
+            const scores_data = scores.dataSync(); //박스의 점수
+            const classes_data = classes.dataSync(); //박스의 클래스
+            const numDetections_data = numDetections.dataSync()[0]; //박스의 갯수
+            tf.dispose(result); //메모리 해제
+
+            var i;
+            for (i = 0; i < numDetections_data; i++) {
+                let [x1, y1, x2, y2] = boxes_data.slice(i * 4, (i + 1) * 4); //박스의 좌표
+                // //비율을 수정한다. 426:240 -> 640:640 이므로 426/640 = 0.667 비율을 곱한다. 240/640 = 0.375 비율을 곱한다.
+                x1 = x1 * 640;
+                y1 = y1 * 640;
+                x2 = x2 * 640;
+                y2 = y2 * 640;
+
+                const width = x2 - x1; //박스의 넓이
+                const height = y2 - y1; //박스의 높이
+                let klass = ""; //박스의 클래스
+                if (classes_data[i] == 1) {
+                    klass = "smoke";
+                } else {
+                    klass = "fire";
+                }
+                const score = (scores_data[i] * 100).toFixed() + "%"; //박스의 점수
+
+                //박스를 그린다.
+                if (klass == "smoke") {
+                    ctx.lineWidth = "3";  //선의 두께 
+                    ctx.strokeStyle = "gray";  //선의 색
+                    ctx.strokeRect(x1, y1, width, height);  //선을 그린다.
+
+                    ctx.font = "20px Arial"; //글자의 크기와 폰트
+                    ctx.fillStyle = "gray"; //글자의 색
+                    ctx.fillText(klass + " " + score, x1, y1); //글자를 그린다.
+                } else {
+                    ctx.lineWidth = "3";
+                    ctx.strokeStyle = "red";
+                    ctx.strokeRect(x1, y1, width, height);
+
+                    ctx.font = "20px Arial";
+                    ctx.fillStyle = "red";
+                    ctx.fillText(klass + " " + score, x1, y1);
+                }
+            }
+        });
+    }
+
+}
+
 //dotnet 객체를 가져온다.
 window.dotnetHelper = (objRef, userId, cameraId) => {
     _Dotnet = objRef;
@@ -577,15 +662,3 @@ class Camera {
     }
 }
 
-
-//canvas -> float[]
-window.getPixel = () => {
-    const video = document.getElementById("video");
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
-
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    console.log(typeof imageData.data)
-    return imageData.data;
-}
