@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AthenaDataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -93,11 +93,27 @@ namespace AthenaDataAccess.Migrations
                     CameraId = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Path = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsRequiredObjectDetection = table.Column<bool>(type: "bit", nullable: false)
+                    IsRequiredObjectDetection = table.Column<bool>(type: "bit", nullable: false),
+                    EventVideoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EventHeaders", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventVideos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CameraId = table.Column<int>(type: "int", nullable: false),
+                    Path = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventVideos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -272,6 +288,9 @@ namespace AthenaDataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "EventHeaders");
+
+            migrationBuilder.DropTable(
+                name: "EventVideos");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

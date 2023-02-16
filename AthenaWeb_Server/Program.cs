@@ -38,6 +38,7 @@ builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IMqttMessageService, MqttMessageService>();
 builder.Services.AddScoped<ICameraRepository, CameraRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IEventVideoRepository, EventVideoRepository>();
 
 builder.Services.AddHostedService<HostedMqttMessageService>();
 

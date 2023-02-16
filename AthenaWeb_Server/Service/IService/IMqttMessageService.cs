@@ -13,6 +13,8 @@ namespace AthenaWeb_Server.Service.IService
 		void RegisterMessageHandler(Func<MqttApplicationMessageReceivedEventArgs, Task> handler);
 		ValueTask<CameraDTO> UpdateCamera(CameraDTO camera);
 		ValueTask<EventDTO> CreateEvent(EventDTO eventObj);
-		ValueTask<IEnumerable<string>> GetEventHeaderPath(IEnumerable<int>? ids = null);
+		ValueTask<IEnumerable<EventHeaderDTO>> GetEventHeader(IEnumerable<int>? ids = null);
+		ValueTask<EventVideoDTO> CreateEventVideo(EventVideoDTO eventVideo);
+		ValueTask<EventHeaderDTO> UpdateEventHeader(EventHeaderDTO eventHeader);
 	}
 }

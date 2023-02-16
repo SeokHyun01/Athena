@@ -5,6 +5,7 @@ using Athena_DataAccess.ViewModel;
 using Athena_Models;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +18,13 @@ namespace Athena_Business.Repository
 	{
 		private readonly AthenaAppDbContext _db;
 		private readonly IMapper _mapper;
+		private readonly ILogger<EventRepository> _logger;
 
-		public EventRepository(AthenaAppDbContext db, IMapper mapper)
+		public EventRepository(AthenaAppDbContext db, IMapper mapper, ILogger<EventRepository> logger)
 		{
 			_db = db;
 			_mapper = mapper;
+			_logger = logger;
 		}
 
 		public async ValueTask<EventDTO> Create(EventDTO objDTO)
@@ -51,6 +54,7 @@ namespace Athena_Business.Repository
 
 			catch (Exception ex)
 			{
+				_logger.LogInformation($"타입 \'{ex.GetType().FullName}\'의 에러가 발생했습니다: {ex.Message}");
 				throw;
 			}
 
@@ -105,14 +109,14 @@ namespace Athena_Business.Repository
 			return _mapper.Map<IEnumerable<Event>, IEnumerable<EventDTO>>(EventsFromDb);
 		}
 
-		public async ValueTask<IEnumerable<string>> GetPath(IEnumerable<int>? ids = null)
+		public async ValueTask<IEnumerable<EventHeaderDTO>> GetHeader(IEnumerable<int>? ids = null)
 		{
 			if (ids != null)
 			{
-				return await _db.EventHeaders.Where(u => ids.Contains(u.Id)).Select(u => u.Path).ToListAsync();
+				return _mapper.Map<IEnumerable<EventHeader>, IEnumerable<EventHeaderDTO>>(_db.EventHeaders.Where(u => ids.Contains(u.Id)));
 			} else
 			{
-				return Enumerable.Empty<string>();
+				return Enumerable.Empty<EventHeaderDTO>();
 			}
 		}
 
@@ -158,6 +162,21 @@ namespace Athena_Business.Repository
 			}
 
 			return _mapper.Map<IEnumerable<Event>, IEnumerable<EventDTO>>(EventsFromDb);
+		}
+
+		public async ValueTask<EventHeaderDTO> UpdateHeader(EventHeaderDTO header)
+		{
+			var objFromDb = await _db.EventHeaders.FirstOrDefaultAsync(u => u.Id == header.Id);
+			if (objFromDb != null)
+			{
+				// 업데이트
+				objFromDb.EventVideoId = header.EventVideoId;
+				_db.EventHeaders.Update(objFromDb);
+				await _db.SaveChangesAsync();
+				return _mapper.Map<EventHeader, EventHeaderDTO>(objFromDb);
+			}
+
+			return null;
 		}
 	}
 }

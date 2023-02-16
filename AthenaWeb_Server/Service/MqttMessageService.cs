@@ -14,15 +14,17 @@ namespace AthenaWeb_Server.Service
 		private readonly IMqttClient _mqttClient;
 		private readonly ICameraRepository _cameraRepository;
 		private readonly IEventRepository _eventRepository;
+		private readonly IEventVideoRepository _eventVideoRepository;
 
 		private bool _disposedValue;
 
 
-		public MqttMessageService(IMqttClient mqttClient, ICameraRepository cameraRepository, IEventRepository eventRepository)
+		public MqttMessageService(IMqttClient mqttClient, ICameraRepository cameraRepository, IEventRepository eventRepository, IEventVideoRepository eventVideoRepository)
 		{
 			_mqttClient = mqttClient;
 			_cameraRepository = cameraRepository;
 			_eventRepository = eventRepository;
+			_eventVideoRepository = eventVideoRepository;
 		}
 
 		public async ValueTask ConnectAsync(string brokerHost, int brokerPort)
@@ -73,7 +75,11 @@ namespace AthenaWeb_Server.Service
 
 		public async ValueTask<EventDTO> CreateEvent(EventDTO eventObj) => await _eventRepository.Create(eventObj);
 		
-		public async ValueTask<IEnumerable<string>> GetEventHeaderPath(IEnumerable<int>? ids = null) => await _eventRepository.GetPath(ids);
+		public async ValueTask<IEnumerable<EventHeaderDTO>> GetEventHeader(IEnumerable<int>? ids = null) => await _eventRepository.GetHeader(ids);
+
+		public async ValueTask<EventVideoDTO> CreateEventVideo(EventVideoDTO eventVideo) => await _eventVideoRepository.Create(eventVideo);
+
+		public async ValueTask<EventHeaderDTO> UpdateEventHeader(EventHeaderDTO eventHeader) => await _eventRepository.UpdateHeader(eventHeader);
 
 		public void Dispose() => Dispose(true);
 

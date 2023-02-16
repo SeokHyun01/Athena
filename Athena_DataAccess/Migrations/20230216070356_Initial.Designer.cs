@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AthenaDataAccess.Migrations
 {
     [DbContext(typeof(AthenaAppDbContext))]
-    [Migration("20230216015342_initial")]
-    partial class initial
+    [Migration("20230216070356_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -96,6 +96,9 @@ namespace AthenaDataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("EventVideoId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsRequiredObjectDetection")
                         .HasColumnType("bit");
 
@@ -110,6 +113,30 @@ namespace AthenaDataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EventHeaders");
+                });
+
+            modelBuilder.Entity("Athena_DataAccess.EventVideo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CameraId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EventVideos");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

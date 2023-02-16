@@ -19,10 +19,6 @@ namespace AthenaWeb_Server.Service
 
 		private IMqttMessageService? _mqttMessageService;
 
-		private const string outputFile = "output.mp4";
-		private string ProgressMessage { get; set; }
-		private FFMPEG? ffMpeg;
-
 
 		public HostedMqttMessageService(ILogger<HostedMqttMessageService> logger, IServiceProvider serviceProvider)
 		{
@@ -70,7 +66,18 @@ namespace AthenaWeb_Server.Service
 								var createVideo = JsonSerializer.Deserialize<CreateVideo>(payload);
 								if (createVideo != null)
 								{
-									var imagePathList = (await _mqttMessageService.GetEventHeaderPath(createVideo.EventHeaderIds)).ToList();
+									var headerList = await _mqttMessageService.GetEventHeader(createVideo.EventHeaderIds);
+
+									var firstHeader = headerList.First();
+									var userId = firstHeader.UserId;
+									var cameraId = firstHeader.CameraId;
+
+									var imagePathList = new List<string>();
+									foreach(var header in headerList)
+									{
+										imagePathList.Add(header.Path);
+									}
+
 									if (imagePathList != null && imagePathList.Any())
 									{
 										var identifier = Guid.NewGuid().ToString();
@@ -78,14 +85,19 @@ namespace AthenaWeb_Server.Service
 										{
 											var destinationPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.png");
 											File.Copy(imagePathList[i], destinationPath);
+											//if (File.Exists(imagePathList[i]))
+											//{
+											//	File.Delete(imagePathList[i]);
+											//}
 										}
 
+										var videoPath = $"{Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "videos", Guid.NewGuid().ToString())}.mp4";
 										var ffMpeg = new Process
 										{
 											StartInfo = new ProcessStartInfo
 											{
 												FileName = "ffmpeg",
-												Arguments = $"-i {Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", identifier)}_%d.png -r 1 -pix_fmt yuv420p -c:v libx264 {Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "videos", Guid.NewGuid().ToString())}.mp4",
+												Arguments = $"-i {Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", identifier)}_%d.png -r 1 -pix_fmt yuv420p -c:v libx264 {videoPath}",
 												UseShellExecute = false,
 												RedirectStandardOutput = true,
 												CreateNoWindow = false,
@@ -94,12 +106,33 @@ namespace AthenaWeb_Server.Service
 											EnableRaisingEvents = true
 										};
 										ffMpeg.Start();
-										await ffMpeg.WaitForExitAsync();
 
 										var processOutput = string.Empty;
 										while ((processOutput = ffMpeg.StandardError.ReadLine()) != null)
 										{
 											_logger.LogInformation(processOutput);
+										}
+
+										var video = await _mqttMessageService.CreateEventVideo(new EventVideoDTO
+										{
+											UserId = userId,
+											CameraId = cameraId,
+											Path = videoPath
+										});
+
+										foreach (var header in headerList)
+										{
+											header.EventVideoId = video.Id;
+											await _mqttMessageService.UpdateEventHeader(header);
+										}
+
+										for (int i = 0; i < imagePathList.Count; i++)
+										{
+											var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.png");
+											if (File.Exists(filePath))
+											{
+												File.Delete(filePath);
+											}
 										}
 									}
 								}
