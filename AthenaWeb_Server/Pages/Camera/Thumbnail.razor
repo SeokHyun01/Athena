@@ -1,5 +1,4 @@
 @page "/thumbnail/{userid:guid}/{cameraid:int}"
-
 @inject IJSRuntime _Jsruntime
 
 <div>
@@ -17,7 +16,7 @@
     @if (isWebRTC)
     {
         <div id="displayWebRTC">
-            <WebRTC UserId=@UserId CameraId=@cameraid />
+            <WebRTC_Client UserIdToThumbnail=@UserId CameraIdToThumbnail=@cameraid />
         </div>
     }
 

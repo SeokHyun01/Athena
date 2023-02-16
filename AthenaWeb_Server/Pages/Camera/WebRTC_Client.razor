@@ -20,6 +20,14 @@
 	[Parameter]
 	public int CameraId { get; set; }
 
+
+	[Parameter]
+	public Guid UserIdToThumbnail { get; set; }
+
+	[Parameter]
+	public int CameraIdToThumbnail { get; set; }
+
+
 	private HubConnection? hubConnection;
 	private string connectionId = "";
 	private string roomName = "";
@@ -29,15 +37,28 @@
 		if (firstRander)
 		{
 
+			//웹: thumbnail 페이지에서 넘어온 경우 앱: webRTC 페이지 직접 접속한 경우
+			if (UserId == Guid.Empty && CameraId == 0)
+			{
+				UserId = UserIdToThumbnail;
+				CameraId = CameraIdToThumbnail;
+			}
+
 			// SignalR
 			hubConnection = new HubConnectionBuilder()
-			.WithUrl(_navigationManager.ToAbsoluteUri("/hubs/signaling"), (opts) =>{
-				opts.HttpMessageHandlerFactory = (message) =>{
-					if (message is HttpClientHandler clientHandler){
-							// SSL 인증 무시
-							clientHandler.ServerCertificateCustomValidationCallback +=
-							(sender, certificate, chain, sslPolicyErrors) => { return true; };}
-							return message;};}).Build();
+			.WithUrl(_navigationManager.ToAbsoluteUri("/hubs/signaling"), (opts) =>
+			{
+				opts.HttpMessageHandlerFactory = (message) =>
+				{
+					if (message is HttpClientHandler clientHandler)
+					{
+						// SSL 인증 무시
+						clientHandler.ServerCertificateCustomValidationCallback +=
+		(sender, certificate, chain, sslPolicyErrors) => { return true; };
+					}
+					return message;
+				};
+			}).Build();
 
 			// SignalR Handler
 			hubConnection.On<string>("OnConnected", async (senderId) =>
