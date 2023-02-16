@@ -41,10 +41,13 @@ builder.Services.AddSwaggerGen(c =>
 				});
 });
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AthenaAppDbContext>(options =>
-{
-	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+		options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+//builder.Services.AddDbContext<AthenaAppDbContext>(options =>
+//{
+//	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+//});
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 	.AddDefaultTokenProviders().AddEntityFrameworkStores<AthenaAppDbContext>();
 
@@ -82,6 +85,8 @@ builder.Services.AddCors(o => o.AddPolicy("Athena", builder =>
 {
 	builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
 }));
+
+builder.WebHost.UseUrls("http://*:8094;https://*:8095");
 
 var app = builder.Build();
 
