@@ -3,6 +3,7 @@ using Athena_Business.Repository.IRepository;
 using Athena_DataAccess;
 using Athena_Models;
 using AthenaWeb_Server.Service.IService;
+using Microsoft.JSInterop;
 using MQTTnet;
 using MQTTnet.Client;
 
@@ -12,20 +13,21 @@ namespace AthenaWeb_Server.Service
 	{
 		private readonly IMqttClient _mqttClient;
 		private readonly ICameraRepository _cameraRepository;
+		private readonly IEventRepository _eventRepository;
 
 		private bool _disposedValue;
 
 
-		public MqttMessageService(IMqttClient mqttClient, ICameraRepository cameraRepository)
+		public MqttMessageService(IMqttClient mqttClient, ICameraRepository cameraRepository, IEventRepository eventRepository)
 		{
 			_mqttClient = mqttClient;
 			_cameraRepository = cameraRepository;
+			_eventRepository = eventRepository;
 		}
 
 		public async ValueTask ConnectAsync(string brokerHost, int brokerPort)
 		{
 			var options = new MqttClientOptionsBuilder()
-				.WithClientId("MqttMessageBackgroundService")
 				.WithTcpServer(brokerHost, brokerPort)
 				.WithCleanSession(true)
 				.Build();
@@ -67,7 +69,11 @@ namespace AthenaWeb_Server.Service
 			_mqttClient.ApplicationMessageReceivedAsync += handler;
 		}
 
-		public async ValueTask<CameraDTO?> UpdateCamera(CameraDTO camera) => await _cameraRepository.Update(camera);
+		public async ValueTask<CameraDTO> UpdateCamera(CameraDTO camera) => await _cameraRepository.Update(camera);
+
+		public async ValueTask<EventDTO> CreateEvent(EventDTO eventObj) => await _eventRepository.Create(eventObj);
+		
+		public async ValueTask<IEnumerable<string>> GetEventHeaderPath(IEnumerable<int>? ids = null) => await _eventRepository.GetPath(ids);
 
 		public void Dispose() => Dispose(true);
 

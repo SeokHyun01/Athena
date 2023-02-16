@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Athena_Models
 {
-	public class EventDTO
+	public class CreateVideo
 	{
-		public EventHeaderDTO EventHeader { get; set; }
-		public IEnumerable<EventBodyDTO>? EventBodies { get; set; }
+		public List<int> EventHeaderIds { get; set; }
 	}
 }

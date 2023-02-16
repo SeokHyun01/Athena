@@ -37,6 +37,7 @@ builder.Services.AddSingleton<IMqttClient>(factory.CreateMqttClient());
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IMqttMessageService, MqttMessageService>();
 builder.Services.AddScoped<ICameraRepository, CameraRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
 
 builder.Services.AddHostedService<HostedMqttMessageService>();
 

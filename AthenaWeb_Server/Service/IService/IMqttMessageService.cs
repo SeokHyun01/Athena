@@ -11,6 +11,8 @@ namespace AthenaWeb_Server.Service.IService
 		ValueTask UnsubscribeAsync(string topic);
 		ValueTask UnsubscribeAsync(MqttClientUnsubscribeOptions options);
 		void RegisterMessageHandler(Func<MqttApplicationMessageReceivedEventArgs, Task> handler);
-		ValueTask<CameraDTO?> UpdateCamera(CameraDTO camera);
+		ValueTask<CameraDTO> UpdateCamera(CameraDTO camera);
+		ValueTask<EventDTO> CreateEvent(EventDTO eventObj);
+		ValueTask<IEnumerable<string>> GetEventHeaderPath(IEnumerable<int>? ids = null);
 	}
 }

@@ -32,12 +32,15 @@ namespace Athena_Business.Repository
 				_db.EventHeaders.Add(obj.EventHeader);
 				await _db.SaveChangesAsync();
 
-				foreach (var body in obj.EventBodies)
+				if (obj.EventBodies != null && obj.EventBodies.Any())
 				{
-					body.EventHeaderId = obj.EventHeader.Id;
+					foreach (var body in obj.EventBodies)
+					{
+						body.EventHeaderId = obj.EventHeader.Id;
+					}
+					_db.EventBodies.AddRange(obj.EventBodies);
+					await _db.SaveChangesAsync();
 				}
-				_db.EventBodies.AddRange(obj.EventBodies);
-				await _db.SaveChangesAsync();
 
 				return new EventDTO()
 				{
@@ -85,14 +88,13 @@ namespace Athena_Business.Repository
 
 		public async ValueTask<IEnumerable<EventDTO>> GetAll()
 		{
-			List<Event> EventsFromDb = new List<Event>();
+			var EventsFromDb = new List<Event>();
 
 			IEnumerable<EventHeader> eventHeaderList = _db.EventHeaders;
 			IEnumerable<EventBody> EventBodyList = _db.EventBodies;
-
 			foreach (var header in eventHeaderList)
 			{
-				Event eventObj = new()
+				var eventObj = new Event()
 				{
 					EventHeader = header,
 					EventBodies = EventBodyList.Where(u => u.EventHeaderId == header.Id),
@@ -101,6 +103,17 @@ namespace Athena_Business.Repository
 			}
 
 			return _mapper.Map<IEnumerable<Event>, IEnumerable<EventDTO>>(EventsFromDb);
+		}
+
+		public async ValueTask<IEnumerable<string>> GetPath(IEnumerable<int>? ids = null)
+		{
+			if (ids != null)
+			{
+				return await _db.EventHeaders.Where(u => ids.Contains(u.Id)).Select(u => u.Path).ToListAsync();
+			} else
+			{
+				return Enumerable.Empty<string>();
+			}
 		}
 
 		public async ValueTask<IEnumerable<EventDTO>> GetAllByCameraId(int cameraId)

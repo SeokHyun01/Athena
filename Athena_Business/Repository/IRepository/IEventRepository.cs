@@ -15,5 +15,6 @@ namespace Athena_Business.Repository.IRepository
 		public ValueTask<IEnumerable<EventDTO>> GetAll();
 		public ValueTask<IEnumerable<EventDTO>> GetAllByUserId(string userId);
 		public ValueTask<IEnumerable<EventDTO>> GetAllByCameraId(int cameraId);
+		ValueTask<IEnumerable<string>> GetPath(IEnumerable<int>? ids = null);
 	}
 }

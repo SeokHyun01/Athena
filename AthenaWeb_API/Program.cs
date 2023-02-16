@@ -1,3 +1,5 @@
+using Athena_Business.Repository;
+using Athena_Business.Repository.IRepository;
 using Athena_DataAccess.Data;
 using AthenaWeb_API.Helper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -45,6 +47,8 @@ builder.Services.AddDbContext<AthenaAppDbContext>(options =>
 });
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 	.AddDefaultTokenProviders().AddEntityFrameworkStores<AthenaAppDbContext>();
+
+builder.Services.AddScoped<IEventRepository, EventRepository>();
 
 var apiSettingsSection = builder.Configuration.GetSection("APISettings");
 builder.Services.Configure<APISettings>(apiSettingsSection);
