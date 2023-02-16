@@ -664,9 +664,6 @@ class Camera {
 
     constructor(connectionId, userId, cameraId) {
         this.localVideo = document.getElementById("video");
-        // if (this.localVideo.getAttribute("hidden") != null) {
-        //     this.localVideo.removeAttribute("hidden");
-        // }
         this.muteButton = document.getElementById("muteButton");
         this.cameraButton = document.getElementById("cameraButton");
         this.camerasSelect = document.getElementById("camerasSelect");
