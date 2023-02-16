@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AthenaDataAccess.Migrations
 {
     [DbContext(typeof(AthenaAppDbContext))]
-    [Migration("20230213080651_Initial")]
+    [Migration("20230216104309_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
