@@ -169,10 +169,11 @@ window.Camshift = (isCamshift) => {
     let isFirst = true;
     let count = 0;
     let isMotion = false;
+    let checkMotionIds = [];
 
     let video = document.querySelector("#video", willReadFrequently = true);
     video.setAttribute('hidden', true);
-    let canvasOutput = document.querySelector("#canvasOutput", willReadFrequently = true);;
+    let canvasOutput = document.querySelector("#canvasOutput", willReadFrequently = true);
     canvasOutput.removeAttribute('hidden');
 
     let cap = new cv.VideoCapture(video);
@@ -253,6 +254,7 @@ window.Camshift = (isCamshift) => {
             //움직임 감지 시 mqtt 전송 (5분 이내 5번 이상 움직임 감지 시)
             if (intervalTime < 300 && count > 5) {
                 sendMotion(canvasOutput);
+                count = 0;
 
                 // 5분 차이나면 초기화    
             } else if (intervalTime > 300) {
@@ -263,6 +265,7 @@ window.Camshift = (isCamshift) => {
             //움직임 감지가 5초이상 없다면 서버에 보고 (단, 한번만 보낸다.)
             if (stopIntervalTime > 5 && isFirst) {
                 sendStop();
+                checkMotionIds = [];
                 isFirst = false;
             } else if (stopIntervalTime < 5 && !isFirst) {
                 isFirst = true;
@@ -293,36 +296,50 @@ window.Camshift = (isCamshift) => {
 
     async function sendMotion(canvasOutput) {
 
-        let data = new Object();
-        data.UserId = _userId;
-        data.CameraId = _cameraId;
-        data.Created = new Date().toISOString();
-        data.Image = canvasOutput.toDataURL("image/jpeg", 0.7); //앞에 붙는 문자열 제거
+        // 이벤트 내용
+        const event = {
+            EventHeader: {
+                UserId: _userId,
+                CameraId: _cameraId,
+                Created: new Date().toISOString(),
+                Path: canvasOutput.toDataURL("image/jpeg", 0.7),
+                IsRequiredObjectDetection: true
+            }
+        }
+        // 이벤트 전송
+        const createEventResponse = await fetch("https://localhost:7067/api/Event/Create", {
+            method: "POST",
+            headers: { "Contetn-Type": "application/json" },
+            body: JSON.stringify(event)
+        });
 
-        message = new Paho.MQTT.Message(JSON.stringify(data));  //썸네일 내용 CameraId, Thumbnail
-        message.destinationName = TOPIC_MOTION;    //보낼 토픽
-        _client.send(message);  // MQTT로 썸네일 전송
-        count = 0;
+        // 이벤트 전송 실패 시 에러 발생
+        if (!createEventResponse.ok) {
+            throw new Error(await createEventResponse.text());
+        }
+
+        //전송한 이벤트의 Id를 받음
+        const checkId = await createEventResponse.json();
+        checkMotionIds.push(checkId);
+        console.log(checkId);
     }
 
     async function sendStop() {
         let data = new Object();
-        data.UserId = _userId;
-        data.CameraId = _cameraId;
-        data.Stop = "stop";
+        data.EventHeaderIds = checkMotionIds;
 
         message = new Paho.MQTT.Message(JSON.stringify(data));
-        message.destinationName = TOPIC_PICTURE_TO_VIDEO;
+        message.destinationName = TOPIC_MAKE_VIDEO;
         _client.send(message);
     }
-
     async_motion_detect(); // 비동기로 움직임 감지 시작
 }
+
 
 //tfjs를 이용한 화재 인식 
 window.tfjs = (isTfjs) => {
     _isTfjs = isTfjs;
-
+    let checkObjectIds = [];
     const TF_FPS = 40;
 
     const tfDate = new Date();
@@ -431,6 +448,8 @@ window.tfjs = (isTfjs) => {
             let stopTfIntervalTime = (new Date().getDate() - tfTime1) / 1000;
             if (stopTfIntervalTime > 5 && tfIsFirst) {
                 sendtfStop();
+                checkObjectIds = [];
+                tfIsFirst = false;
             } else if (stopTfIntervalTime < 5 && !tfIsFirst) {
                 tfIsFirst = true;
             }
@@ -462,29 +481,45 @@ window.tfjs = (isTfjs) => {
             });
         }
 
-        let data = new Object();
-        data.UserId = _userId;
-        data.CameraId = _cameraId;
-        data.Created = new Date().toISOString();
-        data.Image = flippedCanvas.toDataURL("image/jpeg", 0.7);
-        data.EventDetails = detections;
+        const objectEvent = {
+            EventHeader: {
+                UserId: _userId,
+                CameraId: _cameraId,
+                Created: new Date().toISOString(),
+                Path: flippedCanvas.toDataURL('image/jpeg', 0.7),
+                IsRequiredObjectDetection: true
+            },
+            EventDetails: detections
+        };
 
-        message = new Paho.MQTT.Message(JSON.stringify(data));
-        message.destinationName = TOPIC_DETECT;    //보낼 토픽
-        _client.send(message);  // MQTT로 썸네일 전송
+        const createObjectEventResponse = await fetch("https://localhost:7067/api/Event/Create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(objectEvent)
+        });
+
+        if(!createObjectEventResponse.ok) {
+            throw new Error(await createObjectEventResponse.text());
+        }
+
+        const checkOjbectId = await createObjectEventResponse.json();
+        checkObjectIds.push(checkOjbectId);
+
+        // message = new Paho.MQTT.Message(JSON.stringify(data));
+        // message.destinationName = TOPIC_DETECT;    //보낼 토픽
+        // _client.send(message);  // MQTT로 썸네일 전송
     }
 
     async function sendtfStop() {
         let data = new Object();
-        data.UserId = _userId;
-        data.CameraId = _cameraId;
-        data.Stop = "stop";
+        data.EventHeaderIds = checkObjectIds;
 
         message = new Paho.MQTT.Message(JSON.stringify(data));
-        message.destinationName = TOPIC_PICTURE_TO_VIDEO;
+        message.destinationName = TOPIC_MAKE_VIDEO;
         _client.send(message);
     }
 }
+
 
 //블루투스 켜기 
 window.SetBluetooth = () => {
