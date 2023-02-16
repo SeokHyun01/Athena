@@ -25,10 +25,13 @@ builder.Services.AddResponseCompression(opts =>
 		new[] { "application/octet-stream" });
 });
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AthenaAppDbContext>(options =>
-{
-	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+		options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+//builder.Services.AddDbContext<AthenaAppDbContext>(options =>
+//{
+//	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+//});
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 	.AddDefaultTokenProviders().AddDefaultUI().AddEntityFrameworkStores<AthenaAppDbContext>();
 
@@ -43,6 +46,8 @@ builder.Services.AddScoped<IEventVideoRepository, EventVideoRepository>();
 builder.Services.AddHostedService<HostedMqttMessageService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.WebHost.UseUrls("http://*:8098;https://*:8099");
 
 var app = builder.Build();
 
