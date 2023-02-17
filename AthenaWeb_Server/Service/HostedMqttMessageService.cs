@@ -83,7 +83,7 @@ namespace AthenaWeb_Server.Service
 										var identifier = Guid.NewGuid().ToString();
 										for (int i = 0; i < imagePathList.Count; i++)
 										{
-											var destinationPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.png");
+											var destinationPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.jpeg");
 											File.Copy(imagePathList[i], destinationPath);
 											//if (File.Exists(imagePathList[i]))
 											//{
@@ -92,7 +92,7 @@ namespace AthenaWeb_Server.Service
 										}
 
 										var videoPath = $"{Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "videos", Guid.NewGuid().ToString())}.mp4";
-										var args = $"-framerate 1 -i {Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", identifier)}_%d.png -c:v libx264 -r 30 -pix_fmt yuv420p {videoPath}";
+										var args = $"-framerate 1 -i {Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", identifier)}_%d.jpeg -c:v libx264 -r 30 -pix_fmt yuv420p {videoPath}";
 										var ffMpeg = new Process
 										{
 											StartInfo = new ProcessStartInfo
@@ -127,14 +127,14 @@ namespace AthenaWeb_Server.Service
 											await _mqttMessageService.UpdateEventHeader(header);
 										}
 
-										//for (int i = 0; i < imagePathList.Count; i++)
-										//{
-										//	var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.png");
-										//	if (File.Exists(filePath))
-										//	{
-										//		File.Delete(filePath);
-										//	}
-										//}
+										for (int i = 0; i < imagePathList.Count; i++)
+										{
+											var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.png");
+											if (File.Exists(filePath))
+											{
+												File.Delete(filePath);
+											}
+										}
 									}
 								}
 							}

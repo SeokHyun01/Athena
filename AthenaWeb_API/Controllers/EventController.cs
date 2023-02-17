@@ -23,13 +23,13 @@ namespace AthenaWeb_API.Controllers
 			{
 				if (!string.IsNullOrEmpty(eventObj.EventHeader.Path))
 				{
-					var imageBytes = Convert.FromBase64String(eventObj.EventHeader.Path.Replace("data:image/png;base64,", string.Empty));
+					var imageBytes = Convert.FromBase64String(eventObj.EventHeader.Path.Replace("data:image/jpeg;base64,", string.Empty));
 
 					using (var stream = new MemoryStream(imageBytes))
 					{
 						//var root = "C:\\Users\\hisn16.DESKTOP-HGVGADP\\source\\repos\\Athena\\AthenaWeb_Server\\wwwroot\\images";
 						var root = "/home/shyoun/Desktop/Athena-SHYoun/Athena/AthenaWeb_Server/wwwroot/images";
-						var filePath = Path.Combine(root, $"{Guid.NewGuid()}.png");
+						var filePath = Path.Combine(root, $"{Guid.NewGuid()}.jpeg");
 						await stream.CopyToAsync(new FileStream(filePath, FileMode.Create));
 						eventObj.EventHeader.Path = filePath;
 					}
