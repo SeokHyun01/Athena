@@ -480,10 +480,10 @@ window.tfjs = (isTfjs) => {
                 klass = "smoke";
             }
             detections.push({
-                "Left": x1,
-                "Top": y1,
-                "Right": x2,
-                "Bottom": y2,
+                "Left": (x1 * 640).toFixed(),
+                "Top": (y1 * 640).toFixed(),
+                "Right": (x2 * 640).toFixed(),
+                "Bottom": (y2 * 640).toFixed(),
                 "Label": klass
             });
         }
