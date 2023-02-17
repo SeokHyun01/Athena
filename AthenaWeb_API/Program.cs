@@ -86,7 +86,7 @@ builder.Services.AddCors(o => o.AddPolicy("Athena", builder =>
 	builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
 }));
 
-builder.WebHost.UseUrls("http://*:61000;https://*:61001");
+builder.WebHost.UseUrls("http://*:8094;https://*:8095");
 
 var app = builder.Build();
 
