@@ -438,7 +438,6 @@ window.tfjs = (isTfjs) => {
 
             }
             //만약 화재가 감지되면 fireCount를 증가시킨다.
-            console.log(numDetections_data)
             if (numDetections_data > 0) {
                 fireCount++;
                 tfTime2 = new Date().getTime();
@@ -454,7 +453,6 @@ window.tfjs = (isTfjs) => {
             }
 
             //만약 5초안에 객체가 이어서 감지되지 않으면 서버에 더이상 동일한 상황이 없다고 전송한다.
-            console.log(tfTime1)
             let stopTfIntervalTime = (new Date().getDate() - tfTime1) / 1000;
             if (stopTfIntervalTime > 5 && tfIsFirst) {
                 sendtfStop();
@@ -514,7 +512,7 @@ window.tfjs = (isTfjs) => {
 
         const checkOjbectId = await createObjectEventResponse.json();
         checkObjectIds.push(checkOjbectId);
-        console.log(checkObjectIds);
+        console.log(checkOjbectId);
         // message = new Paho.MQTT.Message(JSON.stringify(data));
         // message.destinationName = TOPIC_DETECT;    //보낼 토픽
         // _client.send(message);  // MQTT로 썸네일 전송
