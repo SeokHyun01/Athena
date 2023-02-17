@@ -453,8 +453,8 @@ window.tfjs = (isTfjs) => {
             }
 
             //만약 5초안에 객체가 이어서 감지되지 않으면 서버에 더이상 동일한 상황이 없다고 전송한다.
+            console.log(tfTime1)
             let stopTfIntervalTime = (new Date().getDate() - tfTime1) / 1000;
-            console.log(stopTfIntervalTime)
             if (stopTfIntervalTime > 5 && tfIsFirst) {
                 sendtfStop();
                 checkObjectIds = [];
