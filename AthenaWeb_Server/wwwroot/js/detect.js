@@ -480,10 +480,10 @@ window.tfjs = (isTfjs) => {
                 klass = "smoke";
             }
             detections.push({
-                "Left": x1,
-                "Top": y1,
-                "Right": x2,
-                "Bottom": y2,
+                "Left": parseInt(x1),
+                "Top": parseInt(y1),
+                "Right": parseInt(x2),
+                "Bottom": parseInt(y2),
                 "Label": klass
             });
         }
@@ -505,6 +505,8 @@ window.tfjs = (isTfjs) => {
             body: JSON.stringify(objectEvent)
         });
 
+        console.log(JSON.stringify(objectEvent));
+        
         if(!createObjectEventResponse.ok) {
             throw new Error(await createObjectEventResponse.text());
         }
