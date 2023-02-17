@@ -429,6 +429,13 @@ window.tfjs = (isTfjs) => {
                     ctx.fillStyle = "red";
                     ctx.fillText(klass + " " + score, x1, y1);
                 }
+
+                ctx.font = "24px Arial";
+                ctx.fillStyle = "black";
+                ctx.textAlign = "left";
+                const timeStamp = new Date();
+                ctx.fillText(timeStamp.toISOString(), 10, 30);
+                
             }
             //만약 화재가 감지되면 fireCount를 증가시킨다.
             if (numDetections_data > 0) {
