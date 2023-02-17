@@ -240,6 +240,7 @@ window.Camshift = (isCamshift) => {
 
             cv.rectangle(src, point1, point2, [0, 0, 255, 255], 1);
             cv.putText(src, "Motion Detected", new cv.Point(10, 10), cv.FONT_HERSHEY_SIMPLEX, 0.3, [0, 0, 255, 255]);
+            cv.putText(src, new Date().getDate() , new cv.Point(10, 10), cv.FONT_HERSHEY_SIMPLEX, 0.3, [0, 0, 255, 255]);
             isMotion = true;
 
             //시간 차이 계산 (단위 : s)
