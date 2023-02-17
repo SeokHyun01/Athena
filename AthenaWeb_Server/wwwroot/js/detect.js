@@ -439,7 +439,7 @@ window.tfjs = (isTfjs) => {
 
             //만약 5분이내 5번 이상 화재가 감지되면 mqtt로 화재를 전송한다.
             if (tfIntervalTime < 300 && fireCount > 5) {
-                sendDetect(boxes_data, classes_data, numDetections_data);
+                sendDetect(boxes_data, classes_data, numDetections_data, ctx);
                 fireCount = 0;
             } else if (tfIntervalTime > 300) {
                 fireCount = 0;
@@ -461,7 +461,7 @@ window.tfjs = (isTfjs) => {
         });
     }
 
-    async function sendDetect(boxes_data, classes_data, numDetections_data) {
+    async function sendDetect(boxes_data, classes_data, numDetections_data, ctx) {
         //캔버스에 시간을 표시한다.
         ctx.font = "15px Arial";
         ctx.fillStyle = "black";
@@ -506,7 +506,7 @@ window.tfjs = (isTfjs) => {
         });
 
         console.log(JSON.stringify(objectEvent));
-        
+
         if(!createObjectEventResponse.ok) {
             throw new Error(await createObjectEventResponse.text());
         }
