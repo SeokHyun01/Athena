@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using AthenaWeb_Server.Hubs;
 using Syncfusion.Blazor;
 
-Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MTE0ODQ2NkAzMjMwMmUzNDJlMzBkanVsRTFxNmNIekllUDZoRG8zMW5mWFhFQXp5RHVQV3gzdlJISGxWbldnPQ==");
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MTE0ODUyNEAzMjMwMmUzNDJlMzBkanVsRTFxNmNIekllUDZoRG8zMW5mWFhFQXp5RHVQV3gzdlJISGxWbldnPQ==");
 
 var builder = WebApplication.CreateBuilder(args);
 
