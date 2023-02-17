@@ -439,7 +439,7 @@ window.tfjs = (isTfjs) => {
 
             //만약 5분이내 5번 이상 화재가 감지되면 mqtt로 화재를 전송한다.
             if (tfIntervalTime < 300 && fireCount > 5) {
-                sendDetect(boxes_data, classes_data, numDetections_data, ctx);
+                sendDetect(boxes_data, classes_data, numDetections_data);
                 fireCount = 0;
             } else if (tfIntervalTime > 300) {
                 fireCount = 0;
@@ -461,14 +461,7 @@ window.tfjs = (isTfjs) => {
         });
     }
 
-    async function sendDetect(boxes_data, classes_data, numDetections_data, ctx) {
-        //캔버스에 시간을 표시한다.
-        ctx.font = "15px Arial";
-        ctx.fillStyle = "black";
-        ctx.textAlign = "left";
-        const timeStamp = new Date();
-        ctx.fillText(timeStamp.toLocaleString(), 10, 20);
-
+    async function sendDetect(boxes_data, classes_data, numDetections_data) {
         let detections = [];
         //json 배열 만들기
         for (var i = 0; i < numDetections_data; i++) {
@@ -492,7 +485,7 @@ window.tfjs = (isTfjs) => {
             EventHeader: {
                 UserId: _userId,
                 CameraId: _cameraId,
-                Created: new Date().toISOString(),
+                Created: new Date().toLocaleString(),
                 Path: flippedCanvas.toDataURL('image/jpeg', 0.7),
                 IsRequiredObjectDetection: true
             },
