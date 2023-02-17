@@ -239,7 +239,6 @@ window.Camshift = (isCamshift) => {
             let point2 = new cv.Point(lastNonZeroIndex[1], lastNonZeroIndex[0]);
 
             cv.rectangle(src, point1, point2, [0, 0, 255, 255], 1);
-            cv.putText(src, "Motion Detected", new cv.Point(10, 10), cv.FONT_HERSHEY_SIMPLEX, 0.3, [0, 0, 255, 255]);
             cv.putText(src, new Date().toISOString() , new cv.Point(10, 10), cv.FONT_HERSHEY_SIMPLEX, 0.3, [0, 0, 255, 255]);
             isMotion = true;
 
