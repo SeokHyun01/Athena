@@ -429,13 +429,6 @@ window.tfjs = (isTfjs) => {
                     ctx.fillStyle = "red";
                     ctx.fillText(klass + " " + score, x1, y1);
                 }
-
-                ctx.font = "15px Arial";
-                ctx.fillStyle = "black";
-                ctx.textAlign = "left";
-                const timeStamp = new Date();
-                ctx.fillText(timeStamp.toLocaleString(), 10, 20);
-
             }
             //만약 화재가 감지되면 fireCount를 증가시킨다.
             if (numDetections_data > 0) {
@@ -469,6 +462,13 @@ window.tfjs = (isTfjs) => {
     }
 
     async function sendDetect(boxes_data, classes_data, numDetections_data) {
+        //캔버스에 시간을 표시한다.
+        ctx.font = "15px Arial";
+        ctx.fillStyle = "black";
+        ctx.textAlign = "left";
+        const timeStamp = new Date();
+        ctx.fillText(timeStamp.toLocaleString(), 10, 20);
+
         let detections = [];
         //json 배열 만들기
         for (var i = 0; i < numDetections_data; i++) {
