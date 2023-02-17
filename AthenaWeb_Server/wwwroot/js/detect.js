@@ -239,7 +239,7 @@ window.Camshift = (isCamshift) => {
             let point2 = new cv.Point(lastNonZeroIndex[1], lastNonZeroIndex[0]);
 
             cv.rectangle(src, point1, point2, [0, 0, 255, 255], 1);
-            cv.putText(src, new Date().toISOString() , new cv.Point(10, 10), cv.FONT_HERSHEY_SIMPLEX, 0.3, [0, 0, 255, 255]);
+            cv.putText(src, new Date().toLocaleString() , new cv.Point(10, 10), cv.FONT_HERSHEY_SIMPLEX, 0.3, [0, 0, 255, 255]);
             isMotion = true;
 
             //시간 차이 계산 (단위 : s)
@@ -301,7 +301,7 @@ window.Camshift = (isCamshift) => {
             EventHeader: {
                 UserId: _userId,
                 CameraId: _cameraId,
-                Created: new Date().toISOString(),
+                Created: new Date().toLocaleString(),
                 Path: canvasOutput.toDataURL("image/jpeg", 0.7),
                 IsRequiredObjectDetection: true
             }
@@ -434,11 +434,12 @@ window.tfjs = (isTfjs) => {
                 ctx.fillStyle = "black";
                 ctx.textAlign = "left";
                 const timeStamp = new Date();
-                ctx.fillText(timeStamp.toISOString(), 10, 30);
-                
+                ctx.fillText(timeStamp.toLocaleString(), 10, 30);
+
             }
             //만약 화재가 감지되면 fireCount를 증가시킨다.
             if (numDetections_data > 0) {
+                console.log("fireCount : " + fireCount)
                 fireCount++;
                 tfTime2 = tfDate.getTime();
                 tfIntervalTime = (tfTime2 - tfTime1) / 1000;
