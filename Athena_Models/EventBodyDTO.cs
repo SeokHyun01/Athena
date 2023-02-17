@@ -10,17 +10,11 @@ namespace Athena_Models
 	public class EventBodyDTO
 	{
 		public int Id { get; set; }
-		[Required]
-		public int EventHeaderId { get; set; }
-		[Required]
+		public int? EventHeaderId { get; set; }
 		public string Label { get; set; }
-		[Required]
 		public int Left { get; set; }
-		[Required]
 		public int Right { get; set; }
-		[Required]
 		public int Top { get; set; }
-		[Required]
 		public int Bottom { get; set; }
 	}
 }

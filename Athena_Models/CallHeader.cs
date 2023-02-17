@@ -9,7 +9,6 @@ namespace Athena_Models
 {
 	public class CallHeader
 	{
-		[Required(ErrorMessage = "User ID가 누락됐습니다.")]
 		public string? UserId { get; set; }
 		public int CameraId { get; set; }
 	}

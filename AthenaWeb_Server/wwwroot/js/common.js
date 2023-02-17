@@ -106,7 +106,7 @@ class MOG2MotionDetector {
         const timestamp = new Date();
         this.outputCtx.fillText(timestamp, 10, 30);
 
-        const imageDataURL = this.outputCanvas.toDataURL();
+        const imageDataURL = this.outputCanvas.toDataURL("image/jpeg", 0.7);
         const event = {
             EventHeader: {
                 UserId: this.userId,
