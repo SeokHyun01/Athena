@@ -29,7 +29,7 @@ const TOPIC_MOTOR_ACK = "camera/update/degree/ack";
 const TOPIC_WEBRTC = "call/start";
 const TOPIC_WEBRTC_FIN = "call/stop";
 const TOPIC_PREVIEW = "camera/update/thumbnail";
-const TOPIC_PICTURE_TO_VIDEO = "camera/update/pictureToVideo";
+const TOPIC_MAKE_VIDEO = "video/create";
 const TOPIC_MOTION = "camera/update/motion";
 const TOPIC_DETECT = "event/create";
 
