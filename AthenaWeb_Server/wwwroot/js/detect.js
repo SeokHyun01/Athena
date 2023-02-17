@@ -462,7 +462,6 @@ window.tfjs = (isTfjs) => {
     }
 
     async function sendDetect(boxes_data, classes_data, numDetections_data, ctx) {
-        console.log(classes_data);
         //캔버스에 시간을 표시한다.
         ctx.font = "15px Arial";
         ctx.fillStyle = "black";
@@ -476,9 +475,9 @@ window.tfjs = (isTfjs) => {
             let [x1, y1, x2, y2] = boxes_data.slice(i * 4, (i + 1) * 4);
             let klass = "";
             if (classes_data[i] == 1) {
-                klass = "fire";
-            } else {
                 klass = "smoke";
+            } else {
+                klass = "fire";
             }
             detections.push({
                 "Left": parseInt((x1 * 640).toFixed()),
