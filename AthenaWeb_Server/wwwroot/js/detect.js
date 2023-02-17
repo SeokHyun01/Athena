@@ -309,7 +309,7 @@ window.Camshift = (isCamshift) => {
         // 이벤트 전송
         const createEventResponse = await fetch("https://ictrobot.hknu.ac.kr:8097/api/Event/Create", {
             method: "POST",
-            headers: { "Contetn-Type": "application/json" },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(event)
         });
 
