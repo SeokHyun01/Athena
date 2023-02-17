@@ -12,6 +12,9 @@ using Athena_Business.Repository.IRepository;
 using Athena_Business.Repository;
 using Microsoft.AspNetCore.ResponseCompression;
 using AthenaWeb_Server.Hubs;
+using Syncfusion.Blazor;
+
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MTE0ODQ2NkAzMjMwMmUzNDJlMzBkanVsRTFxNmNIekllUDZoRG8zMW5mWFhFQXp5RHVQV3gzdlJISGxWbldnPQ==");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +49,8 @@ builder.Services.AddScoped<IEventVideoRepository, EventVideoRepository>();
 builder.Services.AddHostedService<HostedMqttMessageService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddSyncfusionBlazor();
 
 builder.WebHost.UseUrls("http://*:8098;https://*:8099");
 
