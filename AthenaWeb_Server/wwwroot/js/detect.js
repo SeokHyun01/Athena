@@ -446,7 +446,6 @@ window.tfjs = (isTfjs) => {
 
             //만약 5분이내 5번 이상 화재가 감지되면 mqtt로 화재를 전송한다.
             if (tfIntervalTime < 300 && fireCount > 5) {
-                console.log("fire")
                 sendDetect(boxes_data, classes_data, numDetections_data);
                 fireCount = 0;
             } else if (tfIntervalTime > 300) {
@@ -513,7 +512,7 @@ window.tfjs = (isTfjs) => {
 
         const checkOjbectId = await createObjectEventResponse.json();
         checkObjectIds.push(checkOjbectId);
-
+        console.log(checkObjectIds);
         // message = new Paho.MQTT.Message(JSON.stringify(data));
         // message.destinationName = TOPIC_DETECT;    //보낼 토픽
         // _client.send(message);  // MQTT로 썸네일 전송
