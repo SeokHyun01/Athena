@@ -117,7 +117,7 @@ class MOG2MotionDetector {
             }
         };
 
-        const createEventResponse = await fetch("http://ictrobot.hknu.ac.kr:8096/api/Event/Create", {
+        const createEventResponse = await fetch("https://ictrobot.hknu.ac.kr:8095/api/Event/Create", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(event)
