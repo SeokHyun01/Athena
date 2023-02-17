@@ -505,6 +505,8 @@ window.tfjs = (isTfjs) => {
             body: JSON.stringify(objectEvent)
         });
 
+        console.log(JSON.stringify(objectEvent));
+
         if(!createObjectEventResponse.ok) {
             throw new Error(await createObjectEventResponse.text());
         }
