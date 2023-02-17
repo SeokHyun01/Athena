@@ -331,6 +331,7 @@ window.Camshift = (isCamshift) => {
         message = new Paho.MQTT.Message(JSON.stringify(data));
         message.destinationName = TOPIC_MAKE_VIDEO;
         _client.send(message);
+        console.log("send stop");
     }
     async_motion_detect(); // 비동기로 움직임 감지 시작
 }
@@ -517,6 +518,7 @@ window.tfjs = (isTfjs) => {
         message = new Paho.MQTT.Message(JSON.stringify(data));
         message.destinationName = TOPIC_MAKE_VIDEO;
         _client.send(message);
+        console.log("send stop");
     }
 }
 
