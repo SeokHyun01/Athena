@@ -303,7 +303,7 @@ window.Camshift = (isCamshift) => {
                 CameraId: _cameraId,
                 Created: new Date().toLocaleString(),
                 Path: canvasOutput.toDataURL("image/jpeg", 0.7),
-                IsRequiredObjectDetection: true
+                IsRequiredObjectDetection: false
             }
         }
         // 이벤트 전송
@@ -434,7 +434,7 @@ window.tfjs = (isTfjs) => {
                 ctx.fillStyle = "black";
                 ctx.textAlign = "left";
                 const timeStamp = new Date();
-                ctx.fillText(timeStamp.toLocaleString(), 10, 30);
+                ctx.fillText(timeStamp.toLocaleString(), 10, 10);
 
             }
             //만약 화재가 감지되면 fireCount를 증가시킨다.
@@ -512,9 +512,6 @@ window.tfjs = (isTfjs) => {
         const checkOjbectId = await createObjectEventResponse.json();
         checkObjectIds.push(checkOjbectId);
         console.log(checkOjbectId);
-        // message = new Paho.MQTT.Message(JSON.stringify(data));
-        // message.destinationName = TOPIC_DETECT;    //보낼 토픽
-        // _client.send(message);  // MQTT로 썸네일 전송
     }
 
     async function sendtfStop() {
