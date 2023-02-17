@@ -439,7 +439,6 @@ window.tfjs = (isTfjs) => {
             }
             //만약 화재가 감지되면 fireCount를 증가시킨다.
             if (numDetections_data > 0) {
-                console.log("fireCount : " + fireCount)
                 fireCount++;
                 tfTime2 = tfDate.getTime();
                 tfIntervalTime = (tfTime2 - tfTime1) / 1000;
@@ -447,6 +446,7 @@ window.tfjs = (isTfjs) => {
 
             //만약 5분이내 5번 이상 화재가 감지되면 mqtt로 화재를 전송한다.
             if (tfIntervalTime < 300 && fireCount > 5) {
+                console.log("fire")
                 sendDetect(boxes_data, classes_data, numDetections_data);
                 fireCount = 0;
             } else if (tfIntervalTime > 300) {
