@@ -126,14 +126,14 @@ namespace AthenaWeb_Server.Service
 											await _mqttMessageService.UpdateEventHeader(header);
 										}
 
-										for (int i = 0; i < imagePathList.Count; i++)
-										{
-											var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.png");
-											if (File.Exists(filePath))
-											{
-												File.Delete(filePath);
-											}
-										}
+										//for (int i = 0; i < imagePathList.Count; i++)
+										//{
+										//	var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.png");
+										//	if (File.Exists(filePath))
+										//	{
+										//		File.Delete(filePath);
+										//	}
+										//}
 									}
 								}
 							}
