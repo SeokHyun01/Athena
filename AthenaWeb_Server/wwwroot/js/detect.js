@@ -438,6 +438,7 @@ window.tfjs = (isTfjs) => {
 
             }
             //만약 화재가 감지되면 fireCount를 증가시킨다.
+            console.log(numDetections_data)
             if (numDetections_data > 0) {
                 fireCount++;
                 tfTime2 = new Date().getTime();
