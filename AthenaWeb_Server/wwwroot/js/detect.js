@@ -430,11 +430,11 @@ window.tfjs = (isTfjs) => {
                     ctx.fillText(klass + " " + score, x1, y1);
                 }
 
-                ctx.font = "24px Arial";
+                ctx.font = "15px Arial";
                 ctx.fillStyle = "black";
                 ctx.textAlign = "left";
                 const timeStamp = new Date();
-                ctx.fillText(timeStamp.toLocaleString(), 10, 10);
+                ctx.fillText(timeStamp.toLocaleString(), 10, 20);
 
             }
             //만약 화재가 감지되면 fireCount를 증가시킨다.
