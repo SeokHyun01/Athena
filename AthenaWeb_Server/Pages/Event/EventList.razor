@@ -49,7 +49,7 @@
 	public int CameraId { get; set; }
 
 	private bool IsLoading { get; set; }
-	private IEnumerable<EventVideoDTO> EventVideos { get; set; }
+	private IEnumerable<EventVideoDTO> EventVideos { get; set; } = new List<EventVideoDTO>();
 
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
