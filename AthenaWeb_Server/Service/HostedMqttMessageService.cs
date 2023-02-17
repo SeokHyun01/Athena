@@ -92,12 +92,13 @@ namespace AthenaWeb_Server.Service
 										}
 
 										var videoPath = $"{Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "videos", Guid.NewGuid().ToString())}.mp4";
+										var args = $"-framerate 1 -i {Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", identifier)}_%d.png -c:v libx264 -r 30 -pix_fmt yuv420p {videoPath}";
 										var ffMpeg = new Process
 										{
 											StartInfo = new ProcessStartInfo
 											{
 												FileName = "ffmpeg",
-												Arguments = $"-i {Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", identifier)}_%d.png -r 1 -pix_fmt yuv420p -c:v libx264 {videoPath}",
+												Arguments = args,
 												UseShellExecute = false,
 												RedirectStandardOutput = true,
 												CreateNoWindow = false,
