@@ -462,6 +462,7 @@ window.tfjs = (isTfjs) => {
     }
 
     async function sendDetect(boxes_data, classes_data, numDetections_data, ctx) {
+        console.log(classes_data);
         //캔버스에 시간을 표시한다.
         ctx.font = "15px Arial";
         ctx.fillStyle = "black";
@@ -504,8 +505,6 @@ window.tfjs = (isTfjs) => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(objectEvent)
         });
-
-        console.log(JSON.stringify(objectEvent));
 
         if(!createObjectEventResponse.ok) {
             throw new Error(await createObjectEventResponse.text());
