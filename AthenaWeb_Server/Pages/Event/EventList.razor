@@ -1,4 +1,5 @@
 ﻿@page "/camera/{cameraId:int}/event"
+@using System.Text.RegularExpressions;
 
 @inject IEventVideoRepository _eventVideoRepository
 
@@ -21,7 +22,7 @@
 						<td>@video.Id</td>
 						<td>
 							<video controls>
-								<source src=@(video.Path) type="video/mp4">
+								<source src=@(Regex.Match(video.Path, @"videos/[\w-]+\.mp4").Value) type="video/mp4">
 							</video>
 						</td>
 					</tr>
