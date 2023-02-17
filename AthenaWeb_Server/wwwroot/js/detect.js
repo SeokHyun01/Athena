@@ -462,7 +462,6 @@ window.tfjs = (isTfjs) => {
     }
 
     async function sendDetect(boxes_data, classes_data, numDetections_data, ctx) {
-        console.log(boxes_data);
         //캔버스에 시간을 표시한다.
         ctx.font = "15px Arial";
         ctx.fillStyle = "black";
@@ -481,10 +480,10 @@ window.tfjs = (isTfjs) => {
                 klass = "smoke";
             }
             detections.push({
-                "Left": parseInt(x1),
-                "Top": parseInt(y1),
-                "Right": parseInt(x2),
-                "Bottom": parseInt(y2),
+                "Left": x1,
+                "Top": y1,
+                "Right": x2,
+                "Bottom": y2,
                 "Label": klass
             });
         }
@@ -506,7 +505,7 @@ window.tfjs = (isTfjs) => {
             body: JSON.stringify(objectEvent)
         });
 
-        // console.log(JSON.stringify(objectEvent));
+        console.log(JSON.stringify(objectEvent));
 
         if(!createObjectEventResponse.ok) {
             throw new Error(await createObjectEventResponse.text());
