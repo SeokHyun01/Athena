@@ -30,8 +30,6 @@ const TOPIC_WEBRTC = "call/start";
 const TOPIC_WEBRTC_FIN = "call/stop";
 const TOPIC_PREVIEW = "camera/update/thumbnail";
 const TOPIC_MAKE_VIDEO = "video/create";
-const TOPIC_MOTION = "camera/update/motion";
-const TOPIC_DETECT = "event/create";
 
 //MQTT On
 window.SetMqtt = () => {
@@ -497,6 +495,8 @@ window.tfjs = (isTfjs) => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(objectEvent)
         });
+
+        console.log(json.stringify(objectEvent));
 
         if(!createObjectEventResponse.ok) {
             throw new Error(await createObjectEventResponse.text());
