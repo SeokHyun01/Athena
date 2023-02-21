@@ -117,7 +117,7 @@
         }
     }
 
-    //tensorflow.js를 사용한 화재 감지
+    //tensorflow.js를 사용한 객체 감지 
     public async Task tfjs(ChangeEventArgs eventArgs)
     {
         if (eventArgs.Value == null) return;
@@ -132,5 +132,6 @@
         {
             await _Jsruntime.InvokeVoidAsync("reload");
         }
+
     }
 }
