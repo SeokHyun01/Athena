@@ -40,7 +40,7 @@
 						</td>
 						<td>
 							<div class="d-flex flex-column align-items-start">
-								<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}user/{camera.UserId}/camera/{camera.Id}/register")>
+								<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}/thumbnail/user/{camera.UserId}/camera/{camera.Id}/register")>
 
 								</SfQRCodeGenerator>
 								<NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}/register") class="btn btn-primary">카메라 등록</NavLink>
