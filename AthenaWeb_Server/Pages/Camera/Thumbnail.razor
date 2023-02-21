@@ -1,0 +1,155 @@
+@page "/thumbnail/user/{userid:guid}/camera/{cameraid:int}/register"
+@inject IJSRuntime _Jsruntime
+
+<div>
+    <button class="btn btn-info btn-sm" @onclick="bluetooth">블루투스 켜기</button>
+    <input type="checkbox" id="camshiftCheckbox" @onchange="@(e => Camshift(e))" />
+    <label for="camshiftCheckbox">움직임 감지</label>
+    <input type="checkbox" id="tfjsCheckbox" @onchange="@(e => tfjs(e))" />
+    <label for="tfjsCheckbox">화재 검출</label>
+      <input type="checkbox" id="roboflowjs" @onchange="@(e => roboflowjs(e))" />
+    <label for="roboflowjs">화재 검출</label>
+</div>
+
+
+<div class="col">
+    <video id="video" autoplay width="448" height="252"></video>
+
+    @if (isWebRTC)
+    {
+        <div id="displayWebRTC">
+            <WebRTC UserIdToThumbnail=@UserId CameraIdToThumbnail=@cameraid />
+        </div>
+    }
+
+    @* opencv.js 를 이용한 움직임 감지 *@
+    <canvas id="canvasOutput" hidden></canvas>
+
+    @* tfjs 를 이용한 화재 감지 *@
+    <canvas id="fireCanvas" hidden></canvas>
+
+    @* 썸네일 전송하는 캔버스 *@
+    <canvas hidden id="canvas_image"></canvas>
+
+</div>
+
+
+@code {
+    [Parameter]
+    public Guid UserId { get; set; }
+
+    [Parameter]
+    public int cameraid { get; set; }
+
+    //일단 이렇게 하드코딩
+    string UseridDarcy = "f9a4161a-9d05-41e2-9be7-a7a1c2d2f52c";
+    //6b57a785-aabf-441a-a881-cb8f72dfdb2d -new : f9a4161a-9d05-41e2-9be7-a7a1c2d2f52c
+    int CameraidDarcy = 1; // 9
+    static bool isWebRTC = false;
+
+    //썸넬의 크기 426:240 (16:9)의 형태
+    private int width = 426;
+    private int height = 240;
+
+
+    //카메라
+    public async Task SetVideo()
+    {
+        await _Jsruntime.InvokeVoidAsync("setVideo", width, height);
+    }
+
+    //MQTT client 생성, 토픽 구독
+    public async Task SetMqtt()
+    {
+        await _Jsruntime.InvokeVoidAsync("SetMqtt");
+    }
+
+    //MQTT로 썸네일 전송
+    public async Task SendThumbnail()
+    {
+        await _Jsruntime.InvokeVoidAsync("SendThumbnail");
+    }
+
+    //순서 1.비디오를 킨다 2. MQTT 접속을한다 3. 썸네일 전송을 시작한다
+    protected override async Task OnAfterRenderAsync(bool firstRander)
+    {
+        await _Jsruntime.InvokeVoidAsync("dotnetHelper", DotNetObjectReference.Create(this), UseridDarcy, CameraidDarcy);
+        if (firstRander)
+        {
+            await SetVideo();
+            await SetMqtt();
+            //일단 하드코딩
+            if (UserId == Guid.Empty)
+            {
+                UserId = Guid.Parse(UseridDarcy);
+                cameraid = CameraidDarcy;
+            }
+        }
+        await SendThumbnail();
+    }
+
+    //버튼을 누를시 모터제어를 할 기기와 블루투스 연동을 시작한다.
+    public async Task bluetooth()
+    {
+        await _Jsruntime.InvokeVoidAsync("SetBluetooth");
+    }
+
+    [JSInvokable]
+    public async ValueTask showWebRTC(bool boolWebRTC)
+    {
+        isWebRTC = boolWebRTC;
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    //opencv.js를 사용한 움직임 감지
+    public async Task Camshift(ChangeEventArgs eventArgs)
+    {
+        if (eventArgs.Value == null) return;
+
+        bool isChecked = (bool)eventArgs.Value;
+
+        if (isChecked)
+        {
+            await _Jsruntime.InvokeVoidAsync("Camshift", true);
+        }
+        else
+        {
+            await _Jsruntime.InvokeVoidAsync("reload");
+        }
+    }
+
+    //tensorflow.js를 사용한 화재 감지
+    public async Task tfjs(ChangeEventArgs eventArgs)
+    {
+        if (eventArgs.Value == null) return;
+
+        bool isChecked = (bool)eventArgs.Value;
+
+        if (isChecked)
+        {
+            await _Jsruntime.InvokeVoidAsync("tfjs", true);
+        }
+        else
+        {
+            await _Jsruntime.InvokeVoidAsync("reload");
+        }
+    }
+
+    public async Task roboflowjs(ChangeEventArgs eventArgs)
+    {
+        if (eventArgs.Value == null) return;
+
+        bool isChecked = (bool)eventArgs.Value;
+
+        if (isChecked)
+        {
+            await _Jsruntime.InvokeVoidAsync("roboflowjs", true);
+        }
+        else
+        {
+            await _Jsruntime.InvokeVoidAsync("reload");
+        }
+    }
+
+}

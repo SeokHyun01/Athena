@@ -25,7 +25,6 @@ namespace AthenaWeb_Server.Service
 		public async ValueTask ConnectAsync(string brokerHost, int brokerPort)
 		{
 			var options = new MqttClientOptionsBuilder()
-				.WithClientId("MqttMessageBackgroundService")
 				.WithTcpServer(brokerHost, brokerPort)
 				.WithCleanSession(true)
 				.Build();

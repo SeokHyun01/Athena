@@ -21,17 +21,31 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddResponseCompression(opts =>
 {
-	opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-		new[] { "application/octet-stream" });
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
 });
 
+<<<<<<< HEAD
+// builder.Services.AddDbContext<AthenaAppDbContext>(options =>
+// {
+// 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+// });
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AthenaAppDbContext>(options =>
-{
-	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+	
+=======
+//builder.Services.AddDbContext<AthenaAppDbContext>(options =>
+//{
+//	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+//});
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<AthenaAppDbContext>(options =>
+	options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+>>>>>>> aea9a42adafb63d3f7ecab8047b02ac09352b44c
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-	.AddDefaultTokenProviders().AddDefaultUI().AddEntityFrameworkStores<AthenaAppDbContext>();
-
+    .AddDefaultTokenProviders().AddDefaultUI().AddEntityFrameworkStores<AthenaAppDbContext>();
+//
 var factory = new MqttFactory();
 builder.Services.AddSingleton<IMqttClient>(factory.CreateMqttClient());
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
@@ -42,6 +56,12 @@ builder.Services.AddHostedService<HostedMqttMessageService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+<<<<<<< HEAD
+builder.WebHost.UseUrls("http://*:8092;https://*:8093");
+=======
+builder.WebHost.UseUrls("http://*:8100;https://*:8101");
+>>>>>>> aea9a42adafb63d3f7ecab8047b02ac09352b44c
+
 var app = builder.Build();
 
 app.UseResponseCompression();
@@ -49,12 +69,12 @@ app.UseResponseCompression();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-	app.UseExceptionHandler("/Error");
-	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-	app.UseHsts();
+    app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
@@ -73,9 +93,9 @@ app.Run();
 
 async ValueTask SeedDatabase()
 {
-	using (var scope = app.Services.CreateScope())
-	{
-		var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-		await dbInitializer.Initialize();
-	}
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        await dbInitializer.Initialize();
+    }
 }

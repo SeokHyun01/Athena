@@ -1,0 +1,107 @@
+@page "/user/{userId:guid}/camera/{cameraId:int}/register"
+
+@inject IJSRuntime _Jsruntime
+@inject NavigationManager _navigationManager
+@implements IAsyncDisposable
+
+<div>
+	<video id="remoteVideo" autoplay width="448" height="252"></video>
+	<video id="video" autoplay width="448" height="252"></video>
+	<button id="muteButton" class="btn btn-primary"> Mute</button>
+	<button id="cameraButton" class="btn btn-primary"> Turn Camera Off</button>
+	<select id="camerasSelect" class="form-control-sm"></select>
+</div>
+
+@code {
+	[Parameter]
+	public Guid UserId { get; set; }
+
+	[Parameter]
+	public int CameraId { get; set; }
+
+
+	[Parameter]
+	public Guid UserIdToThumbnail { get; set; }
+
+	[Parameter]
+	public int CameraIdToThumbnail { get; set; }
+
+
+	private HubConnection? hubConnection;
+	private string connectionId = "";
+	private string roomName = "";
+
+	protected override async Task OnAfterRenderAsync(bool firstRander)
+	{
+		if (firstRander)
+		{
+
+			//웹: thumbnail 페이지에서 넘어온 경우 앱: webRTC 페이지 직접 접속한 경우
+			if (UserId == Guid.Empty && CameraId == 0)
+			{
+				UserId = UserIdToThumbnail;
+				CameraId = CameraIdToThumbnail;
+			}
+
+			// SignalR
+			hubConnection = new HubConnectionBuilder()
+			.WithUrl(_navigationManager.ToAbsoluteUri("/hubs/signaling"), (opts) =>
+			{
+				opts.HttpMessageHandlerFactory = (message) =>
+				{
+					if (message is HttpClientHandler clientHandler)
+					{
+						// SSL 인증 무시
+						clientHandler.ServerCertificateCustomValidationCallback +=
+		(sender, certificate, chain, sslPolicyErrors) => { return true; };
+					}
+					return message;
+				};
+			}).Build();
+
+			// SignalR Handler
+			hubConnection.On<string>("OnConnected", async (senderId) =>
+			{
+				connectionId = senderId;
+				await _Jsruntime.InvokeVoidAsync("initializeCamera", connectionId, UserId.ToString(), CameraId);
+			});
+
+			hubConnection.On("Welcome", async () =>
+			{
+				var offer = await _Jsruntime.InvokeAsync<string>("sendOffer");
+				await hubConnection.SendAsync("SendOffer", offer, roomName);
+			});
+
+			hubConnection.On<string>("ReceiveOffer", async (receivedOffer) =>
+			{
+				var answer = await _Jsruntime.InvokeAsync<string>("sendAnswer", receivedOffer);
+				await hubConnection.SendAsync("SendAnswer", answer, roomName);
+			});
+
+			hubConnection.On<string>("ReceiveAnswer", async (receivedAnswer) =>
+			{
+				await _Jsruntime.InvokeVoidAsync("receiveAnswer", receivedAnswer);
+			});
+
+			hubConnection.On<string>("ReceiveIce", async (receivedIce) =>
+			{
+				await _Jsruntime.InvokeVoidAsync("receiveIce", receivedIce);
+			});
+
+			await hubConnection.StartAsync();
+
+			roomName = $"{CameraId.ToString()}";
+			await hubConnection.SendAsync("JoinRoom", roomName);
+
+		}
+	}
+
+	// Dispose
+	public async ValueTask DisposeAsync()
+	{
+		if (hubConnection != null)
+		{
+			await hubConnection.DisposeAsync();
+		}
+	}
+}
