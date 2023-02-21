@@ -16,7 +16,7 @@
     @if (isWebRTC)
     {
         <div id="displayWebRTC">
-            <WebRTC_Client UserIdToThumbnail=@userid CameraIdToThumbnail=@cameraid/>
+            <WebRTC_Client UserIdToThumbnail=@UserId CameraIdToThumbnail=@CameraId />
         </div>
     }
 
@@ -37,7 +37,7 @@
     public Guid UserId { get; set; }
 
     [Parameter]
-    public int cameraid { get; set; }
+    public int CameraId { get; set; }
 
     static bool isWebRTC = false;
 
@@ -68,7 +68,7 @@
     //순서 1.비디오를 킨다 2. MQTT 접속을한다 3. 썸네일 전송을 시작한다
     protected override async Task OnAfterRenderAsync(bool firstRander)
     {
-        await _Jsruntime.InvokeVoidAsync("dotnetHelper", DotNetObjectReference.Create(this), UserId, cameraid);
+        await _Jsruntime.InvokeVoidAsync("dotnetHelper", DotNetObjectReference.Create(this), UserId, CameraId);
         if (firstRander)
         {
             await SetVideo();
