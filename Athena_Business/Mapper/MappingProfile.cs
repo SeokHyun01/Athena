@@ -18,6 +18,7 @@ namespace Athena_Business.Mapper
 			CreateMap<EventHeader, EventHeaderDTO>().ReverseMap();
 			CreateMap<EventBody, EventBodyDTO>().ReverseMap();
 			CreateMap<Event, EventDTO>().ReverseMap();
+			CreateMap<EventVideo, EventVideoDTO>().ReverseMap();
 		}
 	}
 }

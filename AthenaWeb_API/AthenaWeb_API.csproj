@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Athena_Business\Athena_Business.csproj" />
     <ProjectReference Include="..\Athena_Common\Athena_Common.csproj" />
     <ProjectReference Include="..\Athena_DataAccess\Athena_DataAccess.csproj" />
     <ProjectReference Include="..\Athena_Models\Athena_Models.csproj" />
