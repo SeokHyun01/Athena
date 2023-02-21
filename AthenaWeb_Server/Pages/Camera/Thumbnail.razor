@@ -16,7 +16,7 @@
     @if (isWebRTC)
     {
         <div id="displayWebRTC">
-            <WebRTC_Client />
+            <WebRTC_Client UserIdToThumbnail=@userid CameraIdToThumbnail=@cameraid/>
         </div>
     }
 
@@ -40,6 +40,7 @@
     public int cameraid { get; set; }
 
     static bool isWebRTC = false;
+
 
     //썸넬의 크기 426:240 (16:9)의 형태
     private int width = 426;
