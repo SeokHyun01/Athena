@@ -20,13 +20,6 @@
 	public int CameraId { get; set; }
 
 
-	[Parameter]
-	public Guid UserIdToThumbnail { get; set; }
-
-	[Parameter]
-	public int CameraIdToThumbnail { get; set; }
-
-
 	private HubConnection? hubConnection;
 	private string connectionId = "";
 	private string roomName = "";
