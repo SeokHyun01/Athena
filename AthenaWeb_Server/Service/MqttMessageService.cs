@@ -79,7 +79,9 @@ namespace AthenaWeb_Server.Service
 
 		public async ValueTask<EventVideoDTO> CreateEventVideo(EventVideoDTO eventVideo) => await _eventVideoRepository.Create(eventVideo);
 
-		public async ValueTask<EventHeaderDTO> UpdateEventHeader(EventHeaderDTO eventHeader) => await _eventRepository.UpdateHeader(eventHeader);
+		public async ValueTask<EventHeaderDTO?> UpdateEventHeader(EventHeaderDTO eventHeader) => await _eventRepository.UpdateHeader(eventHeader);
+
+		public async ValueTask<EventHeaderDTO?> DeleteEventHeaderPath(EventHeaderDTO eventHeader) => await _eventRepository.DeletePath(eventHeader);
 
 		public void Dispose() => Dispose(true);
 

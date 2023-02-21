@@ -164,7 +164,7 @@ namespace Athena_Business.Repository
 			return _mapper.Map<IEnumerable<Event>, IEnumerable<EventDTO>>(EventsFromDb);
 		}
 
-		public async ValueTask<EventHeaderDTO> UpdateHeader(EventHeaderDTO header)
+		public async ValueTask<EventHeaderDTO?> UpdateHeader(EventHeaderDTO header)
 		{
 			var objFromDb = await _db.EventHeaders.FirstOrDefaultAsync(u => u.Id == header.Id);
 			if (objFromDb != null)
@@ -174,6 +174,17 @@ namespace Athena_Business.Repository
 				_db.EventHeaders.Update(objFromDb);
 				await _db.SaveChangesAsync();
 				return _mapper.Map<EventHeader, EventHeaderDTO>(objFromDb);
+			}
+
+			return null;
+		}
+
+		public async ValueTask<EventHeaderDTO?> DeletePath(EventHeaderDTO header)
+		{
+			var objFromDb = await _db.EventHeaders.FirstOrDefaultAsync(u => u.Id == header.Id);
+			if (objFromDb != null)
+			{
+				objFromDb.Path = null;
 			}
 
 			return null;

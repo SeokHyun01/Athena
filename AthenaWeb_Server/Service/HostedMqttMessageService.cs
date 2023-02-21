@@ -85,10 +85,11 @@ namespace AthenaWeb_Server.Service
 										{
 											var destinationPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.jpeg");
 											File.Copy(imagePathList[i], destinationPath);
-											//if (File.Exists(imagePathList[i]))
-											//{
-											//	File.Delete(imagePathList[i]);
-											//}
+											if (File.Exists(imagePathList[i]))
+											{
+												File.Delete(imagePathList[i]);
+											}
+											await _mqttMessageService.DeleteEventHeaderPath(headerList.ToArray()[i]);
 										}
 
 										var videoPath = $"{Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "videos", Guid.NewGuid().ToString())}.mp4";
