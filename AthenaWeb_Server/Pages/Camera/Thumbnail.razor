@@ -7,6 +7,8 @@
     <label for="camshiftCheckbox">움직임 감지</label>
     <input type="checkbox" id="tfjsCheckbox" @onchange="@(e => tfjs(e))" />
     <label for="tfjsCheckbox">화재 검출</label>
+      <input type="checkbox" id="roboflowjs" @onchange="@(e => roboflowjs(e))" />
+    <label for="roboflowjs">화재 검출</label>
 </div>
 
 
@@ -16,7 +18,7 @@
     @if (isWebRTC)
     {
         <div id="displayWebRTC">
-            <WebRTC_Client UserIdToThumbnail=@UserId CameraIdToThumbnail=@cameraid />
+            <WebRTC UserIdToThumbnail=@UserId CameraIdToThumbnail=@cameraid />
         </div>
     }
 
@@ -127,6 +129,22 @@
         if (isChecked)
         {
             await _Jsruntime.InvokeVoidAsync("tfjs", true);
+        }
+        else
+        {
+            await _Jsruntime.InvokeVoidAsync("reload");
+        }
+    }
+
+    public async Task roboflowjs(ChangeEventArgs eventArgs)
+    {
+        if (eventArgs.Value == null) return;
+
+        bool isChecked = (bool)eventArgs.Value;
+
+        if (isChecked)
+        {
+            await _Jsruntime.InvokeVoidAsync("roboflowjs", true);
         }
         else
         {
