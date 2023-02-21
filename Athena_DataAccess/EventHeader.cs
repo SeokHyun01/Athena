@@ -15,7 +15,7 @@ namespace Athena_DataAccess
 		public string UserId { get; set; }
 		public int CameraId { get; set; }
 		public string Created { get; set; }
-		public string Path { get; set; }
+		public string? Path { get; set; }
 		public bool IsRequiredObjectDetection { get; set; }
 		public int? EventVideoId { get; set; }
 	}
