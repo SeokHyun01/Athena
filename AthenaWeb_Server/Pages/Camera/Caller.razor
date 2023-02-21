@@ -85,7 +85,7 @@
 			hubConnection.On<string>("OnConnected", async (senderId) =>
 			{
 				ConnectionId = senderId;
-				await _jsRuntime.InvokeVoidAsync("initializeCamera", ConnectionId, UserId.ToString(), CameraId);
+				await _jsRuntime.InvokeVoidAsync("initializeRTCVideoCall", ConnectionId, UserId.ToString(), CameraId);
 			});
 
 			hubConnection.On("Welcome", async () =>
@@ -114,9 +114,9 @@
 
 			await hubConnection.StartAsync();
 
-
 			RoomName = $"{CameraId.ToString()}";
 			await hubConnection.SendAsync("JoinRoom", RoomName);
+
 
 			var mqttFactory = new MqttFactory();
 			mqttClient = mqttFactory.CreateMqttClient();
@@ -164,7 +164,6 @@
 				.WithTopic("call/start")
 				.WithPayload(callHeaderJson)
 				.Build();
-
 			await mqttClient.PublishAsync(applicationMessage, CancellationToken.None);
 		}
 	}
@@ -199,14 +198,29 @@
 
 	public async ValueTask DisposeAsync()
 	{
-		if (hubConnection != null)
-		{
-			await hubConnection.DisposeAsync();
-		}
+		await _jsRuntime.InvokeVoidAsync("disposeRTCVideoCall");
+
+		var callHeader = new CallHeader
+			{
+				UserId = UserId.ToString(),
+				CameraId = CameraId
+			};
+		var callHeaderJson = JsonSerializer.Serialize<CallHeader>(callHeader);
+
+		var applicationMessage = new MqttApplicationMessageBuilder()
+			.WithTopic("call/stop")
+			.WithPayload(callHeaderJson)
+			.Build();
+		await mqttClient.PublishAsync(applicationMessage, CancellationToken.None);
 
 		if (mqttClient != null && mqttClient.IsConnected)
 		{
 			await mqttClient.DisconnectAsync();
+		}
+
+		if (hubConnection != null)
+		{
+			await hubConnection.DisposeAsync();
 		}
 	}
 }

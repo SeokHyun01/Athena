@@ -1,0 +1,74 @@
+﻿@page "/camera/{cameraId:int}/event"
+@using System.Text.RegularExpressions;
+
+@inject IEventVideoRepository _eventVideoRepository
+
+
+<div class="container my-5">
+	<h1 class="text-center">이벤트 리스트</h1>
+	@if (EventVideos.Any())
+	{
+		<table class="table">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Video</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var video in EventVideos)
+				{
+					<tr>
+						<td>@video.Id</td>
+						<td>
+							<video controls>
+								<source src=@(Regex.Match(video.Path, @"videos/[\w-]+\.mp4").Value) type="video/mp4">
+							</video>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+	else
+	{
+		@if (IsLoading)
+		{
+			<div class="spinner-border text-primary" role="status"></div>
+		}
+
+		else
+		{
+			<p>No recrods found.</p>
+		}
+	}
+</div>
+
+
+@code {
+	[Parameter]
+	public int CameraId { get; set; }
+
+	private bool IsLoading { get; set; }
+	private IEnumerable<EventVideoDTO> EventVideos { get; set; } = new List<EventVideoDTO>();
+
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await LoadEventVideos();
+		}
+	}
+
+	private async ValueTask LoadEventVideos()
+	{
+		IsLoading = true;
+		StateHasChanged();
+
+		EventVideos = await _eventVideoRepository.GetAllByCameraId(CameraId);
+
+		IsLoading = false;
+		StateHasChanged();
+	}
+}

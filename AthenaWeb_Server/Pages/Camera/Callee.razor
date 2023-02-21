@@ -1,6 +1,10 @@
 ﻿@*@page "/user/{userId:guid}/camera/{cameraId:int}/register"
 
 @inject IJSRuntime _jsRuntime
+@inject NavigationManager _navigationManager
+@inject ILogger<Callee> _logger
+
+@implements IAsyncDisposable
 
 
 <div class="container my-5">
@@ -34,9 +38,72 @@
 	[Parameter]
 	public int CameraId { get; set; }
 
+	private HubConnection? hubConnection;
+	private string? ConnectionId { get; set; }
+	private string? RoomName { get; set; }
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
-		await _jsRuntime.InvokeVoidAsync("initializeBackgroundSubtractor", UserId.ToString(), CameraId);
+		hubConnection = new HubConnectionBuilder()
+				.WithUrl(_navigationManager.ToAbsoluteUri("/hubs/signaling"), (opts) =>
+				{
+					opts.HttpMessageHandlerFactory = (message) =>
+					{
+						if (message is HttpClientHandler clientHandler)
+						{
+							clientHandler.ServerCertificateCustomValidationCallback +=
+								(sender, certificate, chain, sslPolicyErrors) => { return true; };
+						}
+						return message;
+					};
+				}).Build();
+
+		hubConnection.On<string>("OnConnected", async (senderId) =>
+		{
+			ConnectionId = senderId;
+			await _jsRuntime.InvokeVoidAsync("initializeRTCVideoCall", ConnectionId, UserId.ToString(), CameraId);
+		});
+
+		hubConnection.On("Welcome", async () =>
+		{
+			_logger.LogInformation("누군가 방에 입장했습니다. 어서오세요.");
+
+			var offer = await _jsRuntime.InvokeAsync<string>("sendOffer");
+			await hubConnection.SendAsync("SendOffer", offer, RoomName);
+		});
+
+		hubConnection.On<string>("ReceiveOffer", async (receivedOffer) =>
+		{
+			var answer = await _jsRuntime.InvokeAsync<string>("sendAnswer", receivedOffer);
+			await hubConnection.SendAsync("SendAnswer", answer, RoomName);
+		});
+
+		hubConnection.On<string>("ReceiveAnswer", async (receivedAnswer) =>
+		{
+			await _jsRuntime.InvokeVoidAsync("receiveAnswer", receivedAnswer);
+		});
+
+		hubConnection.On<string>("ReceiveIce", async (receivedIce) =>
+		{
+			await _jsRuntime.InvokeVoidAsync("receiveIce", receivedIce);
+		});
+
+		await hubConnection.StartAsync();
+
+		RoomName = $"{CameraId.ToString()}";
+		await hubConnection.SendAsync("JoinRoom", RoomName);
+
+		await _jsRuntime.InvokeVoidAsync("initializeMOG2MotionDetector", UserId.ToString(), CameraId);
+	}
+
+	public async ValueTask DisposeAsync()
+	{
+		await _jsRuntime.InvokeVoidAsync("disposeRTCVideoCall");
+		await _jsRuntime.InvokeVoidAsync("disposeMOG2MotionDetector");
+
+		if (hubConnection != null)
+		{
+			await hubConnection.DisposeAsync();
+		}
 	}
 }*@

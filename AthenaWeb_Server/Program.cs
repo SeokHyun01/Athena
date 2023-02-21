@@ -12,6 +12,9 @@ using Athena_Business.Repository.IRepository;
 using Athena_Business.Repository;
 using Microsoft.AspNetCore.ResponseCompression;
 using AthenaWeb_Server.Hubs;
+using Syncfusion.Blazor;
+
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MTE0ODUyNEAzMjMwMmUzNDJlMzBkanVsRTFxNmNIekllUDZoRG8zMW5mWFhFQXp5RHVQV3gzdlJISGxWbldnPQ==");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,24 +28,13 @@ builder.Services.AddResponseCompression(opts =>
         new[] { "application/octet-stream" });
 });
 
-<<<<<<< HEAD
-// builder.Services.AddDbContext<AthenaAppDbContext>(options =>
-// {
-// 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-// });
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AthenaAppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-	
-=======
+		options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 //builder.Services.AddDbContext<AthenaAppDbContext>(options =>
 //{
 //	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 //});
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AthenaAppDbContext>(options =>
-	options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
->>>>>>> aea9a42adafb63d3f7ecab8047b02ac09352b44c
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddDefaultTokenProviders().AddDefaultUI().AddEntityFrameworkStores<AthenaAppDbContext>();
 //
@@ -51,16 +43,16 @@ builder.Services.AddSingleton<IMqttClient>(factory.CreateMqttClient());
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IMqttMessageService, MqttMessageService>();
 builder.Services.AddScoped<ICameraRepository, CameraRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IEventVideoRepository, EventVideoRepository>();
 
 builder.Services.AddHostedService<HostedMqttMessageService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-<<<<<<< HEAD
-builder.WebHost.UseUrls("http://*:8092;https://*:8093");
-=======
+builder.Services.AddSyncfusionBlazor();
+
 builder.WebHost.UseUrls("http://*:8100;https://*:8101");
->>>>>>> aea9a42adafb63d3f7ecab8047b02ac09352b44c
 
 var app = builder.Build();
 
@@ -74,7 +66,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 

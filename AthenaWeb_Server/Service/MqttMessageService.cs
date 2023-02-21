@@ -3,6 +3,7 @@ using Athena_Business.Repository.IRepository;
 using Athena_DataAccess;
 using Athena_Models;
 using AthenaWeb_Server.Service.IService;
+using Microsoft.JSInterop;
 using MQTTnet;
 using MQTTnet.Client;
 
@@ -12,14 +13,18 @@ namespace AthenaWeb_Server.Service
 	{
 		private readonly IMqttClient _mqttClient;
 		private readonly ICameraRepository _cameraRepository;
+		private readonly IEventRepository _eventRepository;
+		private readonly IEventVideoRepository _eventVideoRepository;
 
 		private bool _disposedValue;
 
 
-		public MqttMessageService(IMqttClient mqttClient, ICameraRepository cameraRepository)
+		public MqttMessageService(IMqttClient mqttClient, ICameraRepository cameraRepository, IEventRepository eventRepository, IEventVideoRepository eventVideoRepository)
 		{
 			_mqttClient = mqttClient;
 			_cameraRepository = cameraRepository;
+			_eventRepository = eventRepository;
+			_eventVideoRepository = eventVideoRepository;
 		}
 
 		public async ValueTask ConnectAsync(string brokerHost, int brokerPort)
@@ -66,7 +71,17 @@ namespace AthenaWeb_Server.Service
 			_mqttClient.ApplicationMessageReceivedAsync += handler;
 		}
 
-		public async ValueTask<CameraDTO?> UpdateCamera(CameraDTO camera) => await _cameraRepository.Update(camera);
+		public async ValueTask<CameraDTO> UpdateCamera(CameraDTO camera) => await _cameraRepository.Update(camera);
+
+		public async ValueTask<EventDTO> CreateEvent(EventDTO eventObj) => await _eventRepository.Create(eventObj);
+		
+		public async ValueTask<IEnumerable<EventHeaderDTO>> GetEventHeader(IEnumerable<int>? ids = null) => await _eventRepository.GetHeader(ids);
+
+		public async ValueTask<EventVideoDTO> CreateEventVideo(EventVideoDTO eventVideo) => await _eventVideoRepository.Create(eventVideo);
+
+		public async ValueTask<EventHeaderDTO?> UpdateEventHeader(EventHeaderDTO eventHeader) => await _eventRepository.UpdateHeader(eventHeader);
+
+		public async ValueTask<EventHeaderDTO?> DeleteEventHeaderPath(EventHeaderDTO eventHeader) => await _eventRepository.DeletePath(eventHeader);
 
 		public void Dispose() => Dispose(true);
 

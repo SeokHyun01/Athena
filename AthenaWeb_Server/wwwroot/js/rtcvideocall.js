@@ -90,7 +90,7 @@
     async getMedia(deviceId) {
         const initialConstrains = {
             audio: true,
-            video: { facingMode: "user" },
+            video: true,
         };
         const cameraConstraints = {
             audio: true,
@@ -168,8 +168,8 @@ async function initializeCamera(connectionId, userId, cameraId) {
     caller = new Caller(connectionId, userId, cameraId);
     caller.addEventListeners();
 
-    await caller.getMedia();
-    caller.createRTCPeerConnection();
+    await camera.getMedia();
+    camera.createRTCPeerConnection();
 }
 
 async function sendOffer() {
