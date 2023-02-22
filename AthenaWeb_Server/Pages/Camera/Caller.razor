@@ -11,7 +11,7 @@
 <div class="container my-5">
 	<div class="row">
 		<div class="col-6">
-			<video id="video" autoplay width="448" height="252"></video>
+			<video id="video" autoplay width="300" height="530"></video>
 		</div>
 	</div>
 	<div class="row my-1">
@@ -31,7 +31,7 @@
 	</div>
 	<div class="row my-2">
 		<div class="col-12">
-			<video id="remoteVideo" autoplay width="448" height="252"></video>
+			<video id="remoteVideo" autoplay width="300" height="530"></video>
 		</div>
 	</div>
 </div>
@@ -85,7 +85,7 @@
 			hubConnection.On<string>("OnConnected", async (senderId) =>
 			{
 				ConnectionId = senderId;
-				await _jsRuntime.InvokeVoidAsync("initializeRTCVideoCall", ConnectionId, UserId.ToString(), CameraId);
+				await _jsRuntime.InvokeVoidAsync("initializeCamera", ConnectionId, UserId.ToString(), CameraId);
 			});
 
 			hubConnection.On("Welcome", async () =>
