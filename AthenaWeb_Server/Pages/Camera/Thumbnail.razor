@@ -46,6 +46,11 @@
     private int width = 530;
     private int height = 300;
 
+    //dotnet helper 생성
+    public async Task dotnetHelper()
+    {
+        await _Jsruntime.InvokeVoidAsync("dotnetHelper", DotNetObjectReference.Create(this), UserId, CameraId);
+    }
 
     //카메라
     public async Task SetVideo()
@@ -68,9 +73,9 @@
     //순서 1.비디오를 킨다 2. MQTT 접속을한다 3. 썸네일 전송을 시작한다
     protected override async Task OnAfterRenderAsync(bool firstRander)
     {
-        await _Jsruntime.InvokeVoidAsync("dotnetHelper", DotNetObjectReference.Create(this), UserId, CameraId);
         if (firstRander)
         {
+            await dotnetHelper();
             await SetVideo();
             await SetMqtt();
         }
@@ -108,7 +113,7 @@
         }
     }
 
-    //tensorflow.js를 사용한 화재 감지 
+    //tensorflow.js를 사용한 화재 감지
     public async Task tfjs(ChangeEventArgs eventArgs)
     {
         if (eventArgs.Value == null) return;
