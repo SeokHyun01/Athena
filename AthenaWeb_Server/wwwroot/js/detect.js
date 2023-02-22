@@ -133,8 +133,7 @@ window.SendThumbnail = () => {
         context.rotate(90 * Math.PI / 180); // 90도 회전
         context.drawImage(video, 0, 0, canvas.height, canvas.width); // 비디오 그리기
         context.restore(); // 그리기 상태를 복원
-        result64 = canvas.toDataURL("image/jpeg", 0.7);
-
+        result64 = canvas.toDataURL("image/jpeg", 0.9);
 
         let data = new Object();
         data.CameraId = _cameraId;
