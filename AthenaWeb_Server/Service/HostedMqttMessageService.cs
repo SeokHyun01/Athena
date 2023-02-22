@@ -64,7 +64,7 @@ namespace AthenaWeb_Server.Service
 							else if (e.ApplicationMessage.Topic == "video/create")
 							{
 								var createVideo = JsonSerializer.Deserialize<List<int>>(payload);
-								if (createVideo != null)
+								if (createVideo != null && createVideo.Any())
 								{
 									var headerList = await _mqttMessageService.GetEventHeader(createVideo);
 
