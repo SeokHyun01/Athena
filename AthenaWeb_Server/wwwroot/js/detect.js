@@ -128,13 +128,12 @@ window.SendThumbnail = () => {
         let canvas = document.getElementById('canvas_image');
         canvas.width = video.width; canvas.height = video.height;
         let context = canvas.getContext('2d');
-        // context.scale(-1, 1); context.translate(-canvas.width, 0); //좌우 반전이 된 상태이므로 다시 좌우 반전을 해준다.
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        //가로모드이므로 90도 회전을 해준다.
-        context.rotate(90 * Math.PI / 180);
-        //result64 = canvas.toDataURL("image/jpeg", 0.7).replace("data:image/jpeg;base64,", ""); //앞에 붙는 문자열 제거
-        result64 = canvas.toDataURL("image/jpeg", 0.7); //앞에 붙는 문자열 제거
-
+        context.save(); // 현재의 그리기 상태 저장
+        context.translate(canvas.width, 0); // canvas의 오른쪽 위 모서리로 이동
+        context.rotate(90 * Math.PI / 180); // 90도 회전
+        context.drawImage(video, 0, 0, canvas.height, canvas.width); // 비디오 그리기
+        context.restore(); // 그리기 상태를 복원
+        result64 = canvas.toDataURL("image/jpeg", 0.7);
 
 
         let data = new Object();
