@@ -130,6 +130,8 @@ window.SendThumbnail = () => {
         let context = canvas.getContext('2d');
         // context.scale(-1, 1); context.translate(-canvas.width, 0); //좌우 반전이 된 상태이므로 다시 좌우 반전을 해준다.
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        //가로모드이므로 90도 회전을 해준다.
+        context.rotate(90 * Math.PI / 180);
         //result64 = canvas.toDataURL("image/jpeg", 0.7).replace("data:image/jpeg;base64,", ""); //앞에 붙는 문자열 제거
         result64 = canvas.toDataURL("image/jpeg", 0.7); //앞에 붙는 문자열 제거
 
