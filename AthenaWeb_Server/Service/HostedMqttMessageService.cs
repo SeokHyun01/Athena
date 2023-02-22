@@ -72,20 +72,20 @@ namespace AthenaWeb_Server.Service
 
 									if (headerList.Any())
 									{
-										var predictEventList = headerList.Where(obj => obj.IsRequiredObjectDetection);
-										if (predictEventList.Any())
-										{
-											var jsonParams = JsonSerializer.Serialize(headerList.ToList());
-											var url = $"https://example.com/api/myData?params={jsonParams}";
-											var response = await _httpClient.GetFromJsonAsync<List<EventHeaderDTO>>(url);
-											if (response != null && response.Any())
-											{
+										//var predictEventList = headerList.Where(obj => obj.IsRequiredObjectDetection);
+										//if (predictEventList.Any())
+										//{
+										//	var jsonParams = JsonSerializer.Serialize(headerList.ToList());
+										//	var url = $"https://example.com/api/myData?params={jsonParams}";
+										//	var response = await _httpClient.GetFromJsonAsync<List<EventHeaderDTO>>(url);
+										//	if (response != null && response.Any())
+										//	{
 
-											} else
-											{
-												throw new Exception($"{url}으로부터 응답을 받지 못했습니다.");
-											}
-										}
+										//	} else
+										//	{
+										//		throw new Exception($"{url}으로부터 응답을 받지 못했습니다.");
+										//	}
+										//}
 
 										var firstHeader = headerList.First();
 										var userId = firstHeader.UserId;
