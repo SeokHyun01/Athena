@@ -16,16 +16,14 @@ namespace AthenaWeb_Server.Service
 		private readonly IServiceProvider _serviceProvider;
 		private readonly ILogger<HostedMqttMessageService> _logger;
 		private readonly CancellationTokenSource _cancellationTokenSource = new();
-		private readonly HttpClient _httpClient;
 
 		private IMqttMessageService? _mqttMessageService;
 
 
-		public HostedMqttMessageService(ILogger<HostedMqttMessageService> logger, IServiceProvider serviceProvider, HttpClient httpClient)
+		public HostedMqttMessageService(ILogger<HostedMqttMessageService> logger, IServiceProvider serviceProvider)
 		{
 			_serviceProvider = serviceProvider;
 			_logger = logger;
-			_httpClient = httpClient;
 		}
 
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
