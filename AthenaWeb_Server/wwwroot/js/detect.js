@@ -106,6 +106,8 @@ window.SetMqtt = () => {
                         fireCanvas.removeAttribute("hidden");
                         video.setAttribute("hidden", true);
                     }
+                    //오디오 스트림 제거 
+                    video.srcObject.getAudioTracks().forEach(track => track.stop());
 
                     //webRTC 연결을 종료한다.
                     _Dotnet.invokeMethodAsync("showWebRTC", false);
