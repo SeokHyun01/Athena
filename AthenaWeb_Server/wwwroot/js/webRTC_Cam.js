@@ -189,20 +189,11 @@ async function sendAnswer(offer) {
     camera.peerConnection.setRemoteDescription(receivedOffer);
     console.log("Receive offer");
 
-    // const answer = await camera.peerConnection.createAnswer();
-    // camera.peerConnection.setLocalDescription(answer);
+    const answer = await camera.peerConnection.createAnswer();
+    camera.peerConnection.setLocalDescription(answer);
 
-    // console.log("Send answer");
-    // return JSON.stringify(answer);
-    camera.peerConnection.createAnswer().then(answer => {
-        camera.peerConnection.setLocalDescription(answer);
-        console.log("Send answer");
-        const answerString = JSON.stringify(answer);
-        return answerString;
-    }).catch(error => {
-        console.error(error);
-    });
-
+    console.log("Send answer");
+    return JSON.stringify(answer);
 }
 
 function receiveAnswer(answer) {
