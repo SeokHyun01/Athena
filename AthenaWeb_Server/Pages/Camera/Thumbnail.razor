@@ -1,5 +1,6 @@
 @page "/thumbnail/user/{userid:guid}/camera/{cameraid:int}/register"
 @inject IJSRuntime _Jsruntime
+@implements IAsyncDisposable
 
 <div>
     <button class="btn btn-info btn-sm" @onclick="bluetooth">블루투스 켜기</button>
@@ -127,5 +128,12 @@
             await _Jsruntime.InvokeVoidAsync("reload");
         }
 
+    }
+
+    public async ValueTask DisposeAsync(){
+        if(isWebRTC){
+            isWebRTC = false;
+            await InvokeAsync(StateHasChanged);
+        }
     }
 }
