@@ -183,27 +183,26 @@ async function sendOffer() {
 }
 
 async function sendAnswer(offer) {
-    // const jsonObject = JSON.parse(offer);
-    // const receivedOffer = new RTCSessionDescription(jsonObject);
+    const jsonObject = JSON.parse(offer);
+    const receivedOffer = new RTCSessionDescription(jsonObject);
 
-    // camera.peerConnection.setRemoteDescription(receivedOffer);
-    // console.log("Receive offer");
+    camera.peerConnection.setRemoteDescription(receivedOffer);
+    console.log("Receive offer");
 
     // const answer = await camera.peerConnection.createAnswer();
     // camera.peerConnection.setLocalDescription(answer);
 
     // console.log("Send answer");
     // return JSON.stringify(answer);
+    camera.peerConnection.createAnswer().then(answer => {
+        camera.peerConnection.setLocalDescription(answer);
+        console.log("Send answer");
+        const answerString = JSON.stringify(answer);
+        return answerString;
+    }).catch(error => {
+        console.error(error);
+    });
 
-    JSON.parse(offer).then((jsonObject) =>
-        new RTCSessionDescription(jsonObject)).then((receivedOffer) => {
-            camera.peerConnection.setRemoteDescription(receivedOffer);
-            console.log("Receive offer");
-        }).then(() => camera.peerConnection.createAnswer()).then((answer) => {
-            camera.peerConnection.setLocalDescription(answer);
-            console.log("Send answer");
-            return JSON.stringify(answer);
-        });
 }
 
 function receiveAnswer(answer) {
