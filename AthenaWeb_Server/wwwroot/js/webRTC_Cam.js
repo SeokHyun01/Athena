@@ -174,26 +174,36 @@ async function initializeCamera(connectionId, userId, cameraId) {
     camera.createRTCPeerConnection();
 }
 
-function sendOffer() {
-    const offer = camera.peerConnection.createOffer();
+async function sendOffer() {
+    const offer = await camera.peerConnection.createOffer();
     camera.peerConnection.setLocalDescription(offer);
 
     console.log("Send offer");
     return JSON.stringify(offer);
 }
 
-function sendAnswer(offer) {
-    const jsonObject = JSON.parse(offer);
-    const receivedOffer = new RTCSessionDescription(jsonObject);
+async function sendAnswer(offer) {
+    // const jsonObject = JSON.parse(offer);
+    // const receivedOffer = new RTCSessionDescription(jsonObject);
 
-    camera.peerConnection.setRemoteDescription(receivedOffer);
-    console.log("Receive offer");
+    // camera.peerConnection.setRemoteDescription(receivedOffer);
+    // console.log("Receive offer");
 
-    const answer = camera.peerConnection.createAnswer();
-    camera.peerConnection.setLocalDescription(answer);
+    // const answer = await camera.peerConnection.createAnswer();
+    // camera.peerConnection.setLocalDescription(answer);
 
-    console.log("Send answer");
-    return JSON.stringify(answer);
+    // console.log("Send answer");
+    // return JSON.stringify(answer);
+
+    JSON.parse(offer).then((jsonObject) =>
+        new RTCSessionDescription(jsonObject)).then((receivedOffer) => {
+            camera.peerConnection.setRemoteDescription(receivedOffer);
+            console.log("Receive offer");
+        }).then(() => camera.peerConnection.createAnswer()).then((answer) => {
+            camera.peerConnection.setLocalDescription(answer);
+            console.log("Send answer");
+            return JSON.stringify(answer);
+        });
 }
 
 function receiveAnswer(answer) {
