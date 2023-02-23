@@ -353,11 +353,11 @@ window.tfjs = (isTfjs) => {
 
 
     tf.loadGraphModel('model/model.json').then(model => {
-        setInterval(() => {
+        requestAnimationFrame(() => {
             tf.engine().startScope(); //메모리 관리를 위한 스코프 시작
             detect(model);
             tf.engine().endScope(); //스코프 종료
-        }, 1000 / TF_FPS);
+        });
     });
 
     function detect(model) {
