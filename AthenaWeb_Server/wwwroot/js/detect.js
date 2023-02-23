@@ -335,7 +335,6 @@ window.Camshift = (isCamshift) => {
 window.tfjs = (isTfjs) => {
     _isTfjs = isTfjs;
     let checkObjectIds = [];
-    const TF_FPS = 40;
 
     const tfDate = new Date();
     let tfTime1 = tfDate.getTime();
@@ -375,6 +374,12 @@ window.tfjs = (isTfjs) => {
         });
 
         excute(model, tensor, ctx);
+
+        requestAnimationFrame(() => {
+            tf.engine().startScope();
+            detect(model);
+            tf.engine().endScope();
+        });
     }
 
     function excute(model, tensor, ctx) {
