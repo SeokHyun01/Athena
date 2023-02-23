@@ -59,11 +59,6 @@
 
     static bool isWebRTC = false;
 
-
-    //썸넬의 크기 530:300 으로 고정
-    private int width = 530;
-    private int height = 300;
-
     //dotnet helper 생성
     public async Task dotnetHelper()
     {
@@ -73,7 +68,7 @@
     //카메라
     public async Task SetVideo()
     {
-        await _Jsruntime.InvokeVoidAsync("setVideo", width, height);
+        await _Jsruntime.InvokeVoidAsync("setVideo");
     }
 
     //MQTT client 생성, 토픽 구독
