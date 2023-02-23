@@ -300,7 +300,7 @@ window.Camshift = (isCamshift) => {
                 UserId: _userId,
                 CameraId: _cameraId,
                 Created: new Date().toLocaleString(),
-                Path: canvasOutput.toDataURL("image/jpeg", 0.7),
+                Path: canvasOutput.toDataURL("image/jpeg", 0.9),
                 IsRequiredObjectDetection: false
             }
         }

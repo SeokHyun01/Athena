@@ -5,8 +5,8 @@
 @implements IAsyncDisposable
 
 <div>
-	<video id="remoteVideo" autoplay width="530" height="300"></video>
-	<video id="video" autoplay width="530" height="300"></video>
+	<video id="remoteVideo" autoplay width="300" height="530"></video>
+	<video id="video" autoplay width="300" height="530"></video>
 	<button id="muteButton" class="btn btn-primary"> Mute</button>
 	<button id="cameraButton" class="btn btn-primary"> Turn Camera Off</button>
 	<select id="camerasSelect" class="form-control-sm"></select>
@@ -37,6 +37,7 @@
 			//웹: thumbnail 페이지에서 넘어온 경우 앱: webRTC 페이지 직접 접속한 경우
 			if (UserId == Guid.Empty && CameraId == 0)
 			{
+				// thumbnail 페이지에서 넘어온 경우
 				UserId = UserIdToThumbnail;
 				CameraId = CameraIdToThumbnail;
 			}
