@@ -1,10 +1,8 @@
 ﻿//카메라 On
-window.setVideo = (width, height) => {
+window.setVideo = () => {
 
     //비디오를 지정하고 화면에 보여준다.
-    var video = document.querySelector("#video")
-    // video.width = width; video.height = height;
-
+    var video = document.getElementById("video");
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
             video.srcObject = stream;
@@ -125,9 +123,9 @@ window.SendThumbnail = () => {
     setTimeout(sendThumbnail, 500);
 
     function sendThumbnail() {
-        let video = document.querySelector("#video");
+        let video = document.getElementById("video");
         let canvas = document.getElementById('canvas_image');
-        canvas.width = video.width; canvas.height = video.height;
+        canvas.width = video.videoWidth; canvas.height = video.videoHeight;
         let context = canvas.getContext('2d');
         context.drawImage(video, 0, 0, canvas.height, canvas.width); // 비디오 그리기
         result64 = canvas.toDataURL("image/jpeg", 0.9);
@@ -166,9 +164,9 @@ window.Camshift = (isCamshift) => {
     let isMotion = false;
     let checkMotionIds = [];
 
-    let video = document.querySelector("#video", willReadFrequently = true);
+    let video = document.getElementById("video", willReadFrequently = true);
     video.setAttribute('hidden', true);
-    let canvasOutput = document.querySelector("#canvasOutput", willReadFrequently = true);
+    let canvasOutput = document.getElementById("canvasOutput", willReadFrequently = true);
     canvasOutput.removeAttribute('hidden');
 
     let cap = new cv.VideoCapture(video);
