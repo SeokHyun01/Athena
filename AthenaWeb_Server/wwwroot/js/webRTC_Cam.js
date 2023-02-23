@@ -174,22 +174,22 @@ async function initializeCamera(connectionId, userId, cameraId) {
     camera.createRTCPeerConnection();
 }
 
-async function sendOffer() {
-    const offer = await camera.peerConnection.createOffer();
+function sendOffer() {
+    const offer = camera.peerConnection.createOffer();
     camera.peerConnection.setLocalDescription(offer);
 
     console.log("Send offer");
     return JSON.stringify(offer);
 }
 
-async function sendAnswer(offer) {
+function sendAnswer(offer) {
     const jsonObject = JSON.parse(offer);
     const receivedOffer = new RTCSessionDescription(jsonObject);
 
     camera.peerConnection.setRemoteDescription(receivedOffer);
     console.log("Receive offer");
 
-    const answer = await camera.peerConnection.createAnswer();
+    const answer = camera.peerConnection.createAnswer();
     camera.peerConnection.setLocalDescription(answer);
 
     console.log("Send answer");
