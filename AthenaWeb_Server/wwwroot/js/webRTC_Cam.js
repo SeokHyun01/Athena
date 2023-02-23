@@ -102,6 +102,7 @@ class Camera {
                 deviceId ? cameraConstraints : initialConstrains
             );
             this.localVideo.srcObject = this.mediaStream;
+            this.localVideo.style.transform = "scaleX(-1)";
 
             if (!deviceId) {
                 await this.getCameras();
