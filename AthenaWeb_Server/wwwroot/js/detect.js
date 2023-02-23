@@ -129,11 +129,7 @@ window.SendThumbnail = () => {
         let canvas = document.getElementById('canvas_image');
         canvas.width = video.width; canvas.height = video.height;
         let context = canvas.getContext('2d');
-        context.save(); // 현재의 그리기 상태 저장
-        context.translate(canvas.width, 0); // canvas의 오른쪽 위 모서리로 이동
-        context.rotate(90 * Math.PI / 180); // 90도 회전
         context.drawImage(video, 0, 0, canvas.height, canvas.width); // 비디오 그리기
-        context.restore(); // 그리기 상태를 복원
         result64 = canvas.toDataURL("image/jpeg", 0.9);
 
         let data = new Object();
