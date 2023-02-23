@@ -13,7 +13,7 @@
 <div class="col">
 
     <div class="video-wrapper">
-        <video id="video" autoplay></video>
+        <video id="video" autoplay width="530" height="300"></video>
     </div>
 
     @if (isWebRTC)
@@ -33,22 +33,6 @@
     <canvas hidden id="canvas_image"></canvas>
 
 </div>
-
-<style>
-  .video-wrapper {
-    position: relative;
-    width: 100%;
-    padding-bottom: 56.25%; /* 16:9 비율 */
-  }
-
-  .video-wrapper > video {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-  }
-</style>
 
 @code {
     [Parameter]
