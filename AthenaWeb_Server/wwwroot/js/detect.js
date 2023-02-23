@@ -3,7 +3,7 @@ window.setVideo = (width, height) => {
 
     //비디오를 지정하고 화면에 보여준다.
     var video = document.querySelector("#video")
-    video.width = width; video.height = height;
+    // video.width = width; video.height = height;
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
