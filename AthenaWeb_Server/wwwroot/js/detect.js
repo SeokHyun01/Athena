@@ -342,6 +342,7 @@ window.tfjs = (isTfjs) => {
     let tfIntervalTime;
     let fireCount = 0;
     let tfIsFirst = true;
+    let FPS = 10; //초당 프레임 수
 
     let video = document.getElementById('video');
     video.setAttribute('hidden', true);
@@ -352,11 +353,11 @@ window.tfjs = (isTfjs) => {
 
 
     tf.loadGraphModel('model/model.json').then(model => {
-        requestAnimationFrame(() => {
+        setInterval(() => {
             tf.engine().startScope(); //메모리 관리를 위한 스코프 시작
             detect(model);
             tf.engine().endScope(); //스코프 종료
-        });
+        }, 1000 / FPS);
     });
 
     function detect(model) {
@@ -374,12 +375,6 @@ window.tfjs = (isTfjs) => {
         });
 
         excute(model, tensor, ctx);
-
-        requestAnimationFrame(() => {
-            tf.engine().startScope();
-            detect(model);
-            tf.engine().endScope();
-        });
     }
 
     function excute(model, tensor, ctx) {
