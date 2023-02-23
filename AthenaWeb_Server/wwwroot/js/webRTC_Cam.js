@@ -232,3 +232,8 @@ function getCurrentTime() {
     return year + month + day + hour + minutes + seconds;
 }
 
+function disposeVideo() {
+    if(camera != null)
+    //카메라 종료
+    camera.srcObject.getTracks().forEach(track => track.stop());   
+}

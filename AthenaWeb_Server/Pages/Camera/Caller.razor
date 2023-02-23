@@ -222,5 +222,7 @@
 		{
 			await hubConnection.DisposeAsync();
 		}
+		//카메라 종료
+		await _jsRuntime.InvokeVoidAsync("disposeVideo");
 	}
 }
