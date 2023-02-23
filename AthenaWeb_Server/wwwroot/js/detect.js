@@ -571,6 +571,14 @@ window.SetBluetooth = () => {
 
 }
 
+//가로모드 변경
+window.changeOrientation = (boolWebRTC) => {
+    if(boolWebRTC){
+        //가로모드
+        document.getElementById("remoteVideo").style.transform = "rotate(90deg)";
+    }
+}
+
 //dotnet 객체를 가져온다.
 window.dotnetHelper = (objRef, userId, cameraId) => {
     _Dotnet = objRef;

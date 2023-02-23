@@ -52,7 +52,6 @@
         await _Jsruntime.InvokeVoidAsync("dotnetHelper", DotNetObjectReference.Create(this), UserId, CameraId);
     }
 
-
     //카메라
     public async Task SetVideo()
     {
@@ -93,6 +92,8 @@
     public async ValueTask showWebRTC(bool boolWebRTC)
     {
         isWebRTC = boolWebRTC;
+        //가로모드 변경 
+        await _Jsruntime.InvokeVoidAsync("changeOrientation", boolWebRTC);
         await InvokeAsync(StateHasChanged);
     }
 
