@@ -47,14 +47,14 @@
 			.WithUrl(_navigationManager.ToAbsoluteUri("/hubs/signaling"), (opts) =>
 			{
 				opts.HttpMessageHandlerFactory = (message) =>
-				{
-					if (message is HttpClientHandler clientHandler)
-					{
-						// SSL 인증 무시
-						clientHandler.ServerCertificateCustomValidationCallback +=
+	{
+	if (message is HttpClientHandler clientHandler)
+	{
+		// SSL 인증 무시
+		clientHandler.ServerCertificateCustomValidationCallback +=
 		(sender, certificate, chain, sslPolicyErrors) => { return true; };
-					}
-					return message;
+	}
+	return message;
 				};
 			}).Build();
 
@@ -100,6 +100,7 @@
 	{
 		if (hubConnection != null)
 		{
+			await hubConnection.StopAsync();
 			await hubConnection.DisposeAsync();
 		}
 	}
