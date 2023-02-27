@@ -32,8 +32,7 @@ namespace Athena_Business.Repository
 			try
 			{
 				var obj = _mapper.Map<EventDTO, Event>(objDTO);
-				_logger.LogInformation($"EventHeader Id: {obj.EventHeader.Id}");
-				if (obj.EventHeader.Id == null || obj.EventHeader.Id == 0)
+				if (obj.EventHeader.Id == 0)
 				{
 					_db.EventHeaders.Add(obj.EventHeader);
 					await _db.SaveChangesAsync();
@@ -85,8 +84,8 @@ namespace Athena_Business.Repository
 			if (objFromDb != null)
 			{
 				// 업데이트
+				_logger.LogInformation($"업데이트할 Event Video Id: {header.EventVideoId}");
 				objFromDb.EventVideoId = header.EventVideoId;
-				objFromDb.Path = header.Path ?? objFromDb.Path;
 				_db.EventHeaders.Update(objFromDb);
 				await _db.SaveChangesAsync();
 				return _mapper.Map<EventHeader, EventHeaderDTO>(objFromDb);

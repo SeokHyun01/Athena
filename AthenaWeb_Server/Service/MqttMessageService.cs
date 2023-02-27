@@ -95,7 +95,6 @@ namespace AthenaWeb_Server.Service
 			var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
 			var response = await _httpClient.PostAsync("http://localhost:8102/api/event/events/", bodyContent);
 			var contentTemp = await response.Content.ReadAsStringAsync();
-			_logger.LogInformation(contentTemp);
 			var result = JsonConvert.DeserializeObject<IEnumerable<EventDTO>>(contentTemp);
 			if (response.IsSuccessStatusCode && result != null)
 			{
