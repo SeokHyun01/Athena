@@ -1,6 +1,8 @@
 ﻿function setImageSource(ImageId, source) {
     const image = document.getElementById(ImageId);
     image.src = source;
+    //가로 세로 길이 확인
+    console.log(source.width, source.height);
 }
 
 function setInputDisabled(InputId, value) {
