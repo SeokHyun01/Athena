@@ -88,7 +88,7 @@ namespace AthenaWeb_Server.Service
 											}
 											else
 											{
-												throw new Exception(response.Error);
+												throw new Exception("Object Detection 중 에러가 발생했습니다.");
 											}
 										}
 
