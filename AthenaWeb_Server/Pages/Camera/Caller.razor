@@ -200,21 +200,20 @@
 	{
 		await _jsRuntime.InvokeVoidAsync("disposeRTCVideoCall");
 
-		var callHeader = new CallHeader
+		if (mqttClient != null && mqttClient.IsConnected)
+		{
+			var callHeader = new CallHeader
 			{
 				UserId = UserId.ToString(),
 				CameraId = CameraId
 			};
-		var callHeaderJson = JsonSerializer.Serialize<CallHeader>(callHeader);
+			var callHeaderJson = JsonSerializer.Serialize<CallHeader>(callHeader);
+			var applicationMessage = new MqttApplicationMessageBuilder()
+				.WithTopic("call/stop")
+				.WithPayload(callHeaderJson)
+				.Build();
+			await mqttClient.PublishAsync(applicationMessage, CancellationToken.None);
 
-		var applicationMessage = new MqttApplicationMessageBuilder()
-			.WithTopic("call/stop")
-			.WithPayload(callHeaderJson)
-			.Build();
-		await mqttClient.PublishAsync(applicationMessage, CancellationToken.None);
-
-		if (mqttClient != null && mqttClient.IsConnected)
-		{
 			await mqttClient.DisconnectAsync();
 		}
 

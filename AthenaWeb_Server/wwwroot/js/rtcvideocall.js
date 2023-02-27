@@ -38,6 +38,12 @@
                 track.stop();
             });
 
+        motionDetector.video.srcObject
+            .getVideoTracks
+            .forEach((track) => {
+                track.stop();
+            });
+
         if (this.cameraOff) {
             if (this.localVideo.style.display == "none") {
                 this.localVideo.style.display = "block";

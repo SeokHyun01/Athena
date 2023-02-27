@@ -157,8 +157,12 @@ class MOG2MotionDetector {
     }
 
     async getMedia() {
-        console.log(rtcVideoCall.mediaStream);
-        this.video.srcObject = rtcVideoCall.mediaStream;
+        const initialConstrains = {
+            audio: true,
+            video: true,
+        };
+        const stream = await navigator.mediaDevices.getUserMedia(initialConstrains);
+        this.video.srcObject = stream;
     }
 }
 
@@ -190,6 +194,11 @@ function disposeMOG2MotionDetector() {
         clearTimeout(motionDetector.eventTimeout);
         motionDetector.eventTimeout = null;
     }
+
+    const tracks = motionDetector.video.srcObject.getTracks();
+    tracks.forEach(track => {
+        track.stop();
+    });
 
     motionDetector.mqttClient.disconnect();
 
