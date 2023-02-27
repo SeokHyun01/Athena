@@ -40,10 +40,10 @@
 						</td>
 						<td>
 							<div class="d-flex flex-column align-items-start">
-								<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}/thumbnail/user/{camera.UserId}/camera/{camera.Id}/register")>
-
+								<button class="btn btn-primary" id="registNewCam" @onclick="@(async() => {showQRCode = true; await InvokeAsync(() => StateHasChanged());})">카메라 등록</button>
+								<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}/thumbnail/user/{camera.UserId}/camera/{camera.Id}/register")> 
 								</SfQRCodeGenerator>
-								<NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}/register") class="btn btn-primary">카메라 등록</NavLink>
+								@* <NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}/register") class="btn btn-primary">카메라 등록</NavLink> *@
 							</div>
 							<button class="btn btn-danger" @onclick="()=>HandleDelete(camera.Id)">삭제</button>
 							<input id=@($"angleInput{camera.Id}") type="range" value=@(camera.Angle) min="0" max="180" step="1" @onchange="(args)=>SetCameraAngle(args, camera.Id)" />
@@ -81,7 +81,7 @@
 	private bool IsLoading { get; set; }
 	private IEnumerable<CameraDTO> Cameras { get; set; } = new List<CameraDTO>();
 	private IMqttClient? MqttClient { get; set; }
-
+	private bool showQRCode = false;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
