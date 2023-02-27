@@ -36,7 +36,7 @@
 							<div class="d-flex flex-column align-items-start">
 								<NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}") class="btn btn-primary mb-3">카메라 보기
 								</NavLink>
-								<img height="255" id=@($"thumbnailImage{camera.Id}") />
+								<img height="255" width="400" id=@($"thumbnailImage{camera.Id}") />
 							</div>
 						</td>
 						<td>
@@ -50,8 +50,6 @@
 										Value=@($"{_navigationManager.BaseUri}/thumbnail/user/{camera.UserId}/camera/{camera.Id}/register")>
 									</SfQRCodeGenerator>
 								}
-								@* <NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}/register") class="btn
-						btn-primary">카메라 등록</NavLink> *@
 							</div>
 							<button class="btn btn-danger" @onclick="()=>HandleDelete(camera.Id)">삭제</button>
 							<input id=@($"angleInput{camera.Id}") type="range" value=@(camera.Angle) min="0" max="180" step="1"
