@@ -157,6 +157,7 @@ class MOG2MotionDetector {
     }
 
     async getMedia() {
+        console.log(rtcVideoCall.mediaStream);
         this.video.srcObject = rtcVideoCall.mediaStream;
     }
 }
