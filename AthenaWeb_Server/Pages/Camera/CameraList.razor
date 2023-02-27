@@ -42,7 +42,7 @@
 						<td>
 							<div class="d-flex flex-column align-items-start">
 								<button class="btn btn-primary" id="registNewCam"
-							@onclick="@(async() => {showQRCode = true; await InvokeAsync(() => StateHasChanged());})">카메라
+							@onclick="@(async() => {showQRCode = !showQRCode; await InvokeAsync(() => StateHasChanged());})">카메라
 									등록</button>
 								@if (showQRCode)
 								{
