@@ -84,7 +84,6 @@ namespace Athena_Business.Repository
 			if (objFromDb != null)
 			{
 				// 업데이트
-				_logger.LogInformation($"업데이트할 Event Video Id: {header.EventVideoId}");
 				objFromDb.EventVideoId = header.EventVideoId;
 				_db.EventHeaders.Update(objFromDb);
 				await _db.SaveChangesAsync();
