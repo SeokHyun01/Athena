@@ -34,7 +34,7 @@
     handleCameraClick() {
         this.mediaStream
             .getVideoTracks()
-            .forEach((track) => (track.enabled = !track.enabled));
+            .forEach((track) => track.stop());
 
         if (this.cameraOff) {
             if (this.localVideo.style.display == "none") {
