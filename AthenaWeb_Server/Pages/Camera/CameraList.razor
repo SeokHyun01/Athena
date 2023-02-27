@@ -36,7 +36,8 @@
 							<div class="d-flex flex-column align-items-start">
 								<NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}") class="btn btn-primary mb-3">카메라 보기
 								</NavLink>
-								<img height="255" width="400" id=@($"thumbnailImage{camera.Id}") />
+								@* <img height="255" id=@($"thumbnailImage{camera.Id}") /> *@
+								<img id=@($"thumbnailImage{camera.Id}") /> 
 							</div>
 						</td>
 						<td>
