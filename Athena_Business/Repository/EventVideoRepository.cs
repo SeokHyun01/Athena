@@ -62,7 +62,7 @@ namespace Athena_Business.Repository
 
 		public async ValueTask<IEnumerable<EventVideoDTO>> GetAllByCameraId(int cameraId)
 		{
-			if (cameraId != null && cameraId >= 0)
+			if (cameraId > 0)
 			{
 				return _mapper.Map<IEnumerable<EventVideo>, IEnumerable<EventVideoDTO>>(_db.EventVideos.Where(u => u.CameraId == cameraId));
 			}

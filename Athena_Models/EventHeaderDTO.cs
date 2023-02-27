@@ -21,6 +21,6 @@ namespace Athena_Models
 		public string Path { get; set; }
 		[Required]
 		public bool IsRequiredObjectDetection { get; set; }
-		public int? EventVideoId { get; set; }
+		public int EventVideoId { get; set; }
 	}
 }
