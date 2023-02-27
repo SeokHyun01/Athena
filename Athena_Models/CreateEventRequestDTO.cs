@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Athena_Models
 {
-	public class UpdateCamera
+	public class CreateEventRequestDTO
 	{
-		public int CameraId { get; set; }
-		public string? Thumbnail { get; set; }
-		public int? Degree { get; set; }
+		public IEnumerable<EventHeaderDTO> EventHeaderList { get; set;} = Enumerable.Empty<EventHeaderDTO>();
 	}
 }

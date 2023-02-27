@@ -13,9 +13,9 @@ namespace AthenaWeb_Server.Service.IService
 		void RegisterMessageHandler(Func<MqttApplicationMessageReceivedEventArgs, Task> handler);
 		ValueTask<CameraDTO> UpdateCamera(CameraDTO camera);
 		ValueTask<EventDTO> CreateEvent(EventDTO eventObj);
-		ValueTask<IEnumerable<EventHeaderDTO>> GetEventHeader(IEnumerable<int>? ids = null);
+		ValueTask<IEnumerable<EventHeaderDTO>> GetEventHeader(IEnumerable<int> ids);
 		ValueTask<EventVideoDTO> CreateEventVideo(EventVideoDTO eventVideo);
 		ValueTask<EventHeaderDTO?> UpdateEventHeader(EventHeaderDTO eventHeader);
-		ValueTask<EventHeaderDTO?> DeleteEventHeaderPath(EventHeaderDTO eventHeader);
+		ValueTask<CreateEventResponseDTO> PredictEvent(CreateEventRequestDTO createEventRequest);
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using Athena_Business.Repository.IRepository;
 using Athena_DataAccess.ViewModel;
 using Athena_Models;
+using AthenaWeb_Server.Pages.Event;
 using AthenaWeb_Server.Service.IService;
 using FFmpegBlazor;
 using Microsoft.JSInterop;
@@ -63,27 +64,33 @@ namespace AthenaWeb_Server.Service
 							}
 							else if (e.ApplicationMessage.Topic == "video/create")
 							{
-								var createVideo = JsonSerializer.Deserialize<List<int>>(payload);
-								if (createVideo != null && createVideo.Any())
+								var createVideo = JsonSerializer.Deserialize<CreateVideo>(payload);
+								if (createVideo != null)
 								{
-									var headerList = await _mqttMessageService.GetEventHeader(createVideo);
+									var headerList = (await _mqttMessageService.GetEventHeader(createVideo.EventHeaderIds)).ToList();
 
 									if (headerList.Any())
 									{
-										//var predictEventList = headerList.Where(obj => obj.IsRequiredObjectDetection);
-										//if (predictEventList.Any())
-										//{
-										//	var jsonParams = JsonSerializer.Serialize(headerList.ToList());
-										//	var url = $"https://example.com/api/myData?params={jsonParams}";
-										//	var response = await _httpClient.GetFromJsonAsync<List<EventHeaderDTO>>(url);
-										//	if (response != null && response.Any())
-										//	{
-
-										//	} else
-										//	{
-										//		throw new Exception($"{url}으로부터 응답을 받지 못했습니다.");
-										//	}
-										//}
+										var predictEventList = headerList.Where(obj => obj.IsRequiredObjectDetection);
+										if (predictEventList.Any())
+										{
+											var createEvent = new CreateEventRequestDTO
+											{
+												EventHeaderList = predictEventList
+											};
+											var response = await _mqttMessageService.PredictEvent(createEvent);
+											if (response.IsSucceeded)
+											{
+												foreach (var eventObj in response.EventList)
+												{
+													await _mqttMessageService.CreateEvent(eventObj);
+												}
+											}
+											else
+											{
+												throw new Exception(response.Error);
+											}
+										}
 
 										var firstHeader = headerList.First();
 										var userId = firstHeader.UserId;
@@ -92,7 +99,14 @@ namespace AthenaWeb_Server.Service
 										var imagePathList = new List<string>();
 										foreach (var header in headerList)
 										{
-											imagePathList.Add(header.Path);
+											if (header.Path != null)
+											{
+												imagePathList.Add(header.Path);
+											}
+											else
+											{
+												throw new Exception($"EventHeader Id: {header.Id}, 이미지가 누락됐습니다.");
+											}
 										}
 
 										if (imagePathList != null && imagePathList.Any())
@@ -102,11 +116,11 @@ namespace AthenaWeb_Server.Service
 											{
 												var destinationPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.jpeg");
 												File.Copy(imagePathList[i], destinationPath);
-												if (File.Exists(imagePathList[i]))
-												{
-													File.Delete(imagePathList[i]);
-												}
-												await _mqttMessageService.DeleteEventHeaderPath(headerList.ToArray()[i]);
+												//if (File.Exists(imagePathList[i]))
+												//{
+												//	File.Delete(imagePathList[i]);
+												//}
+												//headerList[i].Path = null;
 											}
 
 											var videoPath = $"{Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "videos", Guid.NewGuid().ToString())}.mp4";

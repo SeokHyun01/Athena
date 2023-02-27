@@ -17,6 +17,5 @@ namespace Athena_Business.Repository.IRepository
 		public ValueTask<IEnumerable<EventDTO>> GetAllByCameraId(int cameraId);
 		ValueTask<IEnumerable<EventHeaderDTO>> GetHeader(IEnumerable<int>? ids = null);
 		ValueTask<EventHeaderDTO?> UpdateHeader(EventHeaderDTO header);
-		ValueTask<EventHeaderDTO?> DeletePath(EventHeaderDTO header);
 	}
 }

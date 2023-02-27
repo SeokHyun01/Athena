@@ -32,8 +32,12 @@ namespace Athena_Business.Repository
 			try
 			{
 				var obj = _mapper.Map<EventDTO, Event>(objDTO);
-				_db.EventHeaders.Add(obj.EventHeader);
-				await _db.SaveChangesAsync();
+				_logger.LogInformation($"EventHeader Id: {obj.EventHeader.Id}");
+				if (obj.EventHeader.Id == null || obj.EventHeader.Id == 0)
+				{
+					_db.EventHeaders.Add(obj.EventHeader);
+					await _db.SaveChangesAsync();
+				}
 
 				if (obj.EventBodies != null && obj.EventBodies.Any())
 				{
@@ -75,6 +79,22 @@ namespace Athena_Business.Repository
 			return 0;
 		}
 
+		public async ValueTask<EventHeaderDTO?> UpdateHeader(EventHeaderDTO header)
+		{
+			var objFromDb = await _db.EventHeaders.FirstOrDefaultAsync(u => u.Id == header.Id);
+			if (objFromDb != null)
+			{
+				// 업데이트
+				objFromDb.EventVideoId = header.EventVideoId ?? objFromDb.EventVideoId;
+				objFromDb.Path = header.Path ?? objFromDb.Path;
+				_db.EventHeaders.Update(objFromDb);
+				await _db.SaveChangesAsync();
+				return _mapper.Map<EventHeader, EventHeaderDTO>(objFromDb);
+			}
+
+			return null;
+		}
+
 		public async ValueTask<EventDTO?> Get(int id)
 		{
 			Event eventObj = new()
@@ -114,7 +134,8 @@ namespace Athena_Business.Repository
 			if (ids != null)
 			{
 				return _mapper.Map<IEnumerable<EventHeader>, IEnumerable<EventHeaderDTO>>(_db.EventHeaders.Where(u => ids.Contains(u.Id)));
-			} else
+			}
+			else
 			{
 				return Enumerable.Empty<EventHeaderDTO>();
 			}
@@ -162,32 +183,6 @@ namespace Athena_Business.Repository
 			}
 
 			return _mapper.Map<IEnumerable<Event>, IEnumerable<EventDTO>>(EventsFromDb);
-		}
-
-		public async ValueTask<EventHeaderDTO?> UpdateHeader(EventHeaderDTO header)
-		{
-			var objFromDb = await _db.EventHeaders.FirstOrDefaultAsync(u => u.Id == header.Id);
-			if (objFromDb != null)
-			{
-				// 업데이트
-				objFromDb.EventVideoId = header.EventVideoId;
-				_db.EventHeaders.Update(objFromDb);
-				await _db.SaveChangesAsync();
-				return _mapper.Map<EventHeader, EventHeaderDTO>(objFromDb);
-			}
-
-			return null;
-		}
-
-		public async ValueTask<EventHeaderDTO?> DeletePath(EventHeaderDTO header)
-		{
-			var objFromDb = await _db.EventHeaders.FirstOrDefaultAsync(u => u.Id == header.Id);
-			if (objFromDb != null)
-			{
-				objFromDb.Path = null;
-			}
-
-			return null;
 		}
 	}
 }

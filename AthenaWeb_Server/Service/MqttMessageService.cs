@@ -6,6 +6,10 @@ using AthenaWeb_Server.Service.IService;
 using Microsoft.JSInterop;
 using MQTTnet;
 using MQTTnet.Client;
+using Newtonsoft.Json;
+using Syncfusion.Blazor.Kanban.Internal;
+using System.Net.Http;
+using System.Text;
 
 namespace AthenaWeb_Server.Service
 {
@@ -15,16 +19,20 @@ namespace AthenaWeb_Server.Service
 		private readonly ICameraRepository _cameraRepository;
 		private readonly IEventRepository _eventRepository;
 		private readonly IEventVideoRepository _eventVideoRepository;
+		private readonly HttpClient _httpClient;
+		private readonly ILogger<MqttMessageService> _logger;
 
 		private bool _disposedValue;
 
 
-		public MqttMessageService(IMqttClient mqttClient, ICameraRepository cameraRepository, IEventRepository eventRepository, IEventVideoRepository eventVideoRepository)
+		public MqttMessageService(IMqttClient mqttClient, ICameraRepository cameraRepository, IEventRepository eventRepository, IEventVideoRepository eventVideoRepository, HttpClient httpClient, ILogger<MqttMessageService> logger)
 		{
 			_mqttClient = mqttClient;
 			_cameraRepository = cameraRepository;
 			_eventRepository = eventRepository;
 			_eventVideoRepository = eventVideoRepository;
+			_httpClient = httpClient;
+			_logger = logger;
 		}
 
 		public async ValueTask ConnectAsync(string brokerHost, int brokerPort)
@@ -74,14 +82,31 @@ namespace AthenaWeb_Server.Service
 		public async ValueTask<CameraDTO> UpdateCamera(CameraDTO camera) => await _cameraRepository.Update(camera);
 
 		public async ValueTask<EventDTO> CreateEvent(EventDTO eventObj) => await _eventRepository.Create(eventObj);
-		
-		public async ValueTask<IEnumerable<EventHeaderDTO>> GetEventHeader(IEnumerable<int>? ids = null) => await _eventRepository.GetHeader(ids);
+
+		public async ValueTask<IEnumerable<EventHeaderDTO>> GetEventHeader(IEnumerable<int> ids) => await _eventRepository.GetHeader(ids);
 
 		public async ValueTask<EventVideoDTO> CreateEventVideo(EventVideoDTO eventVideo) => await _eventVideoRepository.Create(eventVideo);
 
 		public async ValueTask<EventHeaderDTO?> UpdateEventHeader(EventHeaderDTO eventHeader) => await _eventRepository.UpdateHeader(eventHeader);
 
-		public async ValueTask<EventHeaderDTO?> DeleteEventHeaderPath(EventHeaderDTO eventHeader) => await _eventRepository.DeletePath(eventHeader);
+		public async ValueTask<CreateEventResponseDTO> PredictEvent(CreateEventRequestDTO createEventRequest)
+		{
+			var content = JsonConvert.SerializeObject(createEventRequest);
+			var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+			var response = await _httpClient.PostAsync("http://localhost:8102/api/event/events/", bodyContent);
+			var contentTemp = await response.Content.ReadAsStringAsync();
+			_logger.LogInformation(contentTemp);
+			var result = JsonConvert.DeserializeObject<CreateEventResponseDTO>(contentTemp);
+			if (response.IsSuccessStatusCode && result != null)
+			{
+				return new CreateEventResponseDTO { IsSucceeded = true, EventList = result.EventList };
+			}
+			else
+			{
+				_logger.LogInformation("결과 객체를 얻어오는 데 실패했습니다.");
+				return new CreateEventResponseDTO { IsSucceeded = false };
+			}
+		}
 
 		public void Dispose() => Dispose(true);
 
