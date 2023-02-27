@@ -85,7 +85,7 @@ namespace Athena_Business.Repository
 			if (objFromDb != null)
 			{
 				// 업데이트
-				objFromDb.EventVideoId = header.EventVideoId ?? objFromDb.EventVideoId;
+				objFromDb.EventVideoId = header.EventVideoId;
 				objFromDb.Path = header.Path ?? objFromDb.Path;
 				_db.EventHeaders.Update(objFromDb);
 				await _db.SaveChangesAsync();
