@@ -47,7 +47,7 @@
     public int height = 270;
 
     //dotnet helper 생성
-    public async Task dotnetHelper()
+    public async Task DotnetHelper()
     {
         await _Jsruntime.InvokeVoidAsync("dotnetHelper", DotNetObjectReference.Create(this), UserId, CameraId);
     }
@@ -75,7 +75,7 @@
     {
         if (firstRander)
         {
-            await dotnetHelper();
+            await DotnetHelper();
             await SetVideo();
             await SetMqtt();
         }
