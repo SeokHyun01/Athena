@@ -9,7 +9,7 @@ namespace Athena_Models
 {
 	public class CallHeader
 	{
-		public string? UserId { get; set; }
+		public string UserId { get; set; }
 		public int CameraId { get; set; }
 	}
 }
