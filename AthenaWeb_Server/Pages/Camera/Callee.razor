@@ -103,6 +103,7 @@
 
 		if (hubConnection != null)
 		{
+			await hubConnection.StopAsync();
 			await hubConnection.DisposeAsync();
 		}
 	}
