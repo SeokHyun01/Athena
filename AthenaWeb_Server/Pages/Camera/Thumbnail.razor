@@ -14,7 +14,7 @@
 <div class="col">
 
     <div class="video-wrapper">
-        <video id="video" autoplay width="460" height="345"></video>
+        <video id="video" autoplay width="@width" height="@height"></video>
     </div>
 
     @if (isWebRTC)
@@ -43,6 +43,8 @@
     public int CameraId { get; set; }
 
     static bool isWebRTC = false;
+    public int width = 460;
+    public int height = 345;
 
     //dotnet helper 생성
     public async Task dotnetHelper()
@@ -65,7 +67,7 @@
     //MQTT로 썸네일 전송
     public async Task SendThumbnail()
     {
-        await _Jsruntime.InvokeVoidAsync("SendThumbnail");
+        await _Jsruntime.InvokeVoidAsync("SendThumbnail", width, height);
     }
 
     //순서 1.비디오를 킨다 2. MQTT 접속을한다 3. 썸네일 전송을 시작한다
