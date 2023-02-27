@@ -42,9 +42,9 @@
 						<td>
 							<div class="d-flex flex-column align-items-start">
 								<button class="btn btn-primary" id="qrCodeButton"
-							@onclick="@(async() => {showQRCode = !showQRCode; selectedCameraId = camera.Id; await InvokeAsync(() => StateHasChanged());})">카메라
+							@onclick="@(async() => {showQRCode = !showQRCode; await InvokeAsync(() => StateHasChanged());})">카메라
 									등록</button>
-								@if (showQRCode && selectedCameraId == camera.Id)
+								@if (showQRCode)
 								{
 									<SfQRCodeGenerator
 										Value=@($"{_navigationManager.BaseUri}/thumbnail/user/{camera.UserId}/camera/{camera.Id}/register")>
