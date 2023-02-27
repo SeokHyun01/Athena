@@ -96,11 +96,11 @@ namespace AthenaWeb_Server.Service
 			var response = await _httpClient.PostAsync("http://localhost:8102/api/event/events/", bodyContent);
 			var contentTemp = await response.Content.ReadAsStringAsync();
 			_logger.LogInformation(contentTemp);
-			var result = JsonConvert.DeserializeObject<CreateEventResponseDTO>(contentTemp);
+			var result = JsonConvert.DeserializeObject<IEnumerable<EventDTO>>(contentTemp);
 			if (response.IsSuccessStatusCode && result != null)
 			{
 				_logger.LogInformation("결과 객체를 얻어오는 데 성공했습니다.");
-				return new CreateEventResponseDTO { IsSucceeded = true, EventList = result.EventList };
+				return new CreateEventResponseDTO { IsSucceeded = true, EventList = result };
 			}
 			else
 			{
