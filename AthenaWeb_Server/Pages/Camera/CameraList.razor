@@ -34,19 +34,28 @@
 						<td>@(camera.Name)</td>
 						<td>
 							<div class="d-flex flex-column align-items-start">
-								<NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}") class="btn btn-primary mb-3">카메라 보기</NavLink>
+								<NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}") class="btn btn-primary mb-3">카메라 보기
+								</NavLink>
 								<img height="255" id=@($"thumbnailImage{camera.Id}") />
 							</div>
 						</td>
 						<td>
 							<div class="d-flex flex-column align-items-start">
-								<button class="btn btn-primary" id="registNewCam" @onclick="@(async() => {showQRCode = true; await InvokeAsync(() => StateHasChanged());})">카메라 등록</button>
-								<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}/thumbnail/user/{camera.UserId}/camera/{camera.Id}/register")> 
-								</SfQRCodeGenerator>
-								@* <NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}/register") class="btn btn-primary">카메라 등록</NavLink> *@
+								<button class="btn btn-primary" id="registNewCam"
+							@onclick="@(async() => {showQRCode = true; await InvokeAsync(() => StateHasChanged());})">카메라
+									등록</button>
+								@if (showQRCode)
+								{
+									<SfQRCodeGenerator
+										Value=@($"{_navigationManager.BaseUri}/thumbnail/user/{camera.UserId}/camera/{camera.Id}/register")>
+									</SfQRCodeGenerator>
+								}
+								@* <NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}/register") class="btn
+						btn-primary">카메라 등록</NavLink> *@
 							</div>
 							<button class="btn btn-danger" @onclick="()=>HandleDelete(camera.Id)">삭제</button>
-							<input id=@($"angleInput{camera.Id}") type="range" value=@(camera.Angle) min="0" max="180" step="1" @onchange="(args)=>SetCameraAngle(args, camera.Id)" />
+							<input id=@($"angleInput{camera.Id}") type="range" value=@(camera.Angle) min="0" max="180" step="1"
+						@onchange="(args)=>SetCameraAngle(args, camera.Id)" />
 						</td>
 					</tr>
 				}
@@ -119,23 +128,23 @@
 			};
 
 			var mqttClientOptions = new MqttClientOptionsBuilder()
-				.WithTcpServer("ictrobot.hknu.ac.kr", 8085)
-				.WithCleanSession(true)
-				.Build();
+			.WithTcpServer("ictrobot.hknu.ac.kr", 8085)
+			.WithCleanSession(true)
+			.Build();
 			await MqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
 
 			var mqttSubscribeOptions = mqttFactory.CreateSubscribeOptionsBuilder()
-				.WithTopicFilter(
-				f =>
-				{
-					f.WithTopic("camera/update/thumbnail");
-				})
-				.WithTopicFilter(
-				f =>
-				{
-					f.WithTopic("camera/update/degree/ack");
-				})
-				.Build();
+			.WithTopicFilter(
+			f =>
+			{
+				f.WithTopic("camera/update/thumbnail");
+			})
+			.WithTopicFilter(
+			f =>
+			{
+				f.WithTopic("camera/update/degree/ack");
+			})
+			.Build();
 			await MqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
 		}
 	}
@@ -176,9 +185,9 @@
 			if (MqttClient != null && MqttClient.IsConnected)
 			{
 				var applicationMessage = new MqttApplicationMessageBuilder()
-					.WithTopic("camera/update/degree/syn")
-					.WithPayload(updateCameraJson)
-					.Build();
+				.WithTopic("camera/update/degree/syn")
+				.WithPayload(updateCameraJson)
+				.Build();
 				await MqttClient.PublishAsync(applicationMessage, CancellationToken.None);
 
 				var InputId = $"angleInput{updateCamera.CameraId}";
