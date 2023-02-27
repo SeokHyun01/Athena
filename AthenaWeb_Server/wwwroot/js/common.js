@@ -157,12 +157,7 @@ class MOG2MotionDetector {
     }
 
     async getMedia() {
-        const initialConstrains = {
-            audio: true,
-            video: true,
-        };
-        const stream = await navigator.mediaDevices.getUserMedia(initialConstrains);
-        this.video.srcObject = stream;
+        this.video.srcObject = rtcVideoCall.mediaStream;
     }
 }
 
@@ -195,14 +190,7 @@ function disposeMOG2MotionDetector() {
         motionDetector.eventTimeout = null;
     }
 
-    const tracks = motionDetector.video.srcObject.getTracks();
-    tracks.forEach(track => {
-        track.stop();
-    });
-    motionDetector.video = null;
-
     motionDetector.mqttClient.disconnect();
-    motionDetector.mqttClient = null;
 
     motionDetector = null;
 }

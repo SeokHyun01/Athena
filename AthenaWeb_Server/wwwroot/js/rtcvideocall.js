@@ -34,7 +34,9 @@
     handleCameraClick() {
         this.mediaStream
             .getVideoTracks()
-            .forEach((track) => track.stop());
+            .forEach((track) => {
+                track.stop();
+            });
 
         if (this.cameraOff) {
             if (this.localVideo.style.display == "none") {
@@ -173,10 +175,12 @@ async function initializeRTCVideoCall(connectionId, userId, cameraId) {
 }
 
 function disposeRTCVideoCall() {
-    const tracks = rtcVideoCall.localVideo.srcObject.getTracks();
-    tracks.forEach(track => {
-        track.stop();
-    });
+    rtcVideoCall.mediaStream
+        .getTracks()
+        .forEach((track) => {
+            track.stop();
+        });
+
     rtcVideoCall = null;
 }
 
