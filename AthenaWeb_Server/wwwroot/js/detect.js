@@ -127,7 +127,7 @@ window.SendThumbnail = () => {
         let canvas = document.getElementById('canvas_image');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        console.log("canvas width: " + canvas.width + " height: " + canvas.height)
+        console.log("video width: " + video.videoWidth + " height: " + video.videoHeight);
         let context = canvas.getContext('2d');
         context.drawImage(video, 0, 0, canvas.width, canvas.height); // 비디오 그리기
         result64 = canvas.toDataURL("image/jpeg", 0.8);
