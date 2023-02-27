@@ -129,9 +129,9 @@ namespace Athena_Business.Repository
 			return _mapper.Map<IEnumerable<Event>, IEnumerable<EventDTO>>(EventsFromDb);
 		}
 
-		public async ValueTask<IEnumerable<EventHeaderDTO>> GetHeader(IEnumerable<int>? ids = null)
+		public async ValueTask<IEnumerable<EventHeaderDTO>> GetHeader(IEnumerable<int> ids)
 		{
-			if (ids != null)
+			if (ids != null && ids.Any())
 			{
 				return _mapper.Map<IEnumerable<EventHeader>, IEnumerable<EventHeaderDTO>>(_db.EventHeaders.Where(u => ids.Contains(u.Id)));
 			}
