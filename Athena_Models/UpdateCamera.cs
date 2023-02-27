@@ -12,6 +12,6 @@ namespace Athena_Models
 		[Required]
 		public int CameraId { get; set; }
 		public string? Thumbnail { get; set; }
-		public int? Degree { get; set; }
+		public int Degree { get; set; }
 	}
 }
