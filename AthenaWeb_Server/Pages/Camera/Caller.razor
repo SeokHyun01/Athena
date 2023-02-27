@@ -175,6 +175,9 @@
 			var cameraId = CameraId;
 			var angle = int.Parse(args.Value.ToString());
 
+			Camera.Angle = angle;
+			await _cameraRepository.Update(Camera);
+
 			var updateCamera = new UpdateCamera
 				{
 					CameraId = cameraId,
