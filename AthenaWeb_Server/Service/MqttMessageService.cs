@@ -99,6 +99,7 @@ namespace AthenaWeb_Server.Service
 			var result = JsonConvert.DeserializeObject<CreateEventResponseDTO>(contentTemp);
 			if (response.IsSuccessStatusCode && result != null)
 			{
+				_logger.LogInformation("결과 객체를 얻어오는 데 성공했습니다.");
 				return new CreateEventResponseDTO { IsSucceeded = true, EventList = result.EventList };
 			}
 			else
