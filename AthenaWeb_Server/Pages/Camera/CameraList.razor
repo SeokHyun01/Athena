@@ -52,7 +52,7 @@
 									</SfQRCodeGenerator>
 								}
 							</div>
-							<button class="btn btn-danger" @onclick="()=>HandleDelete(camera.Id)">삭제</button>
+							<button class="btn btn-danger mt-2" @onclick="()=>HandleDelete(camera.Id)">삭제</button>
 							<input id=@($"angleInput{camera.Id}") type="range" value=@(camera.Angle) min="0" max="180" step="1"
 						@onchange="(args)=>SetCameraAngle(args, camera.Id)" />
 						</td>
