@@ -121,12 +121,13 @@ window.SetMqtt = () => {
 window.SendThumbnail = () => {
     //연결이 되었다면, 썸네일 전송을 시작한다.
     setTimeout(sendThumbnail, 500);
-
+    //왜 640 480으로 보내고 있지?
     async function sendThumbnail() {
         let video = document.getElementById("video");
         let canvas = document.getElementById('canvas_image');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
+        console.log("canvas width: " + canvas.width + " height: " + canvas.height)
         let context = canvas.getContext('2d');
         context.drawImage(video, 0, 0, canvas.width, canvas.height); // 비디오 그리기
         result64 = canvas.toDataURL("image/jpeg", 0.8);
