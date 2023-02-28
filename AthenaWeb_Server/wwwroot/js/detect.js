@@ -72,13 +72,13 @@ window.SetMqtt = () => {
             //webrtc 연결
             try {
                 let data = JSON.parse(message.payloadString);
-                if (data.CameraId == _cameraId) { 
+                if (data.CameraId == _cameraId) {
 
-                    if(canvasOutput.getAttribute("hidden") == null){ 
-                        canvasOutput.setAttribute("hidden", true);  
+                    if (canvasOutput.getAttribute("hidden") == null) {
+                        canvasOutput.setAttribute("hidden", true);
                     }
 
-                    if(fireCanvas.getAttribute("hidden") == null){
+                    if (fireCanvas.getAttribute("hidden") == null) {
                         fireCanvas.setAttribute("hidden", true);
                     }
 
@@ -95,13 +95,13 @@ window.SetMqtt = () => {
             try {
                 let data = JSON.parse(message.payloadString);
                 if (data.CameraId == _cameraId) {
-                    
-                    if(canvasOutput.getAttribute("hidden") != null && _isCamshift == true){
+
+                    if (canvasOutput.getAttribute("hidden") != null && _isCamshift == true) {
                         canvasOutput.removeAttribute("hidden");
                         video.setAttribute("hidden", true);
                     }
 
-                    if(fireCanvas.getAttribute("hidden") != null && _isTfjs == true){
+                    if (fireCanvas.getAttribute("hidden") != null && _isTfjs == true) {
                         fireCanvas.removeAttribute("hidden");
                         video.setAttribute("hidden", true);
                     }
@@ -244,10 +244,10 @@ window.Camshift = (isCamshift) => {
         try {
             //시간 비교 
             time2 = new Date().getTime();
-            intervalTime = (time1 - time2)/1000;
+            intervalTime = (time1 - time2) / 1000;
 
             //움직임 감지가 30초 이상이면 count 초기화
-            if(intervalTime > 30){
+            if (intervalTime > 30) {
                 count = 0;
             }
 
@@ -255,7 +255,7 @@ window.Camshift = (isCamshift) => {
             if (count >= 5 && isMotion) {
                 sendMotion(canvasOutput);
                 isMotion = false;
-            } 
+            }
 
             //움직임 감지가 5초이상 없다면 서버에 보고 (단, 한번만 보낸다.)
             if (sendToVideo.length >= 10 && isFirst) {
@@ -334,19 +334,19 @@ window.Camshift = (isCamshift) => {
         const date = new Date();
         // 데이터의 형태를 지정한다. "년도-달-일 시.분.초" 형태이다.
         const options = {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-          timeZone: "Asia/Seoul",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false,
+            timeZone: "Asia/Seoul",
         };
         // 형태에 맞게 시간을 String 형태로 변환한다.
         return new Intl.DateTimeFormat("ko-KR", options).format(date);
-      }
-      
+    }
+
     async_motion_detect(); // 비동기로 움직임 감지 시작
 }
 
@@ -355,13 +355,13 @@ window.Camshift = (isCamshift) => {
 window.tfjs = (isTfjs) => {
     _isTfjs = isTfjs;
 
-    const tfDate = new Date();
-    let tfTime1 = tfDate.getTime();
+    let tfTime1;
     let tfTime2;
     let tfIntervalTime;
     let fireCount = 0;
     let tfIsFirst = true;
     let FPS = 10; //초당 프레임 수
+    let isDetect = false; //화재 감지 여부
 
     let video = document.getElementById('video');
     video.setAttribute('hidden', true);
@@ -446,30 +446,36 @@ window.tfjs = (isTfjs) => {
             //만약 화재가 감지되면 fireCount를 증가시킨다.
             if (numDetections_data > 0) {
                 fireCount++;
+                tfTime1 = new Date().getTime();
+                isDetect = true;
+            }
+
+            try {
                 tfTime2 = new Date().getTime();
                 tfIntervalTime = (tfTime2 - tfTime1) / 1000;
-            }
 
-            //만약 5분이내 5번 이상 화재가 감지되면 mqtt로 화재를 전송한다.
-            if (tfIntervalTime < 300 && fireCount > 5) {
-                sendDetect(boxes_data, classes_data, numDetections_data);
-                fireCount = 0;
-            } else if (tfIntervalTime > 300) {
-                fireCount = 0;
-            }
+                //만약 30초간 객체가 감지되지 않았다면 count 를 0으로 수정한다.
+                if(tfIntervalTime > 30) {
+                    fireCount = 0;
+                }
 
-            //만약 5초안에 객체가 이어서 감지되지 않으면 서버에 더이상 동일한 상황이 없다고 전송한다.
-            let stopTfIntervalTime =(new Date().getTime() - tfTime1) / 1000;
-            if (stopTfIntervalTime > 5 && tfIsFirst) {
-                sendtfStop();
-                sendToVideo = [];
-                tfIsFirst = false;
-            } else if (stopTfIntervalTime < 5 && !tfIsFirst) {
-                tfIsFirst = true;
-            }
+                //5번 이상 객체가 감지되면 서버에 화재가 감지되었다고 전송한다.
+                if (fireCount >= 5 && isDetect) {
+                    sendDetect(boxes_data, classes_data, numDetections_data);
+                    isDetect = false;
+                }
 
-            if (numDetections_data > 0) {
-                tfTime1 = tfTime2;
+                //사진의 갯수가 10개가 넘어가면 서버에게 사진 -> 영상으로 변환하라 알림.
+                if (sendToVideo.length >= 10 && tfIsFirst) {
+                    sendTfMakeVideo();
+                    sendToVideo = [];
+                    tfIsFirst = false;
+                } else if (sendToVideo.length < 10 && !tfIsFirst) {
+                    tfIsFirst = true;
+                }
+
+            } catch (e) {
+                console.log(e);
             }
         });
     }
@@ -512,7 +518,7 @@ window.tfjs = (isTfjs) => {
         });
 
 
-        if(!createObjectEventResponse.ok) {
+        if (!createObjectEventResponse.ok) {
             throw new Error(await createObjectEventResponse.text());
         }
 
@@ -521,7 +527,7 @@ window.tfjs = (isTfjs) => {
         console.log(checkOjbectId);
     }
 
-    async function sendtfStop() {
+    async function sendTfMakeVideo() {
         let data = new Object();
         data.EventHeaderIds = sendToVideo;
 
@@ -595,7 +601,7 @@ window.dotnetHelper = (objRef, userId, cameraId) => {
 window.onbeforeunload = function () {
 
     //페이지가 닫히면 남은 이벤트를 비디오로 만든다.
-    if(sendToVideo != null && sendToVideo.length > 0) {
+    if (sendToVideo != null && sendToVideo.length > 0) {
         let data = new Object();
         data.EventHeaderIds = sendToVideo;
 
