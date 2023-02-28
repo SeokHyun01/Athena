@@ -20,6 +20,7 @@ let _userId;
 let _cameraId;
 let _isCamshift = false;
 let _isTfjs = false;
+let sendToVideo = [];
 
 const TOPIC_MOTOR = "camera/update/degree/syn";
 const TOPIC_MOTOR_ACK = "camera/update/degree/ack";
@@ -155,14 +156,12 @@ window.Camshift = (isCamshift) => {
     _isCamshift = isCamshift;
 
     // 일정 시간이 지나면, mqtt 전송
-    let time = new Date();
-    let time1 = time.getTime();
+    let time1 = new Date().getTime();
     let time2;
     let intervalTime;
     let isFirst = true;
     let count = 0;
     let isMotion = false;
-    let checkMotionIds = [];
 
     let video = document.getElementById("video", willReadFrequently = true);
     video.setAttribute('hidden', true);
@@ -232,7 +231,8 @@ window.Camshift = (isCamshift) => {
             let point2 = new cv.Point(lastNonZeroIndex[1], lastNonZeroIndex[0]);
 
             cv.rectangle(src, point1, point2, [0, 0, 255, 255], 1);
-            cv.putText(src, new Date().toLocaleString() , new cv.Point(10, 10), cv.FONT_HERSHEY_SIMPLEX, 0.3, [0, 0, 255, 255]);
+            // cv.putText(src, new Date().toLocaleString() , new cv.Point(10, 10), cv.FONT_HERSHEY_SIMPLEX, 0.3, [0, 0, 255, 255]);
+            cv.putText(src, saveTime(), new cv.Point(10, 10), cv.FONT_HERSHEY_SIMPLEX, 0.3, [0, 0, 255, 255]);
             isMotion = true;
 
             //시간 차이 계산 (단위 : s)
@@ -258,7 +258,7 @@ window.Camshift = (isCamshift) => {
             //움직임 감지가 5초이상 없다면 서버에 보고 (단, 한번만 보낸다.)
             if (stopIntervalTime > 5 && isFirst) {
                 sendStop();
-                checkMotionIds = [];
+                sendToVideo = [];
                 isFirst = false;
             } else if (stopIntervalTime < 5 && !isFirst) {
                 isFirst = true;
@@ -313,19 +313,38 @@ window.Camshift = (isCamshift) => {
 
         //전송한 이벤트의 Id를 받음
         const checkId = await createEventResponse.json();
-        checkMotionIds.push(checkId);
+        sendToVideo.push(checkId);
         console.log(checkId);
     }
 
     async function sendStop() {
         let data = new Object();
-        data.EventHeaderIds = checkMotionIds;
+        data.EventHeaderIds = sendToVideo;
 
         message = new Paho.MQTT.Message(JSON.stringify(data));
         message.destinationName = TOPIC_MAKE_VIDEO;
         _client.send(message);
         console.log("send stop");
     }
+
+    function saveTime() {
+        // 현재 시간을 구한다.
+        const date = new Date();
+        // 데이터의 형태를 지정한다. "년도-달-일 시.분.초" 형태이다.
+        const options = {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+          timeZone: "Asia/Seoul",
+        };
+        // 형태에 맞게 시간을 String 형태로 변환한다.
+        return new Intl.DateTimeFormat("ko-KR", options).format(date);
+      }
+      
     async_motion_detect(); // 비동기로 움직임 감지 시작
 }
 
@@ -333,7 +352,6 @@ window.Camshift = (isCamshift) => {
 //tfjs를 이용한 화재 인식 
 window.tfjs = (isTfjs) => {
     _isTfjs = isTfjs;
-    let checkObjectIds = [];
 
     const tfDate = new Date();
     let tfTime1 = tfDate.getTime();
@@ -442,7 +460,7 @@ window.tfjs = (isTfjs) => {
             let stopTfIntervalTime =(new Date().getTime() - tfTime1) / 1000;
             if (stopTfIntervalTime > 5 && tfIsFirst) {
                 sendtfStop();
-                checkObjectIds = [];
+                sendToVideo = [];
                 tfIsFirst = false;
             } else if (stopTfIntervalTime < 5 && !tfIsFirst) {
                 tfIsFirst = true;
@@ -497,18 +515,17 @@ window.tfjs = (isTfjs) => {
         }
 
         const checkOjbectId = await createObjectEventResponse.json();
-        checkObjectIds.push(checkOjbectId);
+        sendToVideo.push(checkOjbectId);
         console.log(checkOjbectId);
     }
 
     async function sendtfStop() {
         let data = new Object();
-        data.EventHeaderIds = checkObjectIds;
+        data.EventHeaderIds = sendToVideo;
 
         message = new Paho.MQTT.Message(JSON.stringify(data));
         message.destinationName = TOPIC_MAKE_VIDEO;
         _client.send(message);
-        console.log("send stop");
     }
 }
 
@@ -574,6 +591,17 @@ window.dotnetHelper = (objRef, userId, cameraId) => {
 
 //만약 페이지를 닫으면 mqtt 연결을 끊는다.
 window.onbeforeunload = function () {
+
+    //페이지가 닫히면 남은 이벤트를 비디오로 만든다.
+    if(sendToVideo != null && sendToVideo.length > 0) {
+        let data = new Object();
+        data.EventHeaderIds = sendToVideo;
+
+        message = new Paho.MQTT.Message(JSON.stringify(data));
+        message.destinationName = TOPIC_MAKE_VIDEO;
+        _client.send(message);
+    }
+
     if (_client != null) {
         _client.disconnect();
     }
