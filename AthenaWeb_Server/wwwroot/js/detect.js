@@ -156,7 +156,7 @@ window.Camshift = (isCamshift) => {
     _isCamshift = isCamshift;
 
     // 일정 시간이 지나면, mqtt 전송
-    let time1 = new Date().getTime();
+    let time1;
     let time2;
     let intervalTime;
     let isFirst = true;
@@ -233,34 +233,36 @@ window.Camshift = (isCamshift) => {
             cv.rectangle(src, point1, point2, [0, 0, 255, 255], 1);
             // cv.putText(src, new Date().toLocaleString() , new cv.Point(10, 10), cv.FONT_HERSHEY_SIMPLEX, 0.3, [0, 0, 255, 255]);
             cv.putText(src, saveTime(), new cv.Point(10, 10), cv.FONT_HERSHEY_SIMPLEX, 0.3, [0, 0, 255, 255]);
-            isMotion = true;
 
             //시간 차이 계산 (단위 : s)
-            time2 = new Date().getTime();
-            intervalTime = (time2 - time1) / 1000;
+            time1 = new Date().getTime();
+            isMotion = true;
+            // intervalTime = (time2 - time1) / 1000;
             count++;
-        } else {
-            isMotion = false;
         }
+
         try {
+            //시간 비교 
+            time2 = new Date().getTime();
+            intervalTime = (time1 - time2)/1000;
 
-            //움직임 감지 시 mqtt 전송 (5분 이내 5번 이상 움직임 감지 시)
-            if (intervalTime < 300 && count > 5) {
-                sendMotion(canvasOutput);
-                count = 0;
-
-                // 5분 차이나면 초기화    
-            } else if (intervalTime > 300) {
+            //움직임 감지가 30초 이상이면 count 초기화
+            if(intervalTime > 30){
                 count = 0;
             }
 
-            let stopIntervalTime = (new Date().getTime() - time1) / 1000;
+            //움직임 감지 시 mqtt 전송 (30초 이내 5번 이상 움직임 감지 시)
+            if (count >= 5 && isMotion) {
+                sendMotion(canvasOutput);
+                isMotion = false;
+            } 
+
             //움직임 감지가 5초이상 없다면 서버에 보고 (단, 한번만 보낸다.)
-            if (stopIntervalTime > 5 && isFirst) {
-                sendStop();
+            if (sendToVideo.length >= 10 && isFirst) {
+                sendMakeVideo();
                 sendToVideo = [];
                 isFirst = false;
-            } else if (stopIntervalTime < 5 && !isFirst) {
+            } else if (sendToVideo.length < 10 && !isFirst) {
                 isFirst = true;
             }
 
@@ -317,14 +319,14 @@ window.Camshift = (isCamshift) => {
         console.log(checkId);
     }
 
-    async function sendStop() {
+    async function sendMakeVideo() {
         let data = new Object();
         data.EventHeaderIds = sendToVideo;
 
         message = new Paho.MQTT.Message(JSON.stringify(data));
         message.destinationName = TOPIC_MAKE_VIDEO;
         _client.send(message);
-        console.log("send stop");
+        console.log("send make video");
     }
 
     function saveTime() {
