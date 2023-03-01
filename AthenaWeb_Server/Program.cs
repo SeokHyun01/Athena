@@ -77,6 +77,15 @@ app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapHub<SignalingHub>("/hubs/signaling");
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapGet("/", async context =>
+    {
+        context.Response.Redirect("/user");
+    });
+});
+
 app.MapFallbackToPage("/_Host");
 
 await SeedDatabase();
