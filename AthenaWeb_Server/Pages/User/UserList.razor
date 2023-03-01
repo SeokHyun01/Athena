@@ -2,6 +2,7 @@
 
 @inject UserManager<IdentityUser> _userManager
 @inject NavigationManager _navigationManager
+@inject IJSRuntime _Jsruntime
 
 
 <div class="container my-5">
@@ -44,6 +45,8 @@
 		}
 	}
 </div>
+@* 테스트 *@
+<button class="btn btn-info btn-sm" @onclick="sendKakao">카카오톡 전송</button>
 
 
 @code {
@@ -78,5 +81,11 @@
 			await _userManager.DeleteAsync(user);
 			await LoadUsers();
 		}
+	}
+
+	@* 테스트 *@
+	public async Task sendKakao()
+	{
+		await _Jsruntime.InvokeVoidAsync("sendKakao");
 	}
 }
