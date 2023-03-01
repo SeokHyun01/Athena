@@ -37,9 +37,11 @@ Hello, @context.User.Identity.Name
         await InvokeAsync(StateHasChanged);
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await _jsRuntime.InvokeVoidAsync("kakaoInit");
+        if (firstRender)
+        {
+            await _jsRuntime.InvokeVoidAsync("kakaoInit");
+        }
     }
-
 }
