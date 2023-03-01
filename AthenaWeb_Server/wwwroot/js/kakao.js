@@ -51,7 +51,7 @@ window.kakaoLogout = async () => {
             Kakao.Auth.setAccessToken(undefined);
         }
 
-        return Kakao.Auth.getAccessToken();
+        return false;
     } catch (error) {
         console.log(error);
         return true;
