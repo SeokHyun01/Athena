@@ -1,8 +1,7 @@
-window.kakaoInit = () => {
-    Kakao.init('8743aa8ae98410121d5eb950d8d9fe56');
-}
+Kakao.init('8743aa8ae98410121d5eb950d8d9fe56');
 
 window.kakaoLogin = () => {
+
 
     Kakao.Auth.login({
         success: function (response) {
@@ -19,10 +18,14 @@ window.kakaoLogin = () => {
         fail: function (error) {
             console.log(error)
         },
-    })
-
-    let isLogin = Kakao.Auth.getAccessToken() ? true : false;
-    return isLogin;
+    }.then((response) => {
+        console.log(response)
+        if(response.id != null) {
+            return true;
+        }else{
+            return false;
+        }
+    }));
 }
 
 window.kakaoLogout = () => {

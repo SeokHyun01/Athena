@@ -36,12 +36,4 @@ Hello, @context.User.Identity.Name
         isLogin = await _jsRuntime.InvokeAsync<bool>("kakaoLogout");
         await InvokeAsync(StateHasChanged);
     }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await _jsRuntime.InvokeVoidAsync("kakaoInit");
-        }
-    }
 }
