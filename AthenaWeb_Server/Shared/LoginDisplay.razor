@@ -11,8 +11,8 @@ Hello, @context.User.Identity.Name
 
 @inject IJSRuntime _jsRuntime
 
-<AuthorizeView>
-    <NotAuthorized>
+@* <AuthorizeView>
+    <NotAuthorized> *@
         @if (isLogin)
         {
             <button class="btn btn-warning btn-sm" @onclick="logout">Logout</button>
@@ -22,8 +22,8 @@ Hello, @context.User.Identity.Name
         {
             <button class="btn btn-warning btn-sm" @onclick="login">Kakao Login</button>
         }
-    </NotAuthorized>
-</AuthorizeView>
+    @* </NotAuthorized>
+</AuthorizeView> *@
 
 @code {
     private bool isLogin = false;
@@ -32,7 +32,6 @@ Hello, @context.User.Identity.Name
     public async Task login()
     {
         isLogin = await _jsRuntime.InvokeAsync<bool>("kakaoLogin");
-        Console.WriteLine(isLogin);
         await InvokeAsync(StateHasChanged);
     }
 
