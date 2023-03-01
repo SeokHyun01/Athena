@@ -20,8 +20,14 @@ window.kakaoLogin = () => {
             console.log(error)
         },
     })
-    console.log("isLogin: " + isLogin)
-    return isLogin;
+
+    if(Kakao.Auth.getAccessToken()) {
+        console.log(Kakao.Auth.getAccessToken())
+        console.log("isLogin: " + isLogin)
+        return isLogin;
+    }else{
+        return isLogin;
+    }
 }
 
 window.kakaoLogout = () => {
