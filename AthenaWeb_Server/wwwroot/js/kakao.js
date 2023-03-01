@@ -1,6 +1,7 @@
 window.kakaoLogin = () => {
     Kakao.init('8743aa8ae98410121d5eb950d8d9fe56');
     console.log(Kakao.isInitialized());
+    let isLogin = false;
 
     Kakao.Auth.login({
         success: function (response) {
@@ -9,7 +10,7 @@ window.kakaoLogin = () => {
                 success: function (response) {
                     console.log(response)
                     console.log(response.id, response.kakao_account.profile.nickname)
-                    return true;    
+                    isLogin = true;
                 },
                 fail: function (error) {
                     console.log(error)
@@ -20,23 +21,25 @@ window.kakaoLogin = () => {
             console.log(error)
         },
     })
-    return false;
+    return isLogin;
 }
 
 window.kakaoLogout = () => {
+    let isLogout = false;
+
     if (Kakao.Auth.getAccessToken()) {
         Kakao.API.request({
             url: '/v1/user/unlink',
             success: function (response) {
                 console.log(response)
+                isLogout = true;
             },
             fail: function (error) {
                 console.log(error)
-                return true;
             },
         })
         Kakao.Auth.setAccessToken(undefined)
     }
-    return false;
+    return isLogout;
 }
 
