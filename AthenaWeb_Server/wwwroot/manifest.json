@@ -1,7 +1,7 @@
 {
-  "name": "athena",
-  "short_name": "athena",
-  "start_url": "./",
+  "name": "athenaweb_server",
+  "short_name": "athenaweb_server",
+  "start_url": "./user/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#03173d",
