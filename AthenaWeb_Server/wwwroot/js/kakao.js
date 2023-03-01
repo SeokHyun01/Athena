@@ -19,23 +19,17 @@ window.kakaoLogin = () => {
         },
     })
 
-    if(Kakao.Auth.getAccessToken()) {
-        console.log(Kakao.Auth.getAccessToken())
-        return true;
-    }else{
-        return false;
-    }
+    let isLogin = Kakao.Auth.getAccessToken() ? true : false;
+    return isLogin;
 }
 
 window.kakaoLogout = () => {
-    let isLogout = false;
 
     if (Kakao.Auth.getAccessToken()) {
         Kakao.API.request({
             url: '/v1/user/unlink',
             success: function (response) {
                 console.log(response)
-                isLogout = true;
             },
             fail: function (error) {
                 console.log(error)
@@ -43,6 +37,8 @@ window.kakaoLogout = () => {
         })
         Kakao.Auth.setAccessToken(undefined)
     }
+
+    let isLogout = Kakao.Auth.getAccessToken() ? false : true;
     return isLogout;
 }
 
