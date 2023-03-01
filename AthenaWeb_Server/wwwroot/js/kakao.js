@@ -8,6 +8,7 @@ window.kakaoLogin = () => {
                 url: '/v2/user/me',
                 success: function (response) {
                     console.log(response)
+                    return true;    
                 },
                 fail: function (error) {
                     console.log(error)
@@ -18,6 +19,7 @@ window.kakaoLogin = () => {
             console.log(error)
         },
     })
+    return false;
 }
 
 window.kakaoLogout = () => {

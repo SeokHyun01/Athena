@@ -12,22 +12,24 @@
 @inject IJSRuntime _jsRuntime
 
 <AuthorizeView>
-    <Authorized>
-        @* Hello, @context.User.Identity.Name *@
+    
+        @if(isLogin){
          <button class="btn btn-warning btn-sm" @onclick="logout">Logout</button>
-    </Authorized>
-    <NotAuthorized>
-        @* <a href="Identity/Account/Register">Register</a> *@
-        <button class="btn btn-warning btn-sm" @onclick="login">Kakao Login</button>
-    </NotAuthorized>
+        }
+
+        @if(!isLogin){
+         <button class="btn btn-warning btn-sm" @onclick="login">Kakao Login</button>
+        }
+        
 </AuthorizeView> 
 
 @code {
+    private bool isLogin = false;
 
 // login 버튼 클릭시 호출
   public async Task login()
   {
-    await _jsRuntime.InvokeVoidAsync("kakaoLogin");
+    isLogin = await _jsRuntime.InvokeAsync<bool>("kakaoLogin");
   }
 
   public async Task logout()
