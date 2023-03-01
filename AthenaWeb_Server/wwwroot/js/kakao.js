@@ -8,7 +8,7 @@ window.kakaoLogin = () => {
                 url: '/v2/user/me',
                 success: function (response) {
                     console.log(response)
-                    console.log(response.id, response.nickname)
+                    console.log(response.id, response.kakao_account.profile.nickname)
                     return true;    
                 },
                 fail: function (error) {
