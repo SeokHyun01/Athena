@@ -8,6 +8,7 @@ window.kakaoLogin = () => {
                 url: '/v2/user/me',
                 success: function (response) {
                     console.log(response)
+                    console.log(response.id, response.nickname)
                     return true;    
                 },
                 fail: function (error) {
@@ -28,14 +29,14 @@ window.kakaoLogout = () => {
             url: '/v1/user/unlink',
             success: function (response) {
                 console.log(response)
-                return false;
             },
             fail: function (error) {
                 console.log(error)
+                return true;
             },
         })
         Kakao.Auth.setAccessToken(undefined)
     }
-    return true;
+    return false;
 }
 
