@@ -38,7 +38,7 @@ window.kakaoLogout = () => {
         Kakao.Auth.setAccessToken(undefined)
     }
 
-    let isLogout = Kakao.Auth.getAccessToken() ? false : true;
-    return isLogout;
+    let isLogin = Kakao.Auth.getAccessToken() ? true : false;
+    return isLogin;
 }
 
