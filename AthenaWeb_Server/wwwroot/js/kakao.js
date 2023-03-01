@@ -56,7 +56,7 @@ window.kakaoLogout = async () => {
                 })
             });
             //카카오 토큰 삭제
-            // Kakao.Auth.setAccessToken(undefined);
+            Kakao.Auth.setAccessToken(undefined);
         }
 
         return false;
