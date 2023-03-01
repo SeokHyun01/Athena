@@ -32,7 +32,8 @@
 
     @* 썸네일 전송하는 캔버스 *@
     <canvas hidden id="canvas_image"></canvas>
-
+    @* 테스트 *@
+    <button class="btn btn-info btn-sm" @onclick="sendKakao">카카오톡 전송</button>
 </div>
 
 @code {
@@ -137,5 +138,11 @@
             isWebRTC = false;
             await InvokeAsync(StateHasChanged);
         }
+    }
+
+    @* 테스트 *@
+    public async Task sendKakao()
+    {
+        await _Jsruntime.InvokeVoidAsync("sendKakao");
     }
 }
