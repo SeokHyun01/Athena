@@ -8,7 +8,6 @@ window.kakaoLogin = () => {
             Kakao.API.request({
                 url: '/v2/user/me',
                 success: function (response) {
-                    console.log(response)
                     console.log(response.id, response.kakao_account.profile.nickname)
                     isLogin = true;
                 },
@@ -21,6 +20,7 @@ window.kakaoLogin = () => {
             console.log(error)
         },
     })
+    console.log("isLogin: " + isLogin)
     return isLogin;
 }
 
