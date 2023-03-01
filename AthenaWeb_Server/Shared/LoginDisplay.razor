@@ -28,6 +28,7 @@ Hello, @context.User.Identity.Name
     public async Task login()
     {
         isLogin = await _jsRuntime.InvokeAsync<bool>("kakaoLogin");
+        Console.WriteLine(isLogin);
         await InvokeAsync(StateHasChanged);
     }
 
