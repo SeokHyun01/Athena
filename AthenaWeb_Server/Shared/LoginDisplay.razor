@@ -1,40 +1,44 @@
 ﻿@* <AuthorizeView>
-    <Authorized>
-        Hello, @context.User.Identity.Name
-        <a href="Identity/Account/Logout">Logout</a>
-    </Authorized>
-    <NotAuthorized>
-        <a href="Identity/Account/Register">Register</a>
-        <a href="Identity/Account/Login">Login</a>
-    </NotAuthorized>
+<Authorized>
+Hello, @context.User.Identity.Name
+<a href="Identity/Account/Logout">Logout</a>
+</Authorized>
+<NotAuthorized>
+<a href="Identity/Account/Register">Register</a>
+<a href="Identity/Account/Login">Login</a>
+</NotAuthorized>
 </AuthorizeView> *@
 
 @inject IJSRuntime _jsRuntime
 
 <AuthorizeView>
-    
-        @if(isLogin){
-         <button class="btn btn-warning btn-sm" @onclick="logout">Logout</button>
-        }
 
-        @if(!isLogin){
-         <button class="btn btn-warning btn-sm" @onclick="login">Kakao Login</button>
-        }
-        
-</AuthorizeView> 
+    @if (isLogin)
+    {
+        <button class="btn btn-warning btn-sm" @onclick="logout">Logout</button>
+    }
+
+    @if (!isLogin)
+    {
+        <button class="btn btn-warning btn-sm" @onclick="login">Kakao Login</button>
+    }
+
+</AuthorizeView>
 
 @code {
     private bool isLogin = false;
 
-// login 버튼 클릭시 호출
-  public async Task login()
-  {
-    isLogin = await _jsRuntime.InvokeAsync<bool>("kakaoLogin");
-  }
+    // login 버튼 클릭시 호출
+    public async Task login()
+    {
+        isLogin = await _jsRuntime.InvokeAsync<bool>("kakaoLogin");
+        await InvokeAsync(StateHasChanged);
+    }
 
-  public async Task logout()
-  {
-    await _jsRuntime.InvokeVoidAsync("kakaoLogout");
-  }
+    public async Task logout()
+    {
+        isLogin = await _jsRuntime.InvokeAsync<bool>("kakaoLogout");
+        await InvokeAsync(StateHasChanged);
+    }
 
 }

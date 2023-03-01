@@ -28,6 +28,7 @@ window.kakaoLogout = () => {
             url: '/v1/user/unlink',
             success: function (response) {
                 console.log(response)
+                return false;
             },
             fail: function (error) {
                 console.log(error)
@@ -35,5 +36,6 @@ window.kakaoLogout = () => {
         })
         Kakao.Auth.setAccessToken(undefined)
     }
+    return true;
 }
 
