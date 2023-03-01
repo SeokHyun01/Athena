@@ -37,17 +37,17 @@
 								<NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}") class="btn btn-primary mb-3">카메라 보기
 								</NavLink>
 								@* <img height="255" id=@($"thumbnailImage{camera.Id}") /> *@
-								<img id=@($"thumbnailImage{camera.Id}") /> 
+								<img id=@($"thumbnailImage{camera.Id}") />
 							</div>
 						</td>
 						<td>
 							<div class="d-flex flex-column align-items-start">
 								<div class="d-flex">
-								<button class="btn btn-primary" id="qrCodeButton"
-							@onclick="@(async() => {showQRCode = !showQRCode; await InvokeAsync(() => StateHasChanged());})">카메라
-									등록</button>
+									<button class="btn btn-primary me-4" id="qrCodeButton"
+								@onclick="@(async() => {showQRCode = !showQRCode; await InvokeAsync(() => StateHasChanged());})">카메라
+										등록</button>
 									<NavLink class="btn btn-primary" href=@($"camera/{camera.Id}/event")>이벤트 확인</NavLink>
-									</div>
+								</div>
 								@if (showQRCode)
 								{
 									<SfQRCodeGenerator
@@ -87,22 +87,22 @@
 <style>
 	.table th:nth-child(1),
 	.table td:nth-child(1) {
-	width: 10%;
-	}	
+		width: 10%;
+	}
 
 	.table th:nth-child(2),
 	.table td:nth-child(2) {
-	width: 10%;
+		width: 10%;
 	}
 
 	.table th:nth-child(3),
 	.table td:nth-child(3) {
-	width: 40%;
+		width: 40%;
 	}
 
 	.table th:nth-child(4),
 	.table td:nth-child(4) {
-	width: 20%;
+		width: 20%;
 	}
 </style>
 
