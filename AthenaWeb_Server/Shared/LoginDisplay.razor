@@ -12,21 +12,21 @@ Hello, @context.User.Identity.Name
 @inject IJSRuntime _jsRuntime
 
 <AuthorizeView>
-<NotAuthorized>
-    @if (isLogin)
-    {
-        <button class="btn btn-warning btn-sm" @onclick="logout">Logout</button>
-    }
+    <NotAuthorized>
+        @if (isLogin)
+        {
+            <button class="btn btn-warning btn-sm" @onclick="logout">Logout</button>
+        }
 
-    @if (!isLogin)
-    {
-        <button class="btn btn-warning btn-sm" @onclick="login">Kakao Login</button>
-    }
-</NotAuthorized>
+        @if (!isLogin)
+        {
+            <button class="btn btn-warning btn-sm" @onclick="login">Kakao Login</button>
+        }
+    </NotAuthorized>
 </AuthorizeView>
 
 @code {
-    private bool isLogin = true;
+    private bool isLogin = false;
 
     // login 버튼 클릭시 호출
     public async Task login()
