@@ -45,6 +45,7 @@
 								<button class="btn btn-primary" id="qrCodeButton"
 							@onclick="@(async() => {showQRCode = !showQRCode; await InvokeAsync(() => StateHasChanged());})">카메라
 									등록</button>
+									<NavLink class="btn btn-primary" href=@($"camera/{camera.Id}/event")>이벤트 확인</NavLink>
 								@if (showQRCode)
 								{
 									<SfQRCodeGenerator
@@ -55,7 +56,6 @@
 							<button class="btn btn-danger mt-2" @onclick="()=>HandleDelete(camera.Id)">삭제</button>
 							<input id=@($"angleInput{camera.Id}") type="range" value=@(camera.Angle) min="0" max="180" step="1"
 						@onchange="(args)=>SetCameraAngle(args, camera.Id)" />
-							<NavLink class="btn btn-success mt-2" href=@($"camera/{camera.Id}/event")>이벤트 확인</NavLink>
 						</td>
 					</tr>
 				}
