@@ -1,7 +1,7 @@
 window.kakaoLogin = async () => {
     try {
         //카카오 로그인이 처음이라면
-        if (!Kakao.Auth.getAccessToken()) {
+        if (!Kakao.isInitialized()) {
             Kakao.init('8743aa8ae98410121d5eb950d8d9fe56');
         }
 
