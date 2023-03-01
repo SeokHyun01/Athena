@@ -42,10 +42,12 @@
 						</td>
 						<td>
 							<div class="d-flex flex-column align-items-start">
-								<button class="btn btn-primary" id="qrCodeButton"
+								<div class="d-flex">
+								<button class="btn btn-primary mr-2" id="qrCodeButton"
 							@onclick="@(async() => {showQRCode = !showQRCode; await InvokeAsync(() => StateHasChanged());})">카메라
 									등록</button>
 									<NavLink class="btn btn-primary" href=@($"camera/{camera.Id}/event")>이벤트 확인</NavLink>
+									</div>
 								@if (showQRCode)
 								{
 									<SfQRCodeGenerator
