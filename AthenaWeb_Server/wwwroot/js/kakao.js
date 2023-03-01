@@ -1,8 +1,7 @@
-Kakao.init('8743aa8ae98410121d5eb950d8d9fe56');
-
 window.kakaoLogin = () => {
 
-
+    Kakao.init('8743aa8ae98410121d5eb950d8d9fe56');
+    
     Kakao.Auth.login({
         success: function (response) {
             Kakao.API.request({
