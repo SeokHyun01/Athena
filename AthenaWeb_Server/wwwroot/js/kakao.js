@@ -1,7 +1,6 @@
 window.kakaoLogin = () => {
     Kakao.init('8743aa8ae98410121d5eb950d8d9fe56');
     console.log(Kakao.isInitialized());
-    let isLogin = false;
 
     Kakao.Auth.login({
         success: function (response) {
@@ -9,7 +8,6 @@ window.kakaoLogin = () => {
                 url: '/v2/user/me',
                 success: function (response) {
                     console.log(response.id, response.kakao_account.profile.nickname)
-                    isLogin = true;
                 },
                 fail: function (error) {
                     console.log(error)
@@ -23,10 +21,9 @@ window.kakaoLogin = () => {
 
     if(Kakao.Auth.getAccessToken()) {
         console.log(Kakao.Auth.getAccessToken())
-        console.log("isLogin: " + isLogin)
-        return isLogin;
+        return true;
     }else{
-        return isLogin;
+        return false;
     }
 }
 
