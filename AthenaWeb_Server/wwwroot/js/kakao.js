@@ -1,10 +1,11 @@
 window.kakaoLogin = async () => {
     try {
-        //카카오 로그인이 처음이라면
+        //카카오 초기화
         if (!Kakao.isInitialized()) {
             Kakao.init('8743aa8ae98410121d5eb950d8d9fe56');
         }
 
+        //카카오 로그인
         await new Promise((resolve, reject) => {
             Kakao.Auth.login({
                 success: function (response) {
@@ -16,6 +17,7 @@ window.kakaoLogin = async () => {
             })
         });
 
+        //카카오 로그인 정보 가져오기
         let response = await new Promise((resolve, reject) => {
             Kakao.API.request({
                 url: '/v2/user/me',
@@ -28,6 +30,7 @@ window.kakaoLogin = async () => {
             })
         });
 
+        //카카오 로그인 정보 출력
         console.log(response.id, response.kakao_account.profile.nickname);
         return true;
     } catch (error) {
@@ -40,6 +43,7 @@ window.kakaoLogin = async () => {
 window.kakaoLogout = async () => {
     try {
         if (Kakao.Auth.getAccessToken()) {
+            //카카오 로그아웃
             await new Promise((resolve, reject) => {
                 Kakao.API.request({
                     url: '/v1/user/unlink',
@@ -51,7 +55,8 @@ window.kakaoLogout = async () => {
                     },
                 })
             });
-            Kakao.Auth.setAccessToken(undefined);
+            //카카오 토큰 삭제
+            // Kakao.Auth.setAccessToken(undefined);
         }
 
         return false;
