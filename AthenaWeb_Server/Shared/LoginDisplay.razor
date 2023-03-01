@@ -1,4 +1,4 @@
-﻿<AuthorizeView>
+﻿@* <AuthorizeView>
     <Authorized>
         Hello, @context.User.Identity.Name
         <a href="Identity/Account/Logout">Logout</a>
@@ -7,9 +7,32 @@
         <a href="Identity/Account/Register">Register</a>
         <a href="Identity/Account/Login">Login</a>
     </NotAuthorized>
-</AuthorizeView>
+</AuthorizeView> *@
 
+@inject IJSRuntime _jsRuntime
+
+<AuthorizeView>
+    <Authorized>
+        @* Hello, @context.User.Identity.Name *@
+         <button class="btn btn-success btn-sm" onclick="logout">Logout</button>
+    </Authorized>
+    <NotAuthorized>
+        @* <a href="Identity/Account/Register">Register</a> *@
+        <button class="btn btn-success btn-sm" onclick="login">Kakao Login</button>
+    </NotAuthorized>
+</AuthorizeView> 
 
 @code {
+
+// login 버튼 클릭시 호출
+  public async Task login()
+  {
+    await _jsRuntime.InvokeVoidAsync("kakaoLogin");
+  }
+
+  public async Task logout()
+  {
+    await _jsRuntime.InvokeVoidAsync("kakaoLogout");
+  }
 
 }
