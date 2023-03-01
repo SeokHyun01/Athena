@@ -17,14 +17,13 @@ window.kakaoLogin = () => {
         fail: function (error) {
             console.log(error)
         },
-    }.then((response) => {
-        console.log(response)
-        if(response.id != null) {
-            return true;
-        }else{
-            return false;
-        }
-    }));
+    })
+
+    if(Kakao.Auth.getAccessToken()) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 window.kakaoLogout = () => {
@@ -42,7 +41,10 @@ window.kakaoLogout = () => {
         Kakao.Auth.setAccessToken(undefined)
     }
 
-    let isLogin = Kakao.Auth.getAccessToken() ? true : false;
-    return isLogin;
+    if(Kakao.Auth.getAccessToken()) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
