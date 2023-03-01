@@ -14,11 +14,11 @@
 <AuthorizeView>
     <Authorized>
         @* Hello, @context.User.Identity.Name *@
-         <button class="btn btn-success btn-sm" @onclick="logout">Logout</button>
+         <button class="btn btn-warning btn-sm" @onclick="logout">Logout</button>
     </Authorized>
     <NotAuthorized>
         @* <a href="Identity/Account/Register">Register</a> *@
-        <button class="btn btn-success btn-sm" @onclick="login">Kakao Login</button>
+        <button class="btn btn-warning btn-sm" @onclick="login">Kakao Login</button>
     </NotAuthorized>
 </AuthorizeView> 
 
