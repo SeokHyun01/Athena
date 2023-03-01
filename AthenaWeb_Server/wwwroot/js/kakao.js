@@ -1,6 +1,8 @@
-window.kakaoLogin = () => {
+window.kakaoInit = () => {
     Kakao.init('8743aa8ae98410121d5eb950d8d9fe56');
-    console.log(Kakao.isInitialized());
+}
+
+window.kakaoLogin = () => {
 
     Kakao.Auth.login({
         success: function (response) {

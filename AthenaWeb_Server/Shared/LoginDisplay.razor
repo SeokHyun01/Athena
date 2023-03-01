@@ -28,7 +28,6 @@ Hello, @context.User.Identity.Name
     public async Task login()
     {
         isLogin = await _jsRuntime.InvokeAsync<bool>("kakaoLogin");
-        Console.WriteLine(isLogin);
         await InvokeAsync(StateHasChanged);
     }
 
@@ -36,6 +35,11 @@ Hello, @context.User.Identity.Name
     {
         isLogin = await _jsRuntime.InvokeAsync<bool>("kakaoLogout");
         await InvokeAsync(StateHasChanged);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await _jsRuntime.InvokeVoidAsync("kakaoInit");
     }
 
 }
