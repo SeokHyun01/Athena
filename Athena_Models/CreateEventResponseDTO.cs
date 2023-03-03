@@ -9,7 +9,8 @@ namespace Athena_Models
 	public class CreateEventResponseDTO
 	{
 		public bool IsSucceeded { get; set; }
-		public IEnumerable<EventDTO> EventList { get; set; } = Enumerable.Empty<EventDTO>();
-		public string Error { get; set; } = string.Empty;
+		public EventHeaderDTO EventHeader { get; set; }
+		public IEnumerable<EventBodyDTO> EventBodies { get; set; }
+		public string Error { get; set; }
 	}
 }

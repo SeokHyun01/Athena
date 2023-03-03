@@ -71,27 +71,6 @@ namespace AthenaWeb_Server.Service
 
 									if (headerList.Any())
 									{
-										var predictEventList = headerList.Where(obj => obj.IsRequiredObjectDetection);
-										if (predictEventList.Any())
-										{
-											var createEvent = new CreateEventRequestDTO
-											{
-												EventHeaderList = predictEventList
-											};
-											var response = await _mqttMessageService.PredictEvent(createEvent);
-											if (response.IsSucceeded)
-											{
-												foreach (var eventObj in response.EventList)
-												{
-													await _mqttMessageService.CreateEvent(eventObj);
-												}
-											}
-											else
-											{
-												throw new Exception("Object Detection 중 에러가 발생했습니다.");
-											}
-										}
-
 										var firstHeader = headerList.First();
 										var userId = firstHeader.UserId;
 										var cameraId = firstHeader.CameraId;
@@ -105,7 +84,7 @@ namespace AthenaWeb_Server.Service
 											}
 											else
 											{
-												throw new Exception($"EventHeader Id: {header.Id}, 이미지가 누락됐습니다.");
+												throw new Exception($"EventHeader Id: {header.Id}, 이미지를 찾을 수 없습니다.");
 											}
 										}
 

@@ -8,6 +8,6 @@ namespace Athena_Models
 {
 	public class CreateEventRequestDTO
 	{
-		public IEnumerable<EventHeaderDTO> EventHeaderList { get; set;} = Enumerable.Empty<EventHeaderDTO>();
+		public EventDTO Event { get; set; }
 	}
 }
