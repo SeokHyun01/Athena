@@ -16,6 +16,5 @@ namespace AthenaWeb_Server.Service.IService
 		ValueTask<IEnumerable<EventHeaderDTO>> GetEventHeader(IEnumerable<int> ids);
 		ValueTask<EventVideoDTO> CreateEventVideo(EventVideoDTO eventVideo);
 		ValueTask<EventHeaderDTO?> UpdateEventHeader(EventHeaderDTO eventHeader);
-		ValueTask<CreateEventResponseDTO> PredictEvent(CreateEventRequestDTO createEventRequest);
 	}
 }

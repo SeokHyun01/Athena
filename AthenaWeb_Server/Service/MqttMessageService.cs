@@ -89,23 +89,6 @@ namespace AthenaWeb_Server.Service
 
 		public async ValueTask<EventHeaderDTO?> UpdateEventHeader(EventHeaderDTO eventHeader) => await _eventRepository.UpdateHeader(eventHeader);
 
-		public async ValueTask<CreateEventResponseDTO> PredictEvent(CreateEventRequestDTO createEventRequest)
-		{
-			var content = JsonConvert.SerializeObject(createEventRequest);
-			var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-			var response = await _httpClient.PostAsync("http://localhost:8102/api/event/events/", bodyContent);
-			var contentTemp = await response.Content.ReadAsStringAsync();
-			var result = JsonConvert.DeserializeObject<IEnumerable<EventDTO>>(contentTemp);
-			if (response.IsSuccessStatusCode && result != null)
-			{
-				return new CreateEventResponseDTO { IsSucceeded = true, EventList = result };
-			}
-			else
-			{
-				return new CreateEventResponseDTO { IsSucceeded = false };
-			}
-		}
-
 		public void Dispose() => Dispose(true);
 
 		protected virtual void Dispose(bool disposing)

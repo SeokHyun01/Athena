@@ -12,14 +12,12 @@ namespace AthenaWeb_API.Controllers
 	{
 		private readonly IEventRepository _eventRepository;
 		private readonly HttpClient _client;
-		private readonly ILogger<EventController> _logger;
 
 
-		public EventController(IEventRepository eventRepository, HttpClient client, ILogger<EventController> logger)
+		public EventController(IEventRepository eventRepository, HttpClient client)
 		{
 			_eventRepository = eventRepository;
 			_client = client;
-			_logger = logger;
 		}
 
 		[HttpPost]
@@ -40,8 +38,8 @@ namespace AthenaWeb_API.Controllers
 						eventObj.EventHeader.Path = filePath;
 					}
 
-					var insertEventHeader = eventObj.EventHeader;
-					var insertEventBodies = eventObj.EventBodies;
+					var insertHeader = eventObj.EventHeader;
+					var insertBodies = eventObj.EventBodies;
 
 					if (eventObj.EventHeader.IsRequiredObjectDetection)
 					{
@@ -50,14 +48,15 @@ namespace AthenaWeb_API.Controllers
 						var response = await _client.PostAsync("http://localhost:8000/", bodyContent);
 						var contentTemp = await response.Content.ReadAsStringAsync();
 						var result = JsonConvert.DeserializeObject<CreateEventResponseDTO>(contentTemp);
-						if (result == null)
+						if (response.IsSuccessStatusCode)
 						{
-							_logger.LogInformation("CreateEventResponseDTO 객체를 Deserialize 하는 데 실패했습니다.");
-						}
-						if (response.IsSuccessStatusCode && result != null)
-						{
-							insertEventHeader = result.EventHeader;
-							insertEventBodies = result.EventBodies;
+							insertHeader = result.EventHeader;
+							insertBodies = result.EventBodies;
+
+							if (insertBodies == null || !insertBodies.Any())
+							{
+								return Ok(0);
+							}
 						}
 						else
 						{
@@ -67,8 +66,8 @@ namespace AthenaWeb_API.Controllers
 
 					var createEvent = new EventDTO
 					{
-						EventHeader = insertEvent.EventHeader,
-						EventBodies = insertEvent.EventBodies
+						EventHeader = insertHeader,
+						EventBodies = insertBodies
 					};
 
 					var createdEvent = await _eventRepository.Create(createEvent);
