@@ -106,7 +106,10 @@ class MOG2MotionDetector {
         const timestamp = new Date();
         this.outputCtx.fillText(timestamp, 10, 30);
 
-        const imageDataURL = this.outputCanvas.toDataURL("image/jpeg", 0.7);
+        const imageDataURL = this.outputCanvas.toDataURL("image/jpeg");
+        if (!imageDataURL) {
+            return;
+        }
         const event = {
             EventHeader: {
                 UserId: this.userId,
@@ -117,7 +120,7 @@ class MOG2MotionDetector {
             }
         };
 
-        const createEventResponse = await fetch("https://ictrobot.hknu.ac.kr:8097/api/Event/Create", {
+        const createEventResponse = await fetch("https://localhost:8095/api/Event/Create", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(event)
