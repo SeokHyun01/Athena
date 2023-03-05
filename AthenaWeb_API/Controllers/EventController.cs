@@ -12,12 +12,14 @@ namespace AthenaWeb_API.Controllers
 	{
 		private readonly IEventRepository _eventRepository;
 		private readonly HttpClient _client;
+		private readonly ILogger<EventController> _logger;
 
 
-		public EventController(IEventRepository eventRepository, HttpClient client)
+		public EventController(IEventRepository eventRepository, HttpClient client, ILogger<EventController> logger)
 		{
 			_eventRepository = eventRepository;
 			_client = client;
+			_logger = logger;
 		}
 
 		[HttpPost]
@@ -43,6 +45,7 @@ namespace AthenaWeb_API.Controllers
 
 					if (eventObj.EventHeader.IsRequiredObjectDetection)
 					{
+						_logger.LogInformation(eventObj.EventHeader.Path);
 						var content = JsonConvert.SerializeObject(eventObj);
 						var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
 						var response = await _client.PostAsync("http://localhost:8000/", bodyContent);
