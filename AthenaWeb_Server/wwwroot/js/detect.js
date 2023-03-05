@@ -523,7 +523,7 @@ window.tfjs = (isTfjs) => {
         }
 
         const checkOjbectId = await createObjectEventResponse.json();
-        if(checkOjbectId == 0) {
+        if(checkOjbectId != 0) {
         sendToVideo.push(checkOjbectId);
         console.log(checkOjbectId);
         }
