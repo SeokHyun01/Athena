@@ -34,7 +34,7 @@ namespace AthenaWeb_API.Controllers
 					using (var stream = new MemoryStream(imageBytes))
 					{
 						//var root = "C:\\Users\\hisn16.DESKTOP-HGVGADP\\source\\repos\\Athena\\AthenaWeb_Server\\wwwroot\\images";
-						var root = "/home/shyoun/Desktop/athena-feature-obj-detection/Athena/AthenaWeb_Server/wwwroot/images";
+						var root = "/home/shyoun/Desktop/athena-feature-yolo/Athena/AthenaWeb_Server/wwwroot/images";
 						var filePath = Path.Combine(root, $"{Guid.NewGuid()}.jpeg");
 						await stream.CopyToAsync(new FileStream(filePath, FileMode.Create));
 						eventObj.EventHeader.Path = filePath;
