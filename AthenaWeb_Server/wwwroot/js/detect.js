@@ -528,6 +528,8 @@ window.tfjs = (isTfjs) => {
         if(checkOjbectId != 0) {
         sendToVideo.push(checkOjbectId);
         console.log(checkOjbectId);
+        }else if(checkOjbectId == 0) {
+            console.log("000000000000");
         }
     }
 
