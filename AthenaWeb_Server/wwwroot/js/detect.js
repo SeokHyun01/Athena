@@ -519,7 +519,7 @@ window.tfjs = (isTfjs) => {
 
 
         if (!createObjectEventResponse.ok) {
-            throw new Error(await createObjectEventResponse.text());
+            throw new Error(await createObjectEventResponse.json());
         }
 
         const checkOjbectId = await createObjectEventResponse.json();
