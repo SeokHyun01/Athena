@@ -132,7 +132,9 @@ class MOG2MotionDetector {
         }
 
         const currentEventHeaderId = await createEventResponse.json();
-        this.currentEventHeaderIds.push(currentEventHeaderId);
+        if (currentEventHeaderId !== 0) {
+            this.currentEventHeaderIds.push(currentEventHeaderId);
+        }
         console.log(`currentEventHeaderIds: ${this.currentEventHeaderIds}`)
 
         if (this.eventTimeout) {
