@@ -17,6 +17,6 @@ namespace Athena_DataAccess
 		public string Created { get; set; }
 		public string? Path { get; set; }
 		public bool IsRequiredObjectDetection { get; set; }
-		public int? EventVideoId { get; set; }
+		public int EventVideoId { get; set; }
 	}
 }

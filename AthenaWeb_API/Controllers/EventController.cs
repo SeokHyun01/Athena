@@ -59,9 +59,9 @@ namespace AthenaWeb_API.Controllers
 
 							if (insertBodies == null || !insertBodies.Any())
 							{
-								if (File.Exists(insertHeader.Path))
+								if (System.IO.File.Exists(insertHeader.Path))
 								{
-									File.Delete(insertHeader.Path);
+									System.IO.File.Delete(insertHeader.Path);
 								}
 
 								return Ok(0);
