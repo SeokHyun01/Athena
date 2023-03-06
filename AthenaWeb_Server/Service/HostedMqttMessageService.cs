@@ -65,74 +65,84 @@ namespace AthenaWeb_Server.Service
 								var createVideo = JsonSerializer.Deserialize<CreateVideo>(payload);
 								if (createVideo != null)
 								{
-									var headerList = await _mqttMessageService.GetEventHeader(createVideo.EventHeaderIds);
+									var headerList = (await _mqttMessageService.GetEventHeader(createVideo.EventHeaderIds)).ToList();
 
-									var firstHeader = headerList.First();
-									var userId = firstHeader.UserId;
-									var cameraId = firstHeader.CameraId;
-
-									var imagePathList = new List<string>();
-									foreach(var header in headerList)
+									if (headerList.Any())
 									{
-										imagePathList.Add(header.Path);
-									}
+										var firstHeader = headerList.First();
+										var userId = firstHeader.UserId;
+										var cameraId = firstHeader.CameraId;
 
-									if (imagePathList != null && imagePathList.Any())
-									{
-										var identifier = Guid.NewGuid().ToString();
-										for (int i = 0; i < imagePathList.Count; i++)
-										{
-											var destinationPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.jpeg");
-											File.Copy(imagePathList[i], destinationPath);
-											if (File.Exists(imagePathList[i]))
-											{
-												File.Delete(imagePathList[i]);
-											}
-											await _mqttMessageService.DeleteEventHeaderPath(headerList.ToArray()[i]);
-										}
-
-										var videoPath = $"{Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "videos", Guid.NewGuid().ToString())}.mp4";
-										var args = $"-framerate 1 -i {Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", identifier)}_%d.jpeg -c:v libx264 -r 30 -pix_fmt yuv420p {videoPath}";
-										var ffMpeg = new Process
-										{
-											StartInfo = new ProcessStartInfo
-											{
-												FileName = "ffmpeg",
-												Arguments = args,
-												UseShellExecute = false,
-												RedirectStandardOutput = true,
-												CreateNoWindow = false,
-												RedirectStandardError = true
-											},
-											EnableRaisingEvents = true
-										};
-										ffMpeg.Start();
-
-										var processOutput = string.Empty;
-										while ((processOutput = ffMpeg.StandardError.ReadLine()) != null)
-										{
-											_logger.LogInformation(processOutput);
-										}
-
-										var video = await _mqttMessageService.CreateEventVideo(new EventVideoDTO
-										{
-											UserId = userId,
-											CameraId = cameraId,
-											Path = videoPath
-										});
-
+										var imagePathList = new List<string>();
 										foreach (var header in headerList)
 										{
-											header.EventVideoId = video.Id;
-											await _mqttMessageService.UpdateEventHeader(header);
+											if (header.Path != null)
+											{
+												imagePathList.Add(header.Path);
+											}
+											else
+											{
+												throw new Exception($"EventHeader Id: {header.Id}, 이미지를 찾을 수 없습니다.");
+											}
 										}
 
-										for (int i = 0; i < imagePathList.Count; i++)
+										if (imagePathList != null && imagePathList.Any())
 										{
-											var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.png");
-											if (File.Exists(filePath))
+											var identifier = Guid.NewGuid().ToString();
+											for (int i = 0; i < imagePathList.Count; i++)
 											{
-												File.Delete(filePath);
+												var destinationPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.jpeg");
+												File.Copy(imagePathList[i], destinationPath);
+												//if (File.Exists(imagePathList[i]))
+												//{
+												//	File.Delete(imagePathList[i]);
+												//}
+												//headerList[i].Path = null;
+											}
+
+											var videoPath = $"{Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "videos", Guid.NewGuid().ToString())}.mp4";
+											var args = $"-framerate 1 -i {Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", identifier)}_%d.jpeg -c:v libx264 -r 30 -pix_fmt yuv420p {videoPath}";
+											var ffMpeg = new Process
+											{
+												StartInfo = new ProcessStartInfo
+												{
+													FileName = "ffmpeg",
+													Arguments = args,
+													UseShellExecute = false,
+													RedirectStandardOutput = true,
+													CreateNoWindow = false,
+													RedirectStandardError = true
+												},
+												EnableRaisingEvents = true
+											};
+											ffMpeg.Start();
+
+											var processOutput = string.Empty;
+											while ((processOutput = ffMpeg.StandardError.ReadLine()) != null)
+											{
+												_logger.LogInformation(processOutput);
+											}
+
+											var video = await _mqttMessageService.CreateEventVideo(new EventVideoDTO
+											{
+												UserId = userId,
+												CameraId = cameraId,
+												Path = videoPath
+											});
+
+											foreach (var header in headerList)
+											{
+												header.EventVideoId = video.Id;
+												await _mqttMessageService.UpdateEventHeader(header);
+											}
+
+											for (int i = 0; i < imagePathList.Count; i++)
+											{
+												var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.png");
+												if (File.Exists(filePath))
+												{
+													File.Delete(filePath);
+												}
 											}
 										}
 									}
