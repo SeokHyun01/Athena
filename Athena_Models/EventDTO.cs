@@ -11,6 +11,6 @@ namespace Athena_Models
 	{
 		[Required]
 		public EventHeaderDTO EventHeader { get; set; }
-		public IEnumerable<EventBodyDTO> EventBodies { get; set; }
+		public IEnumerable<EventBodyDTO>? EventBodies { get; set; }
 	}
 }
