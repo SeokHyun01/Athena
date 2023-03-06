@@ -302,7 +302,7 @@ window.Camshift = (isCamshift) => {
             }
         }
         // 이벤트 전송
-        const createEventResponse = await fetch("https://ictrobot.hknu.ac.kr:8097/api/Event/Create", {
+        const createEventResponse = await fetch("https://ictrobot.hknu.ac.kr:8097/api/Event/Create/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(event)
@@ -512,8 +512,8 @@ window.tfjs = (isTfjs) => {
         };
         //event 내용물 확인하기
         console.log(JSON.stringify(objectEvent))
-        
-        const createObjectEventResponse = await fetch("https://ictrobot.hknu.ac.kr:8097/api/Event/Create", {
+
+        const createObjectEventResponse = await fetch("https://ictrobot.hknu.ac.kr:8097/api/Event/Create/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(objectEvent)
