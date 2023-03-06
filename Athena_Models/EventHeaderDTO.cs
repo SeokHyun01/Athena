@@ -23,5 +23,10 @@ namespace Athena_Models
 		[Required]
 		public bool IsRequiredObjectDetection { get; set; }
 		public int EventVideoId { get; set; }
+
+		public override string ToString()
+		{
+			return $"Id: {Id}, UserId: {UserId}, CameraId: {CameraId}, Created: {Created}, Path: {Path}, IsRequiredObjectDetection: {IsRequiredObjectDetection}, EventVideoId: {EventVideoId}";
+		}
 	}
 }
