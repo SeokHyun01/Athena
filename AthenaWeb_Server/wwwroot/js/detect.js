@@ -510,8 +510,6 @@ window.tfjs = (isTfjs) => {
             },
             EventBodies: detections
         };
-        //event 내용물 확인하기
-        console.log(JSON.stringify(objectEvent))
 
         const createObjectEventResponse = await fetch("https://ictrobot.hknu.ac.kr:8097/api/Event/Create", {
             method: "POST",
