@@ -1,6 +1,7 @@
 ﻿using Athena_Business.Repository.IRepository;
 using Athena_Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -69,6 +70,13 @@ namespace AthenaWeb_API.Controllers
 						}
 						else
 						{
+							if (result != null)
+							{
+								_logger.LogInformation(result.EventHeader.ToString());
+							} else
+							{
+								_logger.LogInformation("result를 역직렬화하는 데 실패했습니다.");
+							}
 							throw new Exception(result.Error);
 						}
 					}
