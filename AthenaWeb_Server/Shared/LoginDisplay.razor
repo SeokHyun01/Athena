@@ -1,4 +1,4 @@
-﻿@* <AuthorizeView>
+﻿<AuthorizeView>
 <Authorized>
 Hello, @context.User.Identity.Name
 <a href="Identity/Account/Logout">Logout</a>
@@ -7,9 +7,9 @@ Hello, @context.User.Identity.Name
 <a href="Identity/Account/Register">Register</a>
 <a href="Identity/Account/Login">Login</a>
 </NotAuthorized>
-</AuthorizeView> *@
+</AuthorizeView>
 
-@inject IJSRuntime _jsRuntime
+@* @inject IJSRuntime _jsRuntime
 
 @if (isLogin)
 {
@@ -36,4 +36,4 @@ Hello, @context.User.Identity.Name
         isLogin = await _jsRuntime.InvokeAsync<bool>("kakaoLogout");
         await InvokeAsync(StateHasChanged);
     }
-}
+} *@
