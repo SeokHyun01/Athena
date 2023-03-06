@@ -455,7 +455,7 @@ window.tfjs = (isTfjs) => {
                 tfIntervalTime = (tfTime2 - tfTime1) / 1000;
 
                 //만약 30초간 객체가 감지되지 않았다면 count 를 0으로 수정한다.
-                if(tfIntervalTime > 30) {
+                if (tfIntervalTime > 30) {
                     fireCount = 0;
                 }
 
@@ -520,14 +520,18 @@ window.tfjs = (isTfjs) => {
 
         if (!createObjectEventResponse.ok) {
             console.log("error");
+            if (!createObjectEventResponse) {
+                console.log("null");
+            }
+
             throw new Error(await createObjectEventResponse.text());
         }
 
         const checkOjbectId = await createObjectEventResponse.json();
-        if(checkOjbectId != 0) {
-        sendToVideo.push(checkOjbectId);
-        console.log(checkOjbectId);
-        }else if(checkOjbectId == 0) {
+        if (checkOjbectId != 0) {
+            sendToVideo.push(checkOjbectId);
+            console.log(checkOjbectId);
+        } else if (checkOjbectId == 0) {
             console.log("000000000000");
         }
     }
