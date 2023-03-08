@@ -54,8 +54,8 @@ namespace AthenaWeb_API.Controllers
 						var result = JsonConvert.DeserializeObject<CreateEventResponseDTO>(contentTemp);
 						if (response.IsSuccessStatusCode)
 						{
-							insertHeader = result.EventHeader;
-							insertBodies = result.EventBodies;
+							insertHeader = result.Event.EventHeader;
+							insertBodies = result.Event.EventBodies;
 
 							if (insertBodies == null || !insertBodies.Any())
 							{
