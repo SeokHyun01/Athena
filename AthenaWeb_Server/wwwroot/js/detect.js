@@ -462,7 +462,8 @@ window.tfjs = (isTfjs) => {
                 }
 
                 //5번 이상 객체가 감지되면 서버에 화재가 감지되었다고 전송한다.
-                if (fireCount >= 5 && isDetect && nextSend >= 3) {
+                // if (fireCount >= 5 && isDetect && nextSend >= 3) {
+                    if (fireCount >= 5 && isDetect) {
                     sendDetect(boxes_data, classes_data, numDetections_data);
                     isDetect = false;
                     nextSend = 0;
