@@ -362,7 +362,6 @@ window.tfjs = (isTfjs) => {
     let tfIsFirst = true;
     let FPS = 10; //초당 프레임 수
     let isDetect = false; //화재 감지 여부
-    let nextSend = 0; //3번째마다 객체 전송
 
     let video = document.getElementById('video');
     video.setAttribute('hidden', true);
@@ -449,7 +448,6 @@ window.tfjs = (isTfjs) => {
                 fireCount++;
                 tfTime1 = new Date().getTime();
                 isDetect = true;
-                nextSend++;
             }
 
             try {
@@ -462,11 +460,10 @@ window.tfjs = (isTfjs) => {
                 }
 
                 //5번 이상 객체가 감지되면 서버에 화재가 감지되었다고 전송한다.
-                // if (fireCount >= 5 && isDetect && nextSend >= 3) {
-                    if (fireCount >= 5 && isDetect) {
+                if (fireCount >= 5 && isDetect) {
+                    // if (fireCount >= 5 && isDetect) {
                     sendDetect(boxes_data, classes_data, numDetections_data);
                     isDetect = false;
-                    nextSend = 0;
                 }
 
                 //사진의 갯수가 10개가 넘어가면 서버에게 사진 -> 영상으로 변환하라 알림.
@@ -531,8 +528,6 @@ window.tfjs = (isTfjs) => {
         if (checkOjbectId != 0) {
             sendToVideo.push(checkOjbectId);
             console.log(checkOjbectId);
-        } else if (checkOjbectId == 0) {
-            console.log("000000000000");
         }
     }
 
