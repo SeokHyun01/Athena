@@ -119,7 +119,7 @@ class MOG2MotionDetector {
                 IsRequiredObjectDetection: true
             }
         };
-        console.log(event);
+        console.log(JSON.stringify(event));
 
         const createEventResponse = await fetch("https://ictrobot.hknu.ac.kr:8097/api/Event/Create", {
             method: "POST",
