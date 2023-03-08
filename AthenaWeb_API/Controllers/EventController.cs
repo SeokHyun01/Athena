@@ -52,10 +52,10 @@ namespace AthenaWeb_API.Controllers
 						var response = await _client.PostAsync("http://127.0.0.1:8000/event/create", bodyContent);
 						var contentTemp = await response.Content.ReadAsStringAsync();
 						var result = JsonConvert.DeserializeObject<CreateEventResponseDTO>(contentTemp);
-						if (response.IsSuccessStatusCode)
+						if (response.IsSuccessStatusCode && result != null)
 						{
-							insertHeader = result.Event.EventHeader;
-							insertBodies = result.Event.EventBodies;
+							insertHeader = result.EventHeader;
+							insertBodies = result.EventBodies;
 
 							if (insertBodies == null || !insertBodies.Any())
 							{
