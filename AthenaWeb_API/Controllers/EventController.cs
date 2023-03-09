@@ -69,7 +69,7 @@ namespace AthenaWeb_API.Controllers
 							{
 								foreach(var body in insertBodies)
 								{
-									body.Label = (Math.Floor(float.Parse(body.Label)) == 0) ? "fire" : "smoke";
+									body.Label = ((int)Math.Floor(float.Parse(body.Label)) == 0) ? "fire" : "smoke";
 								}
 							}
 						}
