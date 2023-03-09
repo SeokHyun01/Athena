@@ -65,6 +65,12 @@ namespace AthenaWeb_API.Controllers
 								}
 
 								return Ok(0);
+							} else
+							{
+								foreach(var body in insertBodies)
+								{
+									body.Label = (int.Parse(body.Label) == 0) ? "smoke" : "fire";
+								}
 							}
 						}
 						else
