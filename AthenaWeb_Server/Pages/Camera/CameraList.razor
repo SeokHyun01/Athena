@@ -165,6 +165,12 @@
 		if (args.Value != null)
 		{
 			var angle = int.Parse(args.Value.ToString());
+			var currentCamera = await _cameraRepository.Get(cameraId);
+			if (currentCamera != null)
+			{
+				currentCamera.Angle = angle;
+				await _cameraRepository.Update(currentCamera);
+			}
 
 			var updateCamera = new UpdateCamera
 				{
