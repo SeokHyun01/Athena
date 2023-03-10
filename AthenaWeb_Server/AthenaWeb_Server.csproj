@@ -1,43 +1,52 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>87e55139-dbd5-43ad-b156-36b8cd833205</UserSecretsId>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>87e55139-dbd5-43ad-b156-36b8cd833205</UserSecretsId>
+		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-    <PackageReference Include="FFmpegBlazor" Version="1.0.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.3" />
-    <PackageReference Include="MQTTnet" Version="4.1.4.563" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
-    <PackageReference Include="Syncfusion.Blazor" Version="20.4.0.50" />
-  </ItemGroup>
+	<ItemGroup>
+	  <Content Remove="wwwroot\service-worker.js" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Athena_Business\Athena_Business.csproj" />
-    <ProjectReference Include="..\Athena_Common\Athena_Common.csproj" />
-    <ProjectReference Include="..\Athena_DataAccess\Athena_DataAccess.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+		<PackageReference Include="FFmpegBlazor" Version="1.0.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.3" />
+		<PackageReference Include="MQTTnet" Version="4.1.4.563" />
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+		<PackageReference Include="Syncfusion.Blazor" Version="20.4.0.50" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\lib\microsoft\signalr\dist\browser\" />
-    <Folder Include="wwwroot\images\" />
-    <Folder Include="wwwroot\videos\" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Athena_Business\Athena_Business.csproj" />
+		<ProjectReference Include="..\Athena_Common\Athena_Common.csproj" />
+		<ProjectReference Include="..\Athena_DataAccess\Athena_DataAccess.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="wwwroot\lib\microsoft\signalr\dist\browser\" />
+		<Folder Include="wwwroot\images\" />
+		<Folder Include="wwwroot\videos\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\service-worker.js" />
+	</ItemGroup>
 
 </Project>
