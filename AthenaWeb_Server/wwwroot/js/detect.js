@@ -21,6 +21,7 @@ let _cameraId;
 let _isCamshift = false;
 let _isTfjs = false;
 let sendToVideo = [];
+let size = 1;   // 사진 -> 영상으로 변환할 크기 1 -> 10장 을 1개의 영상으로 변환, 2 -> 20장을 1개의 영상으로 변환
 
 const TOPIC_MOTOR = "camera/update/degree/syn";
 const TOPIC_MOTOR_ACK = "camera/update/degree/ack";
@@ -246,9 +247,16 @@ window.Camshift = (isCamshift) => {
             time2 = new Date().getTime();
             intervalTime = (time1 - time2) / 1000;
 
-            //움직임 감지가 30초 이상이면 count 초기화
+            //움직임 감지가 30초 이상이면 count 초기화 , 남은 사진 id값으로 영상 생성
             if (intervalTime > 30) {
+
+                if (sendToVideo.length > 0) {
+                    sendMakeVideo();
+                    sendToVideo = [];
+                }
+
                 count = 0;
+                size = 1;
             }
 
             //움직임 감지 시 mqtt 전송 (30초 이내 5번 이상 움직임 감지 시)
@@ -258,11 +266,11 @@ window.Camshift = (isCamshift) => {
             }
 
             //움직임 감지가 5초이상 없다면 서버에 보고 (단, 한번만 보낸다.)
-            if (sendToVideo.length >= 10 && isFirst) {
+            if (sendToVideo.length >= (10 * size) && isFirst) {
                 sendMakeVideo();
                 sendToVideo = [];
                 isFirst = false;
-            } else if (sendToVideo.length < 10 && !isFirst) {
+            } else if (sendToVideo.length < (10 * size) && !isFirst) {
                 isFirst = true;
             }
 
@@ -456,22 +464,27 @@ window.tfjs = (isTfjs) => {
 
                 //만약 30초간 객체가 감지되지 않았다면 count 를 0으로 수정한다.
                 if (tfIntervalTime > 30) {
+                    if (sendToVideo.length > 0) {
+                        sendTfMakeVideo();
+                        sendToVideo = [];
+                    }
                     fireCount = 0;
+                    size = 1;
                 }
 
                 //5번 이상 객체가 감지되면 서버에 화재가 감지되었다고 전송한다.
                 if (fireCount >= 5 && isDetect) {
-                    // if (fireCount >= 5 && isDetect) {
                     sendDetect(boxes_data, classes_data, numDetections_data);
                     isDetect = false;
                 }
 
                 //사진의 갯수가 10개가 넘어가면 서버에게 사진 -> 영상으로 변환하라 알림.
-                if (sendToVideo.length >= 10 && tfIsFirst) {
+                if (sendToVideo.length >= (10 * size) && tfIsFirst) {
                     sendTfMakeVideo();
                     sendToVideo = [];
                     tfIsFirst = false;
-                } else if (sendToVideo.length < 10 && !tfIsFirst) {
+                    size++;
+                } else if (sendToVideo.length < (10 * size) && !tfIsFirst) {
                     tfIsFirst = true;
                 }
 
