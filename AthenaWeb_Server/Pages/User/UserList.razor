@@ -2,7 +2,9 @@
 
 @inject UserManager<IdentityUser> _userManager
 @inject NavigationManager _navigationManager
-@inject IJSRuntime _Jsruntime
+@inject IJSRuntime _jsRuntime
+
+@attribute [Authorize(Roles = SD.Role_Admin)]
 
 
 <div class="container my-5">
@@ -24,7 +26,7 @@
 						<td>@user.Id</td>
 						<td>@user.Email</td>
 						<td>
-							<NavLink href=@($"user/{user.Id}/camera") class="btn btn-primary my-2">카메라 관리</NavLink>
+							<NavLink href=@($"user/{user.NormalizedUserName}/camera") class="btn btn-primary my-2">카메라 관리</NavLink>
 							<button class="btn btn-danger my-2" @onclick="()=>HandleDelete(user)">삭제</button>
 						</td>
 					</tr>
@@ -45,8 +47,6 @@
 		}
 	}
 </div>
-@* 테스트
-<button class="btn btn-info btn-sm" @onclick="sendKakao">카카오톡 전송</button> *@
 
 
 @code {
@@ -81,11 +81,5 @@
 			await _userManager.DeleteAsync(user);
 			await LoadUsers();
 		}
-	}
-
-	@* 테스트 *@
-	public async Task sendKakao()
-	{
-		await _Jsruntime.InvokeVoidAsync("sendKakao");
 	}
 }

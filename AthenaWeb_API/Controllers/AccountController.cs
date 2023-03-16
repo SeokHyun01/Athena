@@ -69,7 +69,7 @@ namespace AthenaWeb_API.Controllers
 				});
 			}
 
-			return StatusCode(201);
+			return Ok(user.NormalizedUserName);
 		}
 
 		[HttpPost]

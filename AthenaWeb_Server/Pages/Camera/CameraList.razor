@@ -5,6 +5,8 @@
 @inject IJSRuntime _jsRuntime
 @inject ILogger<CameraList> _logger
 
+@attribute [Authorize(Roles = SD.Role_Customer)]
+
 @implements IAsyncDisposable
 
 
@@ -34,9 +36,9 @@
 						<td>@(camera.Name)</td>
 						<td>
 							<div class="d-flex flex-column align-items-start">
-								<NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}") class="btn btn-primary mb-3">카메라 보기
+								<NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}") class="btn btn-primary mb-3">
+									카메라 보기
 								</NavLink>
-								@* <img height="255" id=@($"thumbnailImage{camera.Id}") /> *@
 								<img id=@($"thumbnailImage{camera.Id}") />
 							</div>
 						</td>
@@ -44,20 +46,21 @@
 							<div class="d-flex flex-column align-items-start">
 								<div class="d-flex">
 									<button class="btn btn-primary me-4" id="qrCodeButton"
-								@onclick="@(async() => {showQRCode = !showQRCode; await InvokeAsync(() => StateHasChanged());})">카메라
-										등록</button>
+									@onclick="@(async() => {showQRCode = !showQRCode; await InvokeAsync(() => StateHasChanged());})">
+										카메라
+										등록
+									</button>
 									<NavLink class="btn btn-success" href=@($"camera/{camera.Id}/event")>이벤트 확인</NavLink>
 								</div>
 								@if (showQRCode)
 								{
-									<SfQRCodeGenerator
-										Value=@($"{_navigationManager.BaseUri}/thumbnail/user/{camera.UserId}/camera/{camera.Id}/register")>
+									<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}/thumbnail/user/{camera.UserId}/camera/{camera.Id}/register")>
 									</SfQRCodeGenerator>
 								}
 							</div>
 							<button class="btn btn-danger mt-2" @onclick="()=>HandleDelete(camera.Id)">삭제</button>
 							<input id=@($"angleInput{camera.Id}") type="range" value=@(camera.Angle) min="0" max="180" step="1"
-						@onchange="(args)=>SetCameraAngle(args, camera.Id)" />
+						   @onchange="(args)=>SetCameraAngle(args, camera.Id)" />
 						</td>
 					</tr>
 				}
@@ -199,6 +202,12 @@
 		if (args.Value != null)
 		{
 			var angle = int.Parse(args.Value.ToString());
+			var currentCamera = await _cameraRepository.Get(cameraId);
+			if (currentCamera != null)
+			{
+				currentCamera.Angle = angle;
+				await _cameraRepository.Update(currentCamera);
+			}
 
 			var updateCamera = new UpdateCamera
 				{

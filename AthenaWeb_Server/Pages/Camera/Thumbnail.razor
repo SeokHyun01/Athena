@@ -1,5 +1,8 @@
 @page "/thumbnail/user/{userid:guid}/camera/{cameraid:int}/register"
 @inject IJSRuntime _Jsruntime
+
+@attribute [Authorize(Roles = SD.Role_Customer)]
+
 @implements IAsyncDisposable
 
 <div>

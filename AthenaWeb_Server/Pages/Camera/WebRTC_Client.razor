@@ -2,6 +2,9 @@
 
 @inject IJSRuntime _Jsruntime
 @inject NavigationManager _navigationManager
+
+@attribute [Authorize(Roles = SD.Role_Customer)]
+
 @implements IAsyncDisposable
 
 <div>
