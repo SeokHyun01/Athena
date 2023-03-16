@@ -24,8 +24,8 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddResponseCompression(opts =>
 {
-    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-        new[] { "application/octet-stream" });
+	opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+		new[] { "application/octet-stream" });
 });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -36,7 +36,7 @@ builder.Services.AddDbContext<AthenaAppDbContext>(options =>
 //	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 //});
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddDefaultTokenProviders().AddDefaultUI().AddEntityFrameworkStores<AthenaAppDbContext>();
+	.AddDefaultTokenProviders().AddDefaultUI().AddEntityFrameworkStores<AthenaAppDbContext>();
 //
 var factory = new MqttFactory();
 builder.Services.AddSingleton<IMqttClient>(factory.CreateMqttClient());
@@ -61,9 +61,9 @@ app.UseResponseCompression();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+	app.UseExceptionHandler("/Error");
+	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+	app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -77,15 +77,6 @@ app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapHub<SignalingHub>("/hubs/signaling");
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapGet("/", async context =>
-    {
-        context.Response.Redirect("/user");
-    });
-});
-
 app.MapFallbackToPage("/_Host");
 
 await SeedDatabase();
@@ -94,9 +85,9 @@ app.Run();
 
 async ValueTask SeedDatabase()
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-        await dbInitializer.Initialize();
-    }
+	using (var scope = app.Services.CreateScope())
+	{
+		var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+		await dbInitializer.Initialize();
+	}
 }
