@@ -33,10 +33,10 @@ namespace AthenaWeb_Server.Service
 					_db.Database.Migrate();
 				}
 
-				if (!await _roleManager.RoleExistsAsync(SD.Role_Admin))
+				if (!await _roleManager.RoleExistsAsync(SD.ROLE_ADMIN))
 				{
-					await _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin));
-					await _roleManager.CreateAsync(new IdentityRole(SD.Role_Customer));
+					await _roleManager.CreateAsync(new IdentityRole(SD.ROLE_ADMIN));
+					await _roleManager.CreateAsync(new IdentityRole(SD.ROLE_CUSTOMER));
 				}
 				else
 				{
@@ -50,8 +50,8 @@ namespace AthenaWeb_Server.Service
 					EmailConfirmed = true
 				};
 				await _userManager.CreateAsync(user, "95fur6u?_!deQ%8");
-				await _userManager.AddToRoleAsync(user, SD.Role_Admin);
-				await _userManager.AddToRoleAsync(user, SD.Role_Customer);
+				await _userManager.AddToRoleAsync(user, SD.ROLE_ADMIN);
+				await _userManager.AddToRoleAsync(user, SD.ROLE_CUSTOMER);
 			}
 
 			catch (Exception ex)

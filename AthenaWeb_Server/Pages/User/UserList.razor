@@ -4,7 +4,7 @@
 @inject NavigationManager _navigationManager
 @inject IJSRuntime _jsRuntime
 
-@attribute [Authorize(Roles = SD.Role_Admin)]
+@attribute [Authorize(Roles = SD.ROLE_ADMIN)]
 
 
 <div class="container my-5">
@@ -68,7 +68,7 @@
 		IsLoading = true;
 		StateHasChanged();
 
-		Users = await _userManager.GetUsersInRoleAsync(SD.Role_Customer);
+		Users = await _userManager.GetUsersInRoleAsync(SD.ROLE_CUSTOMER);
 
 		IsLoading = false;
 		StateHasChanged();

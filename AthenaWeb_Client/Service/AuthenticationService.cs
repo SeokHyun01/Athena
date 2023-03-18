@@ -49,8 +49,8 @@ namespace AthenaWeb_Client.Service
 
 		public async ValueTask Logout()
 		{
-			await _localStorage.RemoveItemAsync(SD.Local_Token);
-			await _localStorage.RemoveItemAsync(SD.Local_UserDetails);
+			await _localStorage.RemoveItemAsync(SD.LOCAL_TOKEN);
+			await _localStorage.RemoveItemAsync(SD.LOCAL_USER_DETAILS);
 
 			((AuthStateProvider)_authStateProvider).NotifyUserLogout();
 

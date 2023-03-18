@@ -3,7 +3,7 @@
 @inject ICameraRepository _cameraRepository
 @inject NavigationManager _navigationManager
 
-@attribute [Authorize(Roles = SD.Role_Customer)]
+@attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
 
 
 <EditForm Model="Camera" OnValidSubmit="InsertCamera">
