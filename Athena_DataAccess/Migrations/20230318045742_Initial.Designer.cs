@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AthenaDataAccess.Migrations
 {
     [DbContext(typeof(AthenaAppDbContext))]
-    [Migration("20230221075244_Initial")]
+    [Migration("20230318045742_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -87,7 +87,7 @@ namespace AthenaDataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("EventVideoId")
+                    b.Property<int>("EventVideoId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsRequiredObjectDetection")

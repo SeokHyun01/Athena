@@ -121,7 +121,7 @@ namespace AthenaDataAccess.Migrations
                     Path = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     IsRequiredObjectDetection = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    EventVideoId = table.Column<int>(type: "int", nullable: true)
+                    EventVideoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

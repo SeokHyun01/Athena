@@ -84,7 +84,7 @@ namespace AthenaDataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("EventVideoId")
+                    b.Property<int>("EventVideoId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsRequiredObjectDetection")
