@@ -3,8 +3,6 @@
 @inject ICameraRepository _cameraRepository
 @inject NavigationManager _navigationManager
 
-@attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
-
 
 <EditForm Model="Camera" OnValidSubmit="InsertCamera">
 	<DataAnnotationsValidator />
@@ -24,6 +22,7 @@
 		<NavLink href=@($"user/{UserId.ToString()}/camera") class="btn btn-secondary">돌아가기</NavLink>
 	</div>
 </EditForm>
+
 
 <style>
 	.form-group {

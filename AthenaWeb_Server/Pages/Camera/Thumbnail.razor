@@ -1,9 +1,8 @@
 @page "/thumbnail/user/{userid:guid}/camera/{cameraid:int}/register"
 @inject IJSRuntime _Jsruntime
 
-@attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
-
 @implements IAsyncDisposable
+
 
 <div>
     <button class="btn btn-info btn-sm" @onclick="bluetooth">블루투스 켜기</button>
@@ -12,8 +11,6 @@
     <input type="checkbox" id="tfjsCheckbox" @onchange="@(e => tfjs(e))" />
     <label for="tfjsCheckbox">화재 검출</label>
 </div>
-
-
 <div class="col">
 
     <div class="video-wrapper">
@@ -37,6 +34,7 @@
     <canvas hidden id="canvas_image"></canvas>
     
 </div>
+
 
 @code {
     [Parameter]

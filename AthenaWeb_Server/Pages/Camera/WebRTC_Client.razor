@@ -3,9 +3,8 @@
 @inject IJSRuntime _Jsruntime
 @inject NavigationManager _navigationManager
 
-@attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
-
 @implements IAsyncDisposable
+
 
 <div>
 	<video id="remoteVideo" autoplay width="460" height="345"></video>
@@ -14,6 +13,7 @@
 	<button id="cameraButton" class="btn btn-primary"> Turn Camera Off</button>
 	<select id="camerasSelect" class="form-control-sm"></select>
 </div>
+
 
 @code {
 	[Parameter]
