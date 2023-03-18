@@ -25,11 +25,11 @@
 			var returnUrl = _navigationManager.ToBaseRelativePath(_navigationManager.Uri);
 			if (string.IsNullOrEmpty(returnUrl))
 			{
-				_navigationManager.NavigateTo("login");
+				_navigationManager.NavigateTo("Identity/Account/Login");
 			}
 			else
 			{
-				_navigationManager.NavigateTo($"login?returnUrl={returnUrl}");
+				_navigationManager.NavigateTo($"Identity/Account/Login?returnUrl={returnUrl}");
 			}
 		}
 		else
