@@ -1,10 +1,3 @@
 ﻿@page "/"
 
-<AuthorizeView>
-	<Authorized>
-		<NavLink href=@($"user/{context.User.Identity.Name}/camera") class="btn btn-primary my-2">내 카메라 보기</NavLink>
-	</Authorized>
-	<NotAuthorized>
-
-	</NotAuthorized>
-</AuthorizeView>
+<NavLink href=@($"camera") class="btn btn-primary my-2">내 카메라 보기</NavLink>

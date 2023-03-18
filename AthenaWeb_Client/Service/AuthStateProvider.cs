@@ -21,7 +21,7 @@ namespace AthenaWeb_Client.Service
 
 		public override async Task<AuthenticationState> GetAuthenticationStateAsync()
 		{
-			var token = await _localStorage.GetItemAsync<string>(SD.Local_Token);
+			var token = await _localStorage.GetItemAsync<string>(SD.LOCAL_TOKEN);
 			if (token == null)
 			{
 				return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));

@@ -51,6 +51,7 @@ namespace AthenaWeb_Server.Service
 				};
 				await _userManager.CreateAsync(user, "95fur6u?_!deQ%8");
 				await _userManager.AddToRoleAsync(user, SD.Role_Admin);
+				await _userManager.AddToRoleAsync(user, SD.Role_Customer);
 			}
 
 			catch (Exception ex)

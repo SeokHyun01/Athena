@@ -8,10 +8,10 @@ namespace Athena_Common
 {
 	public static class SD
 	{
-		public const string Role_Admin = "Admin";
-		public const string Role_Customer = "Customer";
+		public const string ROLE_ADMIN = "admin";
+		public const string ROLE_CUSTOMER = "customer";
 
-		public const string Local_Token = "JWT Token";
-		public const string Local_UserDetails = "UserDetails";
+		public const string LOCAL_TOKEN = "jwt_token";
+		public const string LOCAL_USER_DETAILS = "user_details";
 	}
 }

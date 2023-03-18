@@ -59,7 +59,7 @@ namespace AthenaWeb_API.Controllers
 				});
 			}
 
-			var roleResult = await _userManager.AddToRoleAsync(user, SD.Role_Customer);
+			var roleResult = await _userManager.AddToRoleAsync(user, SD.ROLE_CUSTOMER);
 			if (!roleResult.Succeeded)
 			{
 				return BadRequest(new SignUpResponseDTO()

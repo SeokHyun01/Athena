@@ -35,8 +35,8 @@ namespace AthenaWeb_Client.Service
 			var result = JsonConvert.DeserializeObject<SignInResponseDTO>(contentTemp);
 			if (response.IsSuccessStatusCode)
 			{
-				await _localStorage.SetItemAsync(SD.Local_Token, result.Token);
-				await _localStorage.SetItemAsync(SD.Local_UserDetails, result.UserDTO);
+				await _localStorage.SetItemAsync(SD.LOCAL_TOKEN, result.Token);
+				await _localStorage.SetItemAsync(SD.LOCAL_USER_DETAILS, result.UserDTO);
 				((AuthStateProvider)_authStateProvider).NotifyUserLoggedIn(result.Token);
 				_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
 				return new SignInResponseDTO() { IsSucceeded = true };
