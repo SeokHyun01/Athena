@@ -4,6 +4,7 @@
 @inject IJSRuntime _jsRuntime
 @inject NavigationManager _navigationManager
 @inject ICameraRepository _cameraRepository
+@inject UserManager<IdentityUser> _userManager
 
 @attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
 
@@ -122,7 +123,7 @@
 
 	private int selectedCameraId = 0;
 
-	private string UserName { get; set; } = string.Empty;
+	private IdentityUser User { get; set; }
 
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -130,12 +131,17 @@
 		if (firstRender)
 		{
 			var authState = await _authState;
-			UserName = authState?.User?.Identity?.Name;
-			if (string.IsNullOrEmpty(UserName))
+			var userName = authState?.User?.Identity?.Name;
+			if (string.IsNullOrEmpty(userName))
 			{
-				throw new ArgumentNullException(nameof(UserName));
+				throw new ArgumentNullException(nameof(userName));
 			}
-			await LoadCameras(UserName);
+			User = await _userManager.FindByEmailAsync(userName);
+			if (User == null)
+			{
+				throw new ArgumentNullException(nameof(User));
+			}
+			await LoadCameras(User.Id);
 
 
 			var mqttFactory = new MqttFactory();
@@ -180,12 +186,12 @@
 		}
 	}
 
-	private async ValueTask LoadCameras(string userName)
+	private async ValueTask LoadCameras(string userId)
 	{
 		IsLoading = true;
 		StateHasChanged();
 
-		Cameras = await _cameraRepository.GetAll(userName);
+		Cameras = await _cameraRepository.GetAll(userId);
 
 		IsLoading = false;
 		StateHasChanged();
@@ -196,7 +202,11 @@
 		if (cameraId > 0)
 		{
 			await _cameraRepository.Delete(cameraId);
-			await LoadCameras(UserName);
+			if (string.IsNullOrEmpty(User?.Id))
+			{
+				throw new ArgumentNullException(nameof(User.Id));
+			}
+			await LoadCameras(User.Id);
 		}
 	}
 
