@@ -1,4 +1,4 @@
-﻿@page "/user/{userId:guid}/camera/{cameraId:int}"
+﻿@page "/camera/{cameraId:int}"
 
 @inject IJSRuntime _jsRuntime
 @inject ICameraRepository _cameraRepository
@@ -21,7 +21,7 @@
 			<select id="camerasSelect" class="form-control-sm"></select>
 			@if (IsLoading)
 			{
-		<div class="spinner-border text-primary" role="status"></div>
+				<div class="spinner-border text-primary" role="status"></div>
 			}
 			else
 			{
@@ -38,8 +38,8 @@
 
 
 @code {
-	[Parameter]
-	public Guid UserId { get; set; }
+	[CascadingParameter]
+	public Task<AuthenticationState> _authState { get; set; }
 
 	[Parameter]
 	public int CameraId { get; set; }
@@ -49,8 +49,10 @@
 	private CameraDTO Camera { get; set; } = new CameraDTO();
 
 	private HubConnection? hubConnection;
-	private string? ConnectionId { get; set; }
-	private string? RoomName { get; set; }
+
+	private string ConnectionId { get; set; } = string.Empty;
+	private string RoomName { get; set; } = string.Empty;
+	private string UserName { get; set; } = string.Empty;
 
 	private IMqttClient? mqttClient;
 
@@ -62,30 +64,34 @@
 			IsLoading = true;
 			StateHasChanged();
 
+			var authState = await _authState;
+			UserName = authState?.User?.Identity?.Name;
+			if (string.IsNullOrEmpty(UserName))
+			{
+				throw new ArgumentNullException(nameof(UserName));
+			}
+
 			Camera = await _cameraRepository.Get(CameraId);
 
-			IsLoading = false;
-			StateHasChanged();
-
-
 			hubConnection = new HubConnectionBuilder()
-				.WithUrl(_navigationManager.ToAbsoluteUri("/hubs/signaling"), (opts) =>
+			.WithUrl(_navigationManager.ToAbsoluteUri("/hubs/signaling"), options =>
+			{
+				options.HttpMessageHandlerFactory = message =>
+			{
+				if (message is HttpClientHandler clientHandler)
 				{
-					opts.HttpMessageHandlerFactory = (message) =>
-					{
-						if (message is HttpClientHandler clientHandler)
-						{
-							clientHandler.ServerCertificateCustomValidationCallback +=
-								(sender, certificate, chain, sslPolicyErrors) => { return true; };
-						}
-						return message;
-					};
-				}).Build();
+					clientHandler.ServerCertificateCustomValidationCallback +=
+						(sender, certificate, chain, sslPolicyErrors) => true;
+				}
+				return message;
+			};
+			})
+			.Build();
 
 			hubConnection.On<string>("OnConnected", async (senderId) =>
 			{
 				ConnectionId = senderId;
-				await _jsRuntime.InvokeVoidAsync("initializeCamera", ConnectionId, UserId.ToString(), CameraId);
+				await _jsRuntime.InvokeVoidAsync("initializeCamera", ConnectionId, UserName, CameraId);
 			});
 
 			hubConnection.On("Welcome", async () =>
@@ -117,6 +123,8 @@
 			RoomName = $"{CameraId.ToString()}";
 			await hubConnection.SendAsync("JoinRoom", RoomName);
 
+			IsLoading = false;
+			StateHasChanged();
 
 			var mqttFactory = new MqttFactory();
 			mqttClient = mqttFactory.CreateMqttClient();
@@ -155,7 +163,7 @@
 
 			var callHeader = new CallHeader
 				{
-					UserId = UserId.ToString(),
+					UserId = UserName,
 					CameraId = CameraId
 				};
 			var callHeaderJson = JsonSerializer.Serialize<CallHeader>(callHeader);
@@ -205,7 +213,7 @@
 
 		var callHeader = new CallHeader
 			{
-				UserId = UserId.ToString(),
+				UserId = UserName,
 				CameraId = CameraId
 			};
 		var callHeaderJson = JsonSerializer.Serialize<CallHeader>(callHeader);

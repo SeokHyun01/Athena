@@ -1,7 +1,10 @@
-﻿@page "/user/{userId:guid}/camera/create"
+﻿@page "/camera/create"
 
 @inject ICameraRepository _cameraRepository
 @inject NavigationManager _navigationManager
+@inject UserManager<IdentityUser> _userManager
+
+@attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
 
 
 <EditForm Model="Camera" OnValidSubmit="InsertCamera">
@@ -19,7 +22,7 @@
 			<ValidationMessage For="(()=>Camera.Name)"></ValidationMessage>
 		</div>
 		<button type="submit" class="btn btn-primary">카메라 @Action</button>
-		<NavLink href=@($"user/{UserId.ToString()}/camera") class="btn btn-secondary">돌아가기</NavLink>
+		<NavLink href=@($"camera") class="btn btn-secondary">돌아가기</NavLink>
 	</div>
 </EditForm>
 
@@ -32,16 +35,18 @@
 
 
 @code {
-	[Parameter]
-	public Guid UserId { get; set; }
+	[CascadingParameter]
+	public Task<AuthenticationState> _authState { get; set; }
 
-	private string Action { get; set; } = "생성하기";
+	private string Action { get; set; } = "생성";
+	private string Error { get; set; } = string.Empty;
+	
 	private bool IsLoading { get; set; }
+	private bool ShowError { get; set; }
 
 	private CameraDTO Camera { get; set; } = new();
 
-	private bool ShowError { get; set; }
-	private string Error { get; set; }
+	private IdentityUser User { get; set; }
 
 
 	private async Task InsertCamera()
@@ -50,17 +55,35 @@
 		IsLoading = true;
 		await InvokeAsync(StateHasChanged);
 
-		Camera.UserId = UserId.ToString();
-		try
+		if (string.IsNullOrEmpty(User.Id))
 		{
-			await _cameraRepository.Create(Camera);
-			_navigationManager.NavigateTo($"user/{UserId}/camera");
-
+			throw new ArgumentNullException(nameof(User.Id));
 		}
-		catch (Exception ex)
+		Camera.UserId = User.Id;
+		await _cameraRepository.Create(Camera);
+		_navigationManager.NavigateTo($"camera");
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
 		{
-			Error = $"타입 \'{ex.GetType().FullName}\'의 에러가 발생했습니다: {ex.Message}";
-			ShowError = true;
+			IsLoading = true;
+			await InvokeAsync(StateHasChanged);
+
+			var authState = await _authState;
+			var userName = authState?.User?.Identity?.Name;
+			if (string.IsNullOrEmpty(userName))
+			{
+				throw new ArgumentNullException(nameof(userName));
+			}
+			User = await _userManager.FindByEmailAsync(userName);
+			if (User == null)
+			{
+				throw new ArgumentNullException(nameof(User));
+			}
+
+			IsLoading = false;
 			await InvokeAsync(StateHasChanged);
 		}
 	}

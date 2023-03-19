@@ -1,9 +1,11 @@
-﻿@page "/user/{userId:guid}/camera"
+﻿@page "/camera"
 
+@inject ILogger<CameraList> _logger
+@inject IJSRuntime _jsRuntime
 @inject NavigationManager _navigationManager
 @inject ICameraRepository _cameraRepository
-@inject IJSRuntime _jsRuntime
-@inject ILogger<CameraList> _logger
+
+@attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
 
 @implements IAsyncDisposable
 
@@ -13,7 +15,7 @@
 		<h1 class="text-center">카메라 리스트</h1>
 	</div>
 	<div class="d-flex justify-content-end form-group">
-		<NavLink href=@($"user/{UserId.ToString()}/camera/create") class="btn btn-primary">카메라 생성하기</NavLink>
+		<NavLink href=@($"camera/create") class="btn btn-primary">카메라 생성하기</NavLink>
 	</div>
 	@if (Cameras.Any())
 	{
@@ -34,7 +36,7 @@
 						<td>@(camera.Name)</td>
 						<td>
 							<div class="d-flex flex-column align-items-start">
-								<NavLink href=@($"user/{camera.UserId}/camera/{camera.Id}") class="btn btn-primary mb-3">
+								<NavLink href=@($"camera/{camera.Id}") class="btn btn-primary mb-3">
 									카메라 보기
 								</NavLink>
 								<img id=@($"thumbnailImage{camera.Id}") />
@@ -44,16 +46,14 @@
 							<div class="d-flex flex-column align-items-start">
 								<div class="d-flex">
 									<button class="btn btn-primary me-4" id="qrCodeButton"
-									@onclick="@(async() => {showQRCode = !showQRCode; await InvokeAsync(() => StateHasChanged());})">
-										카메라
-										등록
+									@onclick="@(async() => { showQRCode = !showQRCode; await InvokeAsync(StateHasChanged); })">
+										카메라 등록
 									</button>
 									<NavLink class="btn btn-success" href=@($"camera/{camera.Id}/event")>이벤트 확인</NavLink>
 								</div>
 								@if (showQRCode)
 								{
-									<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}/thumbnail/user/{camera.UserId}/camera/{camera.Id}/register")>
-									</SfQRCodeGenerator>
+									<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}camera/{camera.Id}/thumbnail") />
 								}
 							</div>
 							<button class="btn btn-danger mt-2" @onclick="()=>HandleDelete(camera.Id)">삭제</button>
@@ -110,24 +110,36 @@
 
 
 @code {
-	[Parameter]
-	public Guid UserId { get; set; }
+	[CascadingParameter]
+	public Task<AuthenticationState> _authState { get; set; }
 
 	private bool IsLoading { get; set; }
-	private IEnumerable<CameraDTO> Cameras { get; set; } = new List<CameraDTO>();
-	private IMqttClient? MqttClient { get; set; }
 	private bool showQRCode = false;
+
+	private IEnumerable<CameraDTO> Cameras { get; set; } = new List<CameraDTO>();
+
+	private IMqttClient? MqttClient { get; set; }
+
 	private int selectedCameraId = 0;
+
+	private string UserName { get; set; } = string.Empty;
+
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (firstRender)
 		{
-			await LoadCameras(UserId.ToString());
+			var authState = await _authState;
+			UserName = authState?.User?.Identity?.Name;
+			if (string.IsNullOrEmpty(UserName))
+			{
+				throw new ArgumentNullException(nameof(UserName));
+			}
+			await LoadCameras(UserName);
+
 
 			var mqttFactory = new MqttFactory();
 			MqttClient = mqttFactory.CreateMqttClient();
-
 			MqttClient.ApplicationMessageReceivedAsync += async e =>
 			{
 				var payload = e.ApplicationMessage.Payload;
@@ -135,7 +147,7 @@
 				{
 					if (e.ApplicationMessage.Topic == "camera/update/thumbnail")
 					{
-						UpdateCamera? updateCamera = JsonSerializer.Deserialize<UpdateCamera>(payload);
+						var updateCamera = JsonSerializer.Deserialize<UpdateCamera>(payload);
 						if (updateCamera != null)
 						{
 							var ImageId = $"thumbnailImage{updateCamera.CameraId}";
@@ -155,33 +167,25 @@
 			};
 
 			var mqttClientOptions = new MqttClientOptionsBuilder()
-			.WithTcpServer("ictrobot.hknu.ac.kr", 8085)
-			.WithCleanSession(true)
-			.Build();
+				.WithTcpServer("ictrobot.hknu.ac.kr", 8085)
+				.WithCleanSession(true)
+				.Build();
 			await MqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
 
 			var mqttSubscribeOptions = mqttFactory.CreateSubscribeOptionsBuilder()
-			.WithTopicFilter(
-			f =>
-			{
-				f.WithTopic("camera/update/thumbnail");
-			})
-			.WithTopicFilter(
-			f =>
-			{
-				f.WithTopic("camera/update/degree/ack");
-			})
-			.Build();
+				.WithTopicFilter( f => { f.WithTopic("camera/update/thumbnail"); })
+				.WithTopicFilter( f => { f.WithTopic("camera/update/degree/ack"); })
+				.Build();
 			await MqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
 		}
 	}
 
-	private async ValueTask LoadCameras(string userId)
+	private async ValueTask LoadCameras(string userName)
 	{
 		IsLoading = true;
 		StateHasChanged();
 
-		Cameras = await _cameraRepository.GetAll(userId);
+		Cameras = await _cameraRepository.GetAll(userName);
 
 		IsLoading = false;
 		StateHasChanged();
@@ -192,7 +196,7 @@
 		if (cameraId > 0)
 		{
 			await _cameraRepository.Delete(cameraId);
-			await LoadCameras(UserId.ToString());
+			await LoadCameras(UserName);
 		}
 	}
 

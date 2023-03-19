@@ -1,142 +1,147 @@
-@page "/thumbnail/user/{userid:guid}/camera/{cameraid:int}/register"
-@inject IJSRuntime _Jsruntime
+@page "/camera/{cameraid:int}/thumbnail"
+@inject IJSRuntime _jsRuntime
+
+@inject ICameraRepository _cameraRepository
 
 @implements IAsyncDisposable
 
 
 <div>
-    <button class="btn btn-info btn-sm" @onclick="bluetooth">블루투스 켜기</button>
-    <input type="checkbox" id="camshiftCheckbox" @onchange="@(e => Camshift(e))" />
-    <label for="camshiftCheckbox">움직임 감지</label>
-    <input type="checkbox" id="tfjsCheckbox" @onchange="@(e => tfjs(e))" />
-    <label for="tfjsCheckbox">화재 검출</label>
+	<button class="btn btn-info btn-sm" @onclick="bluetooth">블루투스 켜기</button>
+	<input type="checkbox" id="CamShiftCheckbox" @onchange="@(e => CamShift(e))" />
+	<label for="CamShiftCheckbox">움직임 감지</label>
+	<input type="checkbox" id="tfjsCheckbox" @onchange="@(e => tfjs(e))" />
+	<label for="tfjsCheckbox">화재 검출</label>
 </div>
 <div class="col">
 
-    <div class="video-wrapper">
-        <video id="video" autoplay width="@width" height="@height"></video>
-    </div>
+	<div class="video-wrapper">
+		<video id="video" autoplay width="@width" height="@height"></video>
+	</div>
 
-    @if (isWebRTC)
-    {
-        <div id="displayWebRTC">
-            <WebRTC_Client UserIdToThumbnail=@UserId CameraIdToThumbnail=@CameraId />
-        </div>
-    }
+	@if (isWebRTC)
+	{
+		<div id="displayWebRTC">
+			<Callee UserIdToThumbnail=@Camera.UserId CameraIdToThumbnail=@CameraId />
+		</div>
+	}
 
-    @* opencv.js 를 이용한 움직임 감지 *@
-    <canvas id="canvasOutput" hidden></canvas>
+	@* opencv.js 를 이용한 움직임 감지 *@
+	<canvas id="canvasOutput" hidden></canvas>
 
-    @* tfjs 를 이용한 화재 감지 *@
-    <canvas id="fireCanvas" hidden></canvas>
+	@* tfjs 를 이용한 화재 감지 *@
+	<canvas id="fireCanvas" hidden></canvas>
 
-    @* 썸네일 전송하는 캔버스 *@
-    <canvas hidden id="canvas_image"></canvas>
-    
+	@* 썸네일 전송하는 캔버스 *@
+	<canvas hidden id="canvas_image"></canvas>
+
 </div>
 
 
 @code {
-    [Parameter]
-    public Guid UserId { get; set; }
+	[Parameter]
+	public int CameraId { get; set; }
 
-    [Parameter]
-    public int CameraId { get; set; }
+	static bool isWebRTC = false;
 
-    static bool isWebRTC = false;
-    public int width = 360;
-    public int height = 270;
+	private int width = 360;
+	private int height = 270;
 
-    //dotnet helper 생성
-    public async Task DotnetHelper()
-    {
-        await _Jsruntime.InvokeVoidAsync("dotnetHelper", DotNetObjectReference.Create(this), UserId, CameraId);
-    }
-
-    //카메라
-    public async Task SetVideo()
-    {
-        await _Jsruntime.InvokeVoidAsync("setVideo");
-    }
-
-    //MQTT client 생성, 토픽 구독
-    public async Task SetMqtt()
-    {
-        await _Jsruntime.InvokeVoidAsync("SetMqtt");
-    }
-
-    //MQTT로 썸네일 전송
-    public async Task SendThumbnail()
-    {
-        await _Jsruntime.InvokeVoidAsync("SendThumbnail", width, height);
-    }
-
-    //순서 1.비디오를 킨다 2. MQTT 접속을한다 3. 썸네일 전송을 시작한다
-    protected override async Task OnAfterRenderAsync(bool firstRander)
-    {
-        if (firstRander)
-        {
-            await DotnetHelper();
-            await SetVideo();
-            await SetMqtt();
-        }
-        await SendThumbnail();
-    }
-
-    //버튼을 누를시 모터제어를 할 기기와 블루투스 연동을 시작한다.
-    public async Task bluetooth()
-    {
-        await _Jsruntime.InvokeVoidAsync("SetBluetooth");
-    }
-
-    [JSInvokable]
-    public async ValueTask showWebRTC(bool boolWebRTC)
-    {
-        isWebRTC = boolWebRTC;
-
-        await InvokeAsync(StateHasChanged);
-    }
+	private CameraDTO Camera { get; set; } = new();
 
 
-    //opencv.js를 사용한 움직임 감지
-    public async Task Camshift(ChangeEventArgs eventArgs)
-    {
-        if (eventArgs.Value == null) return;
+	//순서 1.비디오를 킨다 2. MQTT 접속을한다 3. 썸네일 전송을 시작한다
+	protected override async Task OnAfterRenderAsync(bool firstRander)
+	{
+		if (firstRander)
+		{
+			Camera = await _cameraRepository.Get(CameraId);
 
-        bool isChecked = (bool)eventArgs.Value;
+			await DotnetHelper();
+			await SetVideo();
+			await SetMqtt();
+		}
+		await SendThumbnail();
+	}
 
-        if (isChecked)
-        {
-            await _Jsruntime.InvokeVoidAsync("Camshift", true);
-        }
-        else
-        {
-            await _Jsruntime.InvokeVoidAsync("reload");
-        }
-    }
+	//dotnet helper 생성
+	public async Task DotnetHelper()
+	{
+		await _jsRuntime.InvokeVoidAsync("dotnetHelper", DotNetObjectReference.Create(this), Camera.UserId, CameraId);
+	}
 
-    //tensorflow.js를 사용한 화재 감지
-    public async Task tfjs(ChangeEventArgs eventArgs)
-    {
-        if (eventArgs.Value == null) return;
+	//카메라
+	public async Task SetVideo()
+	{
+		await _jsRuntime.InvokeVoidAsync("setVideo");
+	}
 
-        bool isChecked = (bool)eventArgs.Value;
+	//MQTT client 생성, 토픽 구독
+	public async Task SetMqtt()
+	{
+		await _jsRuntime.InvokeVoidAsync("SetMqtt");
+	}
 
-        if (isChecked)
-        {
-            await _Jsruntime.InvokeVoidAsync("tfjs", true);
-        }
-        else
-        {
-            await _Jsruntime.InvokeVoidAsync("reload");
-        }
+	//MQTT로 썸네일 전송
+	public async Task SendThumbnail()
+	{
+		await _jsRuntime.InvokeVoidAsync("SendThumbnail", width, height);
+	}
 
-    }
+	//버튼을 누를시 모터제어를 할 기기와 블루투스 연동을 시작한다.
+	public async Task bluetooth()
+	{
+		await _jsRuntime.InvokeVoidAsync("SetBluetooth");
+	}
 
-    public async ValueTask DisposeAsync(){
-        if(isWebRTC){
-            isWebRTC = false;
-            await InvokeAsync(StateHasChanged);
-        }
-    }
+	[JSInvokable]
+	public async ValueTask showWebRTC(bool boolWebRTC)
+	{
+		isWebRTC = boolWebRTC;
+
+		await InvokeAsync(StateHasChanged);
+	}
+
+	//opencv.js를 사용한 움직임 감지
+	public async Task CamShift(ChangeEventArgs eventArgs)
+	{
+		if (eventArgs.Value == null) return;
+
+		bool isChecked = (bool)eventArgs.Value;
+
+		if (isChecked)
+		{
+			await _jsRuntime.InvokeVoidAsync("camShift", true);
+		}
+		else
+		{
+			await _jsRuntime.InvokeVoidAsync("reload");
+		}
+	}
+
+	//tensorflow.js를 사용한 화재 감지
+	public async Task tfjs(ChangeEventArgs eventArgs)
+	{
+		if (eventArgs.Value == null) return;
+
+		bool isChecked = (bool)eventArgs.Value;
+
+		if (isChecked)
+		{
+			await _jsRuntime.InvokeVoidAsync("tfjs", true);
+		}
+		else
+		{
+			await _jsRuntime.InvokeVoidAsync("reload");
+		}
+	}
+
+	public async ValueTask DisposeAsync()
+	{
+		if (isWebRTC)
+		{
+			isWebRTC = false;
+			await InvokeAsync(StateHasChanged);
+		}
+	}
 }

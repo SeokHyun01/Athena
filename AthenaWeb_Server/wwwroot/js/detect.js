@@ -18,7 +18,7 @@ let _characteristic;   //전역변수로 ble characteristic 할당
 let _Dotnet;  //전역변수로 dotnet 객체 할당
 let _userId;
 let _cameraId;
-let _isCamshift = false;
+let _isCamShift = false;
 let _isTfjs = false;
 let sendToVideo = [];
 let size = 1;   // 사진 -> 영상으로 변환할 크기 1 -> 10장 을 1개의 영상으로 변환, 2 -> 20장을 1개의 영상으로 변환
@@ -97,7 +97,7 @@ window.SetMqtt = () => {
                 let data = JSON.parse(message.payloadString);
                 if (data.CameraId == _cameraId) {
 
-                    if (canvasOutput.getAttribute("hidden") != null && _isCamshift == true) {
+                    if (canvasOutput.getAttribute("hidden") != null && _isCamShift == true) {
                         canvasOutput.removeAttribute("hidden");
                         video.setAttribute("hidden", true);
                     }
@@ -153,8 +153,8 @@ window.reload = () => {
 }
 
 //opencv.js 를 이용한 움직임 감지
-window.Camshift = (isCamshift) => {
-    _isCamshift = isCamshift;
+window.camShift = (isCamShift) => {
+    _isCamShift = isCamShift;
 
     // 일정 시간이 지나면, mqtt 전송
     let time1;

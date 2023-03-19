@@ -1,3 +1,6 @@
 ﻿@page "/"
 
+@attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
+
+
 <NavLink href=@($"camera") class="btn btn-primary my-2">내 카메라 보기</NavLink>
