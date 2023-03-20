@@ -1,5 +1,8 @@
 ﻿@page
-@inject SignInManager<IdentityUser> _signInManager
+
+@using Athena_DataAccess;
+
+@inject SignInManager<AppUser> _signInManager
 
 @functions {
 	public async Task<IActionResult> OnGet()
