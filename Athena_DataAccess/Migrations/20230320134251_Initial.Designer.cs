@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AthenaDataAccess.Migrations
 {
     [DbContext(typeof(AthenaAppDbContext))]
-    [Migration("20230318045742_Initial")]
+    [Migration("20230320134251_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -127,6 +127,27 @@ namespace AthenaDataAccess.Migrations
                     b.ToTable("EventVideos");
                 });
 
+            modelBuilder.Entity("Athena_DataAccess.FCMInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("FCMInfo");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -188,6 +209,10 @@ namespace AthenaDataAccess.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
@@ -238,6 +263,10 @@ namespace AthenaDataAccess.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -319,6 +348,24 @@ namespace AthenaDataAccess.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Athena_DataAccess.AppUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.HasDiscriminator().HasValue("AppUser");
+                });
+
+            modelBuilder.Entity("Athena_DataAccess.FCMInfo", b =>
+                {
+                    b.HasOne("Athena_DataAccess.AppUser", "User")
+                        .WithMany("FCMKeys")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -368,6 +415,11 @@ namespace AthenaDataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Athena_DataAccess.AppUser", b =>
+                {
+                    b.Navigation("FCMKeys");
                 });
 #pragma warning restore 612, 618
         }

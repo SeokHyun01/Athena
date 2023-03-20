@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Athena_DataAccess
 {
-	public class ApplicationUser : IdentityUser
+	public class AppUser : IdentityUser
 	{
-		public ISet<string> FCMKey { get; set; }
+		public IEnumerable<FCMInfo> FCMKeys { get; set; }
 	}
 }

@@ -21,6 +21,6 @@ namespace Athena_Models
 		[DataType(DataType.Password)]
 		[Compare("Password", ErrorMessage = "비밀번호가 일치하지 않습니다.")]
 		public string ConfirmPassword { get; set; }
-		public string FCMKey { get; set; }
+		public string FCMToken { get; set; }
 	}
 }

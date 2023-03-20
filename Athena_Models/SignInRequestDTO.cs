@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Athena_DataAccess;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -16,6 +17,6 @@ namespace Athena_Models
 		[Required(ErrorMessage = "비밀번호를 입력해 주세요.")]
 		[DataType(DataType.Password)]
 		public string Password { get; set; }
-		public string FCMKey { get; set; }
+		public string FCMToken { get; set; }
 	}
 }

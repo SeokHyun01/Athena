@@ -1,4 +1,5 @@
 ﻿using Athena_Common;
+using Athena_DataAccess;
 using Athena_DataAccess.Data;
 using AthenaWeb_Server.Service.IService;
 using Microsoft.AspNetCore.Identity;
@@ -8,12 +9,12 @@ namespace AthenaWeb_Server.Service
 {
 	public class DbInitializer : IDbInitializer
 	{
-		private readonly UserManager<IdentityUser> _userManager;
+		private readonly UserManager<AppUser> _userManager;
 		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly AthenaAppDbContext _db;
 		private readonly ILogger<DbInitializer> _logger;
 
-		public DbInitializer(UserManager<IdentityUser> userManager,
+		public DbInitializer(UserManager<AppUser> userManager,
 			RoleManager<IdentityRole> roleManager,
 			AthenaAppDbContext db,
 			ILogger<DbInitializer> logger)
@@ -43,7 +44,7 @@ namespace AthenaWeb_Server.Service
 					return;
 				}
 
-				IdentityUser user = new()
+				AppUser user = new()
 				{
 					UserName = "admin@athnea.com",
 					Email = "admin@athnea.com",

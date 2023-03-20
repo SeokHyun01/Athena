@@ -4,9 +4,11 @@ using Athena_Models;
 using AthenaWeb_API.Helper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
@@ -16,15 +18,15 @@ namespace AthenaWeb_API.Controllers
 	[ApiController]
 	public class AccountController : Controller
 	{
-		private readonly SignInManager<ApplicationUser> _signInManager;
-		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly SignInManager<AppUser> _signInManager;
+		private readonly UserManager<AppUser> _userManager;
 		private readonly ILogger<AccountController> _logger;
 		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly APISettings _apiSettings;
 
 
-		public AccountController(SignInManager<ApplicationUser> signInManager,
-			UserManager<ApplicationUser> userManager,
+		public AccountController(SignInManager<AppUser> signInManager,
+			UserManager<AppUser> userManager,
 			ILogger<AccountController> logger,
 			RoleManager<IdentityRole> roleManager,
 			IOptions<APISettings> options)
@@ -44,15 +46,11 @@ namespace AthenaWeb_API.Controllers
 				return BadRequest();
 			}
 
-			var user = new ApplicationUser
+			var user = new AppUser
 			{
 				UserName = signUpRequest.Email,
 				Email = signUpRequest.Email,
-				EmailConfirmed = true,
-				FCMKey = new HashSet<string>()
-				{
-					signUpRequest.FCMKey
-				}	
+				EmailConfirmed = true
 			};
 			var result = await _userManager.CreateAsync(user, signUpRequest.Password);
 			if (!result.Succeeded)
@@ -62,6 +60,23 @@ namespace AthenaWeb_API.Controllers
 					IsSucceeded = false,
 					Errors = result.Errors.Select(u => u.Description)
 				});
+			}
+
+			var createdUser = await _userManager.FindByEmailAsync(signUpRequest.Email);
+			var userId = createdUser?.Id;
+			if (string.IsNullOrEmpty(userId))
+			{
+				throw new ArgumentNullException(nameof(userId));
+			}
+			user.FCMKeys.ToList().Add(new FCMInfo()
+			{
+				UserId = userId,
+				Token = signUpRequest.FCMToken
+			});
+			var updateResult = await _userManager.UpdateAsync(user);
+			if (!updateResult.Succeeded)
+			{
+				throw new Exception("유저의 정보를 업데이트하는 데 실패했습니다.");
 			}
 
 			var roleResult = await _userManager.AddToRoleAsync(user, SD.ROLE_CUSTOMER);
@@ -98,8 +113,20 @@ namespace AthenaWeb_API.Controllers
 					});
 				}
 
-				user.FCMKey.Add(signInRequest.FCMKey);
-				await _userManager.UpdateAsync(user);
+				var newFcmInfo = new FCMInfo()
+				{
+					UserId = user.Id,
+					Token = signInRequest.FCMToken,
+				};
+				if (!user.FCMKeys.Any(x => x.Token == newFcmInfo.Token))
+				{
+					user.FCMKeys.ToList().Add(newFcmInfo);
+				}
+				var updateResult = await _userManager.UpdateAsync(user);
+				if (!updateResult.Succeeded)
+				{
+					throw new Exception("유저의 정보를 업데이트하는 데 실패했습니다.");
+				}
 
 				var claims = await GetClaims(user);
 				var signInCredentials = GetSigningCredentials();

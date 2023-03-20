@@ -19,5 +19,6 @@ namespace Athena_DataAccess.Data
 		public DbSet<EventHeader> EventHeaders { get; set; }
 		public DbSet<EventBody> EventBodies { get; set; }
 		public DbSet<EventVideo> EventVideos { get; set; }
+		public DbSet<AppUser> AppUsers { get; set; }
 	}
 }

@@ -36,7 +36,7 @@ builder.Services.AddDbContext<AthenaAppDbContext>(options =>
 //{
 //	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 //});
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<AppUser, IdentityRole>()
 	.AddDefaultTokenProviders().AddDefaultUI().AddEntityFrameworkStores<AthenaAppDbContext>();
 //
 var factory = new MqttFactory();

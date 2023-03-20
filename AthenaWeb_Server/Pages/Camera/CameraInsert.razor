@@ -2,7 +2,7 @@
 
 @inject ICameraRepository _cameraRepository
 @inject NavigationManager _navigationManager
-@inject UserManager<ApplicationUser> _userManager
+@inject UserManager<AppUser> _userManager
 
 @attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
 
@@ -46,7 +46,7 @@
 
 	private CameraDTO Camera { get; set; } = new();
 
-	private ApplicationUser User { get; set; }
+	private AppUser User { get; set; }
 
 
 	private async Task InsertCamera()
