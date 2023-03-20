@@ -1,6 +1,6 @@
 ﻿@page "/"
 
-@inject UserManager<IdentityUser> _userManager
+@inject UserManager<AppUser> _userManager
 @inject NavigationManager _navigationManager
 
 @attribute [Authorize(Roles = SD.ROLE_ADMIN)]
