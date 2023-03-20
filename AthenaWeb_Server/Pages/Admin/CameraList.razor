@@ -1,0 +1,129 @@
+﻿@page "/admin/camera"
+
+@inject ICameraRepository _cameraRepository
+@inject IJSRuntime _jsRuntime
+
+@attribute [Authorize(Roles = SD.ROLE_ADMIN)]
+
+
+<div class="container my-5">
+	<div class="form-group">
+		<h1 class="text-center">카메라 리스트</h1>
+	</div>
+	@if (Cameras.Any())
+	{
+		<table class="table">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Image</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var camera in Cameras)
+				{
+					<tr>
+						<td>@($"Camera {camera.Id}")</td>
+						<td>@(camera.Name)</td>
+						<td>
+							<div class="d-flex flex-column align-items-start">
+								<NavLink href=@($"camera/{camera.Id}") class="btn btn-primary mb-3">
+									카메라 보기
+								</NavLink>
+								<img id=@($"thumbnailImage{camera.Id}") />
+							</div>
+						</td>
+						<td>
+							<button class="btn btn-danger mt-2" @onclick="()=>HandleDelete(camera.Id)">삭제</button>
+							<input id=@($"angleInput{camera.Id}") type="range" value=@(camera.Angle) min="0" max="180" step="1" @onchange="(args)=>SetCameraAngle(args, camera.Id)" />
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+	else
+	{
+		@if (IsLoading)
+		{
+			<div class="spinner-border text-primary" role="status"></div>
+		}
+
+		else
+		{
+			<p>No recrods found.</p>
+		}
+	}
+</div>
+
+
+@code {
+	private bool IsLoading { get; set; }
+
+	private IEnumerable<CameraDTO> Cameras { get; set; } = new List<CameraDTO>();
+
+	private IMqttClient? MqttClient { get; set; }
+
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await LoadCameras();
+		}
+	}
+
+	private async ValueTask LoadCameras()
+	{
+		IsLoading = true;
+		StateHasChanged();
+
+		Cameras = await _cameraRepository.GetAll();
+
+		IsLoading = false;
+		StateHasChanged();
+	}
+
+	private async Task HandleDelete(int cameraId)
+	{
+		if (cameraId > 0)
+		{
+			await LoadCameras();
+		}
+	}
+
+	private async Task SetCameraAngle(ChangeEventArgs args, int cameraId)
+	{
+		if (args.Value != null)
+		{
+			var angle = int.Parse(args.Value.ToString());
+			var currentCamera = await _cameraRepository.Get(cameraId);
+			if (currentCamera != null)
+			{
+				currentCamera.Angle = angle;
+				await _cameraRepository.Update(currentCamera);
+			}
+
+			var updateCamera = new UpdateCamera
+				{
+					CameraId = cameraId,
+					Degree = angle
+				};
+			var updateCameraJson = JsonSerializer.Serialize<UpdateCamera>(updateCamera);
+
+			if (MqttClient != null && MqttClient.IsConnected)
+			{
+				var applicationMessage = new MqttApplicationMessageBuilder()
+				.WithTopic("camera/update/degree/syn")
+				.WithPayload(updateCameraJson)
+				.Build();
+				await MqttClient.PublishAsync(applicationMessage, CancellationToken.None);
+
+				var InputId = $"angleInput{updateCamera.CameraId}";
+				await _jsRuntime.InvokeVoidAsync("setInputDisabled", InputId, true);
+			}
+		}
+	}
+}

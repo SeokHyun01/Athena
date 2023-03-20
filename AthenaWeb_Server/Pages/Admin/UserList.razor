@@ -1,6 +1,6 @@
-﻿@page "/user"
+﻿@page "/admin/user"
 
-@inject UserManager<IdentityUser> _userManager
+@inject UserManager<ApplicationUser> _userManager
 @inject NavigationManager _navigationManager
 @inject IJSRuntime _jsRuntime
 
@@ -50,7 +50,7 @@
 
 
 @code {
-	private IEnumerable<IdentityUser> Users { get; set; } = new List<IdentityUser>();
+	private IEnumerable<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
 
 	private bool IsLoading { get; set; }
 
@@ -74,7 +74,7 @@
 		StateHasChanged();
 	}
 
-	private async Task HandleDelete(IdentityUser user)
+	private async Task HandleDelete(ApplicationUser user)
 	{
 		if (user is not null)
 		{

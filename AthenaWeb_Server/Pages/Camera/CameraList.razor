@@ -4,7 +4,7 @@
 @inject IJSRuntime _jsRuntime
 @inject NavigationManager _navigationManager
 @inject ICameraRepository _cameraRepository
-@inject UserManager<IdentityUser> _userManager
+@inject UserManager<ApplicationUser> _userManager
 
 @attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
 
@@ -46,8 +46,7 @@
 						<td>
 							<div class="d-flex flex-column align-items-start">
 								<div class="d-flex">
-									<button class="btn btn-primary me-4" id="qrCodeButton"
-									@onclick="@(async() => { showQRCode = !showQRCode; await InvokeAsync(StateHasChanged); })">
+									<button class="btn btn-primary me-4" id="qrCodeButton" @onclick="@(async() => { showQRCode = !showQRCode; await InvokeAsync(StateHasChanged); })">
 										카메라 등록
 									</button>
 									<NavLink class="btn btn-success" href=@($"camera/{camera.Id}/event")>이벤트 확인</NavLink>
@@ -123,7 +122,7 @@
 
 	private int selectedCameraId = 0;
 
-	private IdentityUser User { get; set; }
+	private ApplicationUser User { get; set; }
 
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)

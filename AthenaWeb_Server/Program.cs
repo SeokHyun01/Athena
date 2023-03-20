@@ -13,6 +13,7 @@ using Athena_Business.Repository;
 using Microsoft.AspNetCore.ResponseCompression;
 using AthenaWeb_Server.Hubs;
 using Syncfusion.Blazor;
+using Athena_DataAccess;
 
 Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MTE0ODUyNEAzMjMwMmUzNDJlMzBkanVsRTFxNmNIekllUDZoRG8zMW5mWFhFQXp5RHVQV3gzdlJISGxWbldnPQ==");
 
@@ -35,7 +36,7 @@ builder.Services.AddDbContext<AthenaAppDbContext>(options =>
 //{
 //	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 //});
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 	.AddDefaultTokenProviders().AddDefaultUI().AddEntityFrameworkStores<AthenaAppDbContext>();
 //
 var factory = new MqttFactory();

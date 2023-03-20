@@ -1,4 +1,5 @@
 ﻿using Athena_Common;
+using Athena_DataAccess;
 using Athena_Models;
 using AthenaWeb_API.Helper;
 using Microsoft.AspNetCore.Identity;
@@ -15,15 +16,15 @@ namespace AthenaWeb_API.Controllers
 	[ApiController]
 	public class AccountController : Controller
 	{
-		private readonly SignInManager<IdentityUser> _signInManager;
-		private readonly UserManager<IdentityUser> _userManager;
+		private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly ILogger<AccountController> _logger;
 		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly APISettings _apiSettings;
 
 
-		public AccountController(SignInManager<IdentityUser> signInManager,
-			UserManager<IdentityUser> userManager,
+		public AccountController(SignInManager<ApplicationUser> signInManager,
+			UserManager<ApplicationUser> userManager,
 			ILogger<AccountController> logger,
 			RoleManager<IdentityRole> roleManager,
 			IOptions<APISettings> options)
@@ -43,11 +44,15 @@ namespace AthenaWeb_API.Controllers
 				return BadRequest();
 			}
 
-			var user = new IdentityUser
+			var user = new ApplicationUser
 			{
 				UserName = signUpRequest.Email,
 				Email = signUpRequest.Email,
-				EmailConfirmed = true
+				EmailConfirmed = true,
+				FCMKey = new HashSet<string>()
+				{
+					signUpRequest.FCMKey
+				}	
 			};
 			var result = await _userManager.CreateAsync(user, signUpRequest.Password);
 			if (!result.Succeeded)
@@ -69,7 +74,7 @@ namespace AthenaWeb_API.Controllers
 				});
 			}
 
-			return Ok(user.NormalizedUserName);
+			return Ok(201);
 		}
 
 		[HttpPost]
@@ -93,6 +98,9 @@ namespace AthenaWeb_API.Controllers
 					});
 				}
 
+				user.FCMKey.Add(signInRequest.FCMKey);
+				await _userManager.UpdateAsync(user);
+
 				var claims = await GetClaims(user);
 				var signInCredentials = GetSigningCredentials();
 				var tokenOptions = new JwtSecurityToken(
@@ -111,7 +119,7 @@ namespace AthenaWeb_API.Controllers
 					{
 						Id = user.Id,
 						Name = user.UserName,
-						Email = user.Email
+						Email = user.Email,
 					}
 				});
 			}
@@ -123,8 +131,6 @@ namespace AthenaWeb_API.Controllers
 					ErrorMessage = "Id 또는 비밀번호를 잘못 입력했습니다."
 				});
 			}
-
-			return StatusCode(201);
 		}
 
 		private SigningCredentials GetSigningCredentials()

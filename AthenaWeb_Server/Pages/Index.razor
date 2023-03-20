@@ -1,6 +1,32 @@
 ﻿@page "/"
 
+@inject UserManager<IdentityUser> _userManager
+@inject NavigationManager _navigationManager
+
+@attribute [Authorize(Roles = SD.ROLE_ADMIN)]
 @attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
 
 
-<NavLink href=@($"camera") class="btn btn-primary my-2">내 카메라 보기</NavLink>
+<NavLink href=@($"camera") class="btn btn-primary my-2">내 카메라</NavLink>
+
+
+@code {
+	[CascadingParameter]
+	public Task<AuthenticationState> _authState { get; set; }
+
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			var authState = await _authState;
+			var userName = authState.User.Identity.Name;
+			var user = await _userManager.FindByEmailAsync(userName);
+			var isAdmin = await _userManager.IsInRoleAsync(user, SD.ROLE_ADMIN);
+			if (isAdmin)
+			{
+				_navigationManager.NavigateTo("admin");
+			}
+		}
+	}
+}

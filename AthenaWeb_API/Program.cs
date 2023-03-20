@@ -1,5 +1,6 @@
 using Athena_Business.Repository;
 using Athena_Business.Repository.IRepository;
+using Athena_DataAccess;
 using Athena_DataAccess.Data;
 using AthenaWeb_API.Controllers;
 using AthenaWeb_API.Helper;
@@ -49,7 +50,7 @@ builder.Services.AddDbContext<AthenaAppDbContext>(options =>
 //{
 //	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 //});
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 	.AddDefaultTokenProviders().AddEntityFrameworkStores<AthenaAppDbContext>();
 
 builder.Services.AddScoped<IEventRepository, EventRepository>();
