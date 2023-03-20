@@ -55,9 +55,9 @@ namespace Athena_Business.Repository
 			throw new NotImplementedException();
 		}
 
-		public ValueTask<IEnumerable<EventVideoDTO>> GetAll()
+		public async ValueTask<IEnumerable<EventVideoDTO>> GetAll()
 		{
-			throw new NotImplementedException();
+			return _mapper.Map<IEnumerable<EventVideo>, IEnumerable<EventVideoDTO>>(_db.EventVideos);
 		}
 
 		public async ValueTask<IEnumerable<EventVideoDTO>> GetAllByCameraId(int cameraId)
