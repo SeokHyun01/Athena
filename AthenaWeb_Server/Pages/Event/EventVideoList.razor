@@ -68,8 +68,12 @@
 		IsLoading = true;
 		StateHasChanged();
 
-		var videos = await _eventVideoRepository.GetAllByCameraId(CameraId);
-		EventVideos = Enumerable.Reverse<EventVideoDTO>(videos);
+		var eventVideos = await _eventVideoRepository.GetAll();
+		if (eventVideos != null && eventVideos.Any())
+		{
+			var target = eventVideos.Where(eventVideo => eventVideo.EventHeaders.Any(eventHeader => eventHeader.CameraId == CameraId));
+			EventVideos = Enumerable.Reverse<EventVideoDTO>(target);
+		}
 
 		IsLoading = false;
 		StateHasChanged();

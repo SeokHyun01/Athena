@@ -24,74 +24,71 @@ namespace AthenaWeb_API.Controllers
 		}
 
 		[HttpPost]
-		public async ValueTask<IActionResult> Create([FromBody] EventDTO eventObj)
+		public async ValueTask<IActionResult> Create([FromBody] EventDTO request)
 		{
 			try
 			{
-				if (!string.IsNullOrEmpty(eventObj.EventHeader.Path))
+				var imageBytes = Convert.FromBase64String(request.EventHeader.Path.Replace("data:image/jpeg;base64,", string.Empty));
+				if (imageBytes == null || !imageBytes.Any())
 				{
-					var imageBytes = Convert.FromBase64String(eventObj.EventHeader.Path.Replace("data:image/jpeg;base64,", string.Empty));
+					return NotFound();
+				}
+				using (var stream = new MemoryStream(imageBytes))
+				{
+					var dir = "/home/shyoun/Desktop/Athena/AthenaWeb_Server/wwwroot/images";
+					var path = Path.Combine(dir, $"{Guid.NewGuid()}.jpeg");
+					await stream.CopyToAsync(new FileStream(path, FileMode.Create));
+					request.EventHeader.Path = path;
+				}
 
-					using (var stream = new MemoryStream(imageBytes))
+				var createEventHeader = request.EventHeader;
+				var createEventBodies = request.EventBodies;
+
+				if (request.EventHeader.IsRequiredObjectDetection)
+				{
+					var content = JsonConvert.SerializeObject(request);
+					var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+					var response = await _client.PostAsync("http://localhost:8000/event/create/", bodyContent);
+					var contentTemp = await response.Content.ReadAsStringAsync();
+					var result = JsonConvert.DeserializeObject<ObjectDetectionResponseDTO>(contentTemp);
+					if (response.IsSuccessStatusCode)
 					{
-						//var root = "C:\\Users\\hisn16.DESKTOP-HGVGADP\\source\\repos\\Athena\\AthenaWeb_Server\\wwwroot\\images";
-						var root = "/home/shyoun/Desktop/Athena/AthenaWeb_Server/wwwroot/images";
-						var filePath = Path.Combine(root, $"{Guid.NewGuid()}.jpeg");
-						await stream.CopyToAsync(new FileStream(filePath, FileMode.Create));
-						eventObj.EventHeader.Path = filePath;
-					}
+						createEventHeader = result.EventHeader;
+						createEventBodies = result.EventBodies;
 
-					var insertHeader = eventObj.EventHeader;
-					var insertBodies = eventObj.EventBodies;
-
-					if (eventObj.EventHeader.IsRequiredObjectDetection)
-					{
-						_logger.LogInformation(eventObj.EventHeader.Path);
-						var content = JsonConvert.SerializeObject(eventObj);
-						_logger.LogInformation(content);
-						var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-						var response = await _client.PostAsync("http://localhost:8000/api/event/events/", bodyContent);
-						var contentTemp = await response.Content.ReadAsStringAsync();
-						var result = JsonConvert.DeserializeObject<CreateEventResponseDTO>(contentTemp);
-						if (response.IsSuccessStatusCode)
+						if (createEventBodies == null || !createEventBodies.Any())
 						{
-							insertHeader = result.EventHeader;
-							insertBodies = result.EventBodies;
-
-							if (insertBodies == null || !insertBodies.Any())
+							if (System.IO.File.Exists(createEventHeader.Path))
 							{
-								if (System.IO.File.Exists(insertHeader.Path))
-								{
-									System.IO.File.Delete(insertHeader.Path);
-								}
-
-								return Ok(0);
+								System.IO.File.Delete(createEventHeader.Path);
 							}
-						}
-						else
-						{
-							throw new Exception(result.Error);
+
+							return Ok();
 						}
 					}
-
-					var createEvent = new EventDTO
+					else
 					{
-						EventHeader = insertHeader,
-						EventBodies = insertBodies
-					};
-
-					var createdEvent = await _eventRepository.Create(createEvent);
-
-					return Ok(createdEvent.EventHeader.Id);
+						throw new Exception(result.Error);
+					}
 				}
-				else
+
+				var createEvent = new EventDTO
 				{
-					throw new ArgumentNullException(eventObj.EventHeader.Path);
-				}
+					EventHeader = createEventHeader,
+					EventBodies = createEventBodies
+				};
+
+				var createdEvent = await _eventRepository.Create(createEvent);
+
+				return Ok(createdEvent.EventHeader.Id);
 			}
 			catch (Exception ex)
 			{
-				return BadRequest($"타입 \'{ex.GetType().FullName}\'의 에러가 발생했습니다: {ex.Message}");
+				var response = new
+				{
+					Error = $"타입 \'{ex.GetType().FullName}\'의 에러가 발생했습니다: {ex.Message}",
+				};
+				return new ObjectResult(response) { StatusCode = StatusCodes.Status500InternalServerError };
 			}
 		}
 	}

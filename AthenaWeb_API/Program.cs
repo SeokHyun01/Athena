@@ -53,7 +53,11 @@ builder.Services.AddDbContext<AthenaAppDbContext>(options =>
 builder.Services.AddIdentity<AppUser, IdentityRole>()
 	.AddDefaultTokenProviders().AddEntityFrameworkStores<AthenaAppDbContext>();
 
+builder.Services.AddScoped<ICameraRepository, CameraRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IEventHeaderRepository, EventHeaderRepository>();
+builder.Services.AddScoped<IFCMInfoRepository, FCMInfoRepository>();
+
 builder.Services.AddHttpClient<EventController>();
 
 var apiSettingsSection = builder.Configuration.GetSection("APISettings");

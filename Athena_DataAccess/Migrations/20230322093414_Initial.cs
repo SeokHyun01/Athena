@@ -72,74 +72,11 @@ namespace AthenaDataAccess.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Cameras",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Angle = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cameras", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "EventBodies",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    EventHeaderId = table.Column<int>(type: "int", nullable: false),
-                    Label = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Left = table.Column<int>(type: "int", nullable: false),
-                    Right = table.Column<int>(type: "int", nullable: false),
-                    Top = table.Column<int>(type: "int", nullable: false),
-                    Bottom = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EventBodies", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "EventHeaders",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    CameraId = table.Column<int>(type: "int", nullable: false),
-                    Created = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Path = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsRequiredObjectDetection = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    EventVideoId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EventHeaders", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "EventVideos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    CameraId = table.Column<int>(type: "int", nullable: false),
                     Path = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
@@ -277,7 +214,31 @@ namespace AthenaDataAccess.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "FCMInfo",
+                name: "Cameras",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Angle = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cameras", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Cameras_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "FCMInfos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -289,11 +250,69 @@ namespace AthenaDataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FCMInfo", x => x.Id);
+                    table.PrimaryKey("PK_FCMInfos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FCMInfo_AspNetUsers_UserId",
+                        name: "FK_FCMInfos_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "EventHeaders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Created = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Path = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsRequiredObjectDetection = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    CameraId = table.Column<int>(type: "int", nullable: false),
+                    EventVideoId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventHeaders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EventHeaders_Cameras_CameraId",
+                        column: x => x.CameraId,
+                        principalTable: "Cameras",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventHeaders_EventVideos_EventVideoId",
+                        column: x => x.EventVideoId,
+                        principalTable: "EventVideos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "EventBodies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Label = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Left = table.Column<int>(type: "int", nullable: false),
+                    Right = table.Column<int>(type: "int", nullable: false),
+                    Top = table.Column<int>(type: "int", nullable: false),
+                    Bottom = table.Column<int>(type: "int", nullable: false),
+                    EventHeaderId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventBodies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EventBodies_EventHeaders_EventHeaderId",
+                        column: x => x.EventHeaderId,
+                        principalTable: "EventHeaders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -337,8 +356,28 @@ namespace AthenaDataAccess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_FCMInfo_UserId",
-                table: "FCMInfo",
+                name: "IX_Cameras_UserId",
+                table: "Cameras",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventBodies_EventHeaderId",
+                table: "EventBodies",
+                column: "EventHeaderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventHeaders_CameraId",
+                table: "EventHeaders",
+                column: "CameraId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventHeaders_EventVideoId",
+                table: "EventHeaders",
+                column: "EventVideoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FCMInfos_UserId",
+                table: "FCMInfos",
                 column: "UserId");
         }
 
@@ -361,22 +400,22 @@ namespace AthenaDataAccess.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Cameras");
+                name: "EventBodies");
 
             migrationBuilder.DropTable(
-                name: "EventBodies");
+                name: "FCMInfos");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "EventHeaders");
 
             migrationBuilder.DropTable(
+                name: "Cameras");
+
+            migrationBuilder.DropTable(
                 name: "EventVideos");
-
-            migrationBuilder.DropTable(
-                name: "FCMInfo");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

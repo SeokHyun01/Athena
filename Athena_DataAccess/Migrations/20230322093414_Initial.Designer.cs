@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AthenaDataAccess.Migrations
 {
     [DbContext(typeof(AthenaAppDbContext))]
-    [Migration("20230320134251_Initial")]
+    [Migration("20230322093414_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -37,9 +37,11 @@ namespace AthenaDataAccess.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Cameras");
                 });
@@ -71,6 +73,8 @@ namespace AthenaDataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EventHeaderId");
+
                     b.ToTable("EventBodies");
                 });
 
@@ -96,11 +100,11 @@ namespace AthenaDataAccess.Migrations
                     b.Property<string>("Path")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("CameraId");
+
+                    b.HasIndex("EventVideoId");
 
                     b.ToTable("EventHeaders");
                 });
@@ -111,14 +115,7 @@ namespace AthenaDataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("CameraId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -145,7 +142,7 @@ namespace AthenaDataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("FCMInfo");
+                    b.ToTable("FCMInfos");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -355,10 +352,51 @@ namespace AthenaDataAccess.Migrations
                     b.HasDiscriminator().HasValue("AppUser");
                 });
 
+            modelBuilder.Entity("Athena_DataAccess.Camera", b =>
+                {
+                    b.HasOne("Athena_DataAccess.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Athena_DataAccess.EventBody", b =>
+                {
+                    b.HasOne("Athena_DataAccess.EventHeader", "EventHeader")
+                        .WithMany("EventBodies")
+                        .HasForeignKey("EventHeaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EventHeader");
+                });
+
+            modelBuilder.Entity("Athena_DataAccess.EventHeader", b =>
+                {
+                    b.HasOne("Athena_DataAccess.Camera", "Camera")
+                        .WithMany()
+                        .HasForeignKey("CameraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Athena_DataAccess.EventVideo", "EventVideo")
+                        .WithMany("EventHeaders")
+                        .HasForeignKey("EventVideoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Camera");
+
+                    b.Navigation("EventVideo");
+                });
+
             modelBuilder.Entity("Athena_DataAccess.FCMInfo", b =>
                 {
                     b.HasOne("Athena_DataAccess.AppUser", "User")
-                        .WithMany("FCMKeys")
+                        .WithMany("FCMInfos")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -417,9 +455,19 @@ namespace AthenaDataAccess.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Athena_DataAccess.EventHeader", b =>
+                {
+                    b.Navigation("EventBodies");
+                });
+
+            modelBuilder.Entity("Athena_DataAccess.EventVideo", b =>
+                {
+                    b.Navigation("EventHeaders");
+                });
+
             modelBuilder.Entity("Athena_DataAccess.AppUser", b =>
                 {
-                    b.Navigation("FCMKeys");
+                    b.Navigation("FCMInfos");
                 });
 #pragma warning restore 612, 618
         }

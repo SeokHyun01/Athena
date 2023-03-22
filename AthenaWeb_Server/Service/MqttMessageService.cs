@@ -15,16 +15,24 @@ namespace AthenaWeb_Server.Service
 		private readonly ICameraRepository _cameraRepository;
 		private readonly IEventRepository _eventRepository;
 		private readonly IEventVideoRepository _eventVideoRepository;
+		private readonly IEventHeaderRepository _eventHeaderRepository;
 
 		private bool _disposedValue;
 
 
-		public MqttMessageService(IMqttClient mqttClient, ICameraRepository cameraRepository, IEventRepository eventRepository, IEventVideoRepository eventVideoRepository)
+		public MqttMessageService(
+			IMqttClient mqttClient,
+			ICameraRepository cameraRepository,
+			IEventRepository eventRepository,
+			IEventVideoRepository eventVideoRepository,
+			IEventHeaderRepository eventHeaderRepository
+			)
 		{
 			_mqttClient = mqttClient;
 			_cameraRepository = cameraRepository;
 			_eventRepository = eventRepository;
 			_eventVideoRepository = eventVideoRepository;
+			_eventHeaderRepository = eventHeaderRepository;
 		}
 
 		public async ValueTask ConnectAsync(string brokerHost, int brokerPort)
@@ -75,14 +83,12 @@ namespace AthenaWeb_Server.Service
 
 		public async ValueTask<EventDTO> CreateEvent(EventDTO eventObj) => await _eventRepository.Create(eventObj);
 		
-		public async ValueTask<IEnumerable<EventHeaderDTO>> GetEventHeader(IEnumerable<int>? ids = null) => await _eventRepository.GetHeader(ids);
+		public async ValueTask<IEnumerable<EventHeaderDTO>> GetEventHeaders(IEnumerable<int>? ids = null) => await _eventHeaderRepository.GetAll(ids);
 
 		public async ValueTask<EventVideoDTO> CreateEventVideo(EventVideoDTO eventVideo) => await _eventVideoRepository.Create(eventVideo);
 
-		public async ValueTask<EventHeaderDTO?> UpdateEventHeader(EventHeaderDTO eventHeader) => await _eventRepository.UpdateHeader(eventHeader);
-
-		public async ValueTask<EventHeaderDTO?> DeleteEventHeaderPath(EventHeaderDTO eventHeader) => await _eventRepository.DeletePath(eventHeader);
-
+		public async ValueTask<EventHeaderDTO?> UpdateEventHeader(EventHeaderDTO eventHeader) => await _eventHeaderRepository.Update(eventHeader);
+		
 		public void Dispose() => Dispose(true);
 
 		protected virtual void Dispose(bool disposing)

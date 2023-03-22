@@ -9,6 +9,6 @@ namespace Athena_DataAccess
 {
 	public class AppUser : IdentityUser
 	{
-		public IEnumerable<FCMInfo> FCMKeys { get; set; }
+		public IEnumerable<FCMInfo> FCMInfos { get; set; }
 	}
 }

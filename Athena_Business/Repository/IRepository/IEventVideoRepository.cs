@@ -14,7 +14,5 @@ namespace Athena_Business.Repository.IRepository
 		ValueTask<int> Delete(int id);
 		ValueTask<EventVideoDTO?> Get(int id);
 		ValueTask<IEnumerable<EventVideoDTO>> GetAll();
-		ValueTask<IEnumerable<EventVideoDTO>> GetAllByUserId(string userId);
-		ValueTask<IEnumerable<EventVideoDTO>> GetAllByCameraId(int cameraId);
 	}
 }

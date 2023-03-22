@@ -1,6 +1,6 @@
 @page "/camera/{cameraId:int}/register"
 
-@inject IJSRuntime _Jsruntime
+@inject IJSRuntime _jsRuntime
 @inject NavigationManager _navigationManager
 
 @implements IAsyncDisposable
@@ -63,29 +63,29 @@
 			hubConnection.On<string>("OnConnected", async (senderId) =>
 			{
 				ConnectionId = senderId;
-				await _Jsruntime.InvokeVoidAsync("initializeCamera", ConnectionId, UserId.ToString(), CameraId);
+				await _jsRuntime.InvokeVoidAsync("initializeCamera", ConnectionId, UserId.ToString(), CameraId);
 			});
 
 			hubConnection.On("Welcome", async () =>
 			{
-				var offer = await _Jsruntime.InvokeAsync<string>("sendOffer");
+				var offer = await _jsRuntime.InvokeAsync<string>("sendOffer");
 				await hubConnection.SendAsync("SendOffer", offer, RoomName);
 			});
 
 			hubConnection.On<string>("ReceiveOffer", async (receivedOffer) =>
 			{
-				var answer = await _Jsruntime.InvokeAsync<string>("sendAnswer", receivedOffer);
+				var answer = await _jsRuntime.InvokeAsync<string>("sendAnswer", receivedOffer);
 				await hubConnection.SendAsync("SendAnswer", answer, RoomName);
 			});
 
 			hubConnection.On<string>("ReceiveAnswer", async (receivedAnswer) =>
 			{
-				await _Jsruntime.InvokeVoidAsync("receiveAnswer", receivedAnswer);
+				await _jsRuntime.InvokeVoidAsync("receiveAnswer", receivedAnswer);
 			});
 
 			hubConnection.On<string>("ReceiveIce", async (receivedIce) =>
 			{
-				await _Jsruntime.InvokeVoidAsync("receiveIce", receivedIce);
+				await _jsRuntime.InvokeVoidAsync("receiveIce", receivedIce);
 			});
 
 			await hubConnection.StartAsync();

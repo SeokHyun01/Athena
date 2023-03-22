@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace Athena_Models
 {
-	public class EventVideoDTO
+	public class FCMInfoDTO
 	{
 		public int Id { get; set; }
-		public string Path { get; set; }
-		public IEnumerable<EventHeaderDTO> EventHeaders { get; set; }
+		public string UserId { get; set; }
+		public AppUser User { get; set; }
+		public string Token { get; set; }
 	}
 }

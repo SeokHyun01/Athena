@@ -1,4 +1,5 @@
-﻿using Athena_Common;
+﻿using Athena_Business.Repository.IRepository;
+using Athena_Common;
 using Athena_DataAccess;
 using Athena_Models;
 using AthenaWeb_API.Helper;
@@ -23,19 +24,22 @@ namespace AthenaWeb_API.Controllers
 		private readonly ILogger<AccountController> _logger;
 		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly APISettings _apiSettings;
+		private readonly IFCMInfoRepository _fcmInfoRepository;
 
 
 		public AccountController(SignInManager<AppUser> signInManager,
 			UserManager<AppUser> userManager,
 			ILogger<AccountController> logger,
 			RoleManager<IdentityRole> roleManager,
-			IOptions<APISettings> options)
+			IOptions<APISettings> options,
+			IFCMInfoRepository fCMInfoRepository)
 		{
 			_signInManager = signInManager;
 			_userManager = userManager;
 			_logger = logger;
 			_roleManager = roleManager;
 			_apiSettings = options.Value;
+			_fcmInfoRepository = fCMInfoRepository;
 		}
 
 		[HttpPost]
@@ -63,21 +67,12 @@ namespace AthenaWeb_API.Controllers
 			}
 
 			var createdUser = await _userManager.FindByEmailAsync(signUpRequest.Email);
-			var userId = createdUser?.Id;
-			if (string.IsNullOrEmpty(userId))
+			var createdUserId = createdUser?.Id;
+			await _fcmInfoRepository.Create(new FCMInfoDTO()
 			{
-				throw new ArgumentNullException(nameof(userId));
-			}
-			user.FCMKeys.ToList().Add(new FCMInfo()
-			{
-				UserId = userId,
-				Token = signUpRequest.FCMToken
+				UserId = createdUserId,
+				Token = signUpRequest.FCMToken,
 			});
-			var updateResult = await _userManager.UpdateAsync(user);
-			if (!updateResult.Succeeded)
-			{
-				throw new Exception("유저의 정보를 업데이트하는 데 실패했습니다.");
-			}
 
 			var roleResult = await _userManager.AddToRoleAsync(user, SD.ROLE_CUSTOMER);
 			if (!roleResult.Succeeded)
@@ -113,19 +108,14 @@ namespace AthenaWeb_API.Controllers
 					});
 				}
 
-				var newFcmInfo = new FCMInfo()
+				var createFcmInfo = new FCMInfoDTO()
 				{
 					UserId = user.Id,
 					Token = signInRequest.FCMToken,
 				};
-				if (!user.FCMKeys.Any(x => x.Token == newFcmInfo.Token))
+				if (!user.FCMInfos.Any(x => x.Token == createFcmInfo.Token))
 				{
-					user.FCMKeys.ToList().Add(newFcmInfo);
-				}
-				var updateResult = await _userManager.UpdateAsync(user);
-				if (!updateResult.Succeeded)
-				{
-					throw new Exception("유저의 정보를 업데이트하는 데 실패했습니다.");
+					await _fcmInfoRepository.Create(createFcmInfo);
 				}
 
 				var claims = await GetClaims(user);

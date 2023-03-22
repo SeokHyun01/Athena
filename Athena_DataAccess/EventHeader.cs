@@ -12,11 +12,15 @@ namespace Athena_DataAccess
 	{
 		[Key]
 		public int Id { get; set; }
-		public string UserId { get; set; }
-		public int CameraId { get; set; }
 		public string Created { get; set; }
 		public string? Path { get; set; }
 		public bool IsRequiredObjectDetection { get; set; }
+		public int CameraId { get; set; }
+		[ForeignKey(nameof(CameraId))]
+		public Camera Camera { get; set; }
+		public IEnumerable<EventBody> EventBodies { get; set; }
 		public int EventVideoId { get; set; }
+		[ForeignKey(nameof(EventVideoId))]
+		public EventVideo EventVideo { get; set; }
 	}
 }

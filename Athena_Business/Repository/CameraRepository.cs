@@ -27,21 +27,15 @@ namespace Athena_Business.Repository
 			_logger = logger;
 		}
 
-		public async ValueTask<CameraDTO?> Create(CameraDTO objDTO)
+		public async ValueTask<CameraDTO> Create(CameraDTO objDTO)
 		{
 			try
 			{
 				var obj = _mapper.Map<CameraDTO, Camera>(objDTO);
-				if (string.IsNullOrEmpty(obj.UserId))
-				{
-					throw new ArgumentNullException(nameof(obj.UserId));
-				}
-
-				var addedObj = _db.Cameras.Add(obj);
+				var createdObj = _db.Cameras.Add(obj);
 				await _db.SaveChangesAsync();
 
-				return _mapper.Map<Camera, CameraDTO>(addedObj.Entity);
-
+				return _mapper.Map<Camera, CameraDTO>(createdObj.Entity);
 			}
 			catch (Exception ex)
 			{
@@ -52,7 +46,7 @@ namespace Athena_Business.Repository
 
 		public async ValueTask<int> Delete(int id)
 		{
-			var obj = await _db.Cameras.FirstOrDefaultAsync(u => u.Id == id);
+			var obj = await _db.Cameras.FirstOrDefaultAsync(x => x.Id == id);
 			if (obj != null)
 			{
 				_db.Cameras.Remove(obj);
@@ -64,7 +58,7 @@ namespace Athena_Business.Repository
 
 		public async ValueTask<CameraDTO?> Get(int id)
 		{
-			var obj = await _db.Cameras.FirstOrDefaultAsync(u => u.Id == id);
+			var obj = await _db.Cameras.Include(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
 			if (obj != null)
 			{
 				return _mapper.Map<Camera, CameraDTO>(obj);
@@ -72,21 +66,26 @@ namespace Athena_Business.Repository
 			return null;
 		}
 
-		public async ValueTask<IEnumerable<CameraDTO>> GetAll(string? userId = null)
+		public async ValueTask<IEnumerable<CameraDTO>> GetAll()
+		{
+			return _mapper.Map<IEnumerable<Camera>, IEnumerable<CameraDTO>>(_db.Cameras.Include(x => x.User));
+		}
+
+		public async ValueTask<IEnumerable<CameraDTO>> GetAllByUserId(string? userId = null)
 		{
 			if (!string.IsNullOrEmpty(userId))
 			{
-				return _mapper.Map<IEnumerable<Camera>, IEnumerable<CameraDTO>>(_db.Cameras.Where(u => u.UserId == userId));
+				return _mapper.Map<IEnumerable<Camera>, IEnumerable<CameraDTO>>(_db.Cameras.Where(x => x.UserId == userId).Include(x => x.User));
 			}
 			else
 			{
-				return _mapper.Map<IEnumerable<Camera>, IEnumerable<CameraDTO>>(_db.Cameras);
+				return _mapper.Map<IEnumerable<Camera>, IEnumerable<CameraDTO>>(_db.Cameras.Include(x => x.User));
 			}
 		}
 
 		public async ValueTask<CameraDTO?> Update(CameraDTO objDTO)
 		{
-			var objFromDb = await _db.Cameras.FirstOrDefaultAsync(u => u.Id == objDTO.Id);
+			var objFromDb = await _db.Cameras.FirstOrDefaultAsync(x => x.Id == objDTO.Id);
 			if (objFromDb != null)
 			{
 				// 업데이트

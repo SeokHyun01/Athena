@@ -65,14 +65,10 @@ namespace AthenaWeb_Server.Service
 								var createVideo = JsonSerializer.Deserialize<CreateVideo>(payload);
 								if (createVideo != null)
 								{
-									var headerList = (await _mqttMessageService.GetEventHeader(createVideo.EventHeaderIds)).ToList();
+									var headerList = (await _mqttMessageService.GetEventHeaders(createVideo.EventHeaderIds)).ToList();
 
 									if (headerList.Any())
 									{
-										var firstHeader = headerList.First();
-										var userId = firstHeader.UserId;
-										var cameraId = firstHeader.CameraId;
-
 										var imagePathList = new List<string>();
 										foreach (var header in headerList)
 										{
@@ -86,7 +82,7 @@ namespace AthenaWeb_Server.Service
 											}
 										}
 
-										if (imagePathList != null && imagePathList.Any())
+										if (imagePathList.Any())
 										{
 											var identifier = Guid.NewGuid().ToString();
 											for (int i = 0; i < imagePathList.Count; i++)
@@ -125,8 +121,6 @@ namespace AthenaWeb_Server.Service
 
 											var video = await _mqttMessageService.CreateEventVideo(new EventVideoDTO
 											{
-												UserId = userId,
-												CameraId = cameraId,
 												Path = videoPath
 											});
 

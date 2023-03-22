@@ -8,6 +8,6 @@ namespace Athena_Models
 {
 	public class CreateVideo
 	{
-		public List<int> EventHeaderIds { get; set; }
+		public IEnumerable<int> EventHeaderIds { get; set; }
 	}
 }

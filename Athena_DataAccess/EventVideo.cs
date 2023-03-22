@@ -12,8 +12,7 @@ namespace Athena_DataAccess
 	{
 		[Key]
 		public int Id { get; set; }
-		public string UserId { get; set; }
-		public int CameraId { get; set; }
 		public string Path { get; set; }
+		public IEnumerable<EventHeader> EventHeaders { get; set; }
 	}
 }

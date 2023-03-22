@@ -7,9 +7,12 @@ using System.Threading.Tasks;
 
 namespace Athena_Business.Repository.IRepository
 {
-	public interface IEventRepository
+	public interface IFCMInfoRepository
 	{
-		ValueTask<EventDTO> Create(EventDTO objDTO);
+		ValueTask<FCMInfoDTO> Create(FCMInfoDTO objDTO);
+		ValueTask<FCMInfoDTO?> Update(FCMInfoDTO objDTO);
 		ValueTask<int> Delete(int id);
+		ValueTask<FCMInfoDTO?> Get(int id);
+		ValueTask<IEnumerable<FCMInfoDTO>> GetAll();
 	}
 }

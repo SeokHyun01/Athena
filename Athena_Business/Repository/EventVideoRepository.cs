@@ -4,6 +4,7 @@ using Athena_DataAccess.Data;
 using Athena_DataAccess.ViewModel;
 using Athena_Models;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -32,11 +33,10 @@ namespace Athena_Business.Repository
 			try
 			{
 				var obj = _mapper.Map<EventVideoDTO, EventVideo>(objDTO);
-				var addedObj = _db.EventVideos.Add(obj);
+				var createdObj = _db.EventVideos.Add(obj);
 				await _db.SaveChangesAsync();
 
-				return _mapper.Map<EventVideo, EventVideoDTO>(addedObj.Entity);
-
+				return _mapper.Map<EventVideo, EventVideoDTO>(createdObj.Entity);
 			}
 			catch (Exception ex)
 			{
@@ -57,30 +57,7 @@ namespace Athena_Business.Repository
 
 		public async ValueTask<IEnumerable<EventVideoDTO>> GetAll()
 		{
-			return _mapper.Map<IEnumerable<EventVideo>, IEnumerable<EventVideoDTO>>(_db.EventVideos);
-		}
-
-		public async ValueTask<IEnumerable<EventVideoDTO>> GetAllByCameraId(int cameraId)
-		{
-			if (cameraId != null && cameraId >= 0)
-			{
-				return _mapper.Map<IEnumerable<EventVideo>, IEnumerable<EventVideoDTO>>(_db.EventVideos.Where(u => u.CameraId == cameraId));
-			}
-			else
-			{
-				return Enumerable.Empty<EventVideoDTO>();
-			}
-		}
-
-		public async ValueTask<IEnumerable<EventVideoDTO>> GetAllByUserId(string userId)
-		{
-			if (!string.IsNullOrEmpty(userId))
-			{
-				return _mapper.Map<IEnumerable<EventVideo>, IEnumerable<EventVideoDTO>>(_db.EventVideos.Where(u => u.UserId == userId));
-			} else
-			{
-				return Enumerable.Empty<EventVideoDTO>();
-			}
+			return _mapper.Map<IEnumerable<EventVideo>, IEnumerable<EventVideoDTO>>(_db.EventVideos.Include(x => x.EventHeaders));
 		}
 
 		public ValueTask<EventVideoDTO> Update(EventVideoDTO objDTO)

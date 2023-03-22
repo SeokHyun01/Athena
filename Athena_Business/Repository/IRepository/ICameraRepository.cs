@@ -13,6 +13,7 @@ namespace Athena_Business.Repository.IRepository
 		ValueTask<CameraDTO> Update(CameraDTO objDTO);
 		ValueTask<int> Delete(int id);
 		ValueTask<CameraDTO?> Get(int id);
-		ValueTask<IEnumerable<CameraDTO>> GetAll(string? userId = null);
+		ValueTask<IEnumerable<CameraDTO>> GetAll();
+		ValueTask<IEnumerable<CameraDTO>> GetAllByUserId(string? userId = null);
 	}
 }
