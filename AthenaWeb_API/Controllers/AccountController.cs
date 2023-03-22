@@ -103,11 +103,12 @@ namespace AthenaWeb_API.Controllers
 					UserId = user.Id,
 					Token = signInRequest.FCMToken,
 				};
-				if (!user.FCMInfos.Any(x => x.Token == createFcmInfo.Token))
+				var fcmInfos = await _fcmInfoRepository.GetAll();
+				if (fcmInfos != null && !fcmInfos.Any(x => x.Token == createFcmInfo.Token))
 				{
 					await _fcmInfoRepository.Create(createFcmInfo);
 				}
-
+				
 				var claims = await GetClaims(user);
 				var signInCredentials = GetSigningCredentials();
 				var tokenOptions = new JwtSecurityToken(
