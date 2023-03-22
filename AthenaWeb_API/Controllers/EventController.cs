@@ -68,7 +68,7 @@ namespace AthenaWeb_API.Controllers
 					}
 					else
 					{
-						throw new Exception(result.Error);
+						throw new Exception(result.ErrorMessage);
 					}
 				}
 
