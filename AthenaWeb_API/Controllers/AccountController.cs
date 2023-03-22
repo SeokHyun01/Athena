@@ -45,11 +45,6 @@ namespace AthenaWeb_API.Controllers
 		[HttpPost]
 		public async ValueTask<IActionResult> SignUp([FromBody] SignUpRequestDTO signUpRequest)
 		{
-			if (signUpRequest == null || !ModelState.IsValid)
-			{
-				return BadRequest();
-			}
-
 			var user = new AppUser
 			{
 				UserName = signUpRequest.Email,
@@ -90,11 +85,6 @@ namespace AthenaWeb_API.Controllers
 		[HttpPost]
 		public async ValueTask<IActionResult> SignIn([FromBody] SignInRequestDTO signInRequest)
 		{
-			if (signInRequest == null || !ModelState.IsValid)
-			{
-				return BadRequest();
-			}
-
 			var result = await _signInManager.PasswordSignInAsync(signInRequest.Email, signInRequest.Password, false, false);
 			if (result.Succeeded)
 			{

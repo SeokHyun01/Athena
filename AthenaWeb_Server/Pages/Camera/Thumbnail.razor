@@ -67,7 +67,7 @@
 	//dotnet helper 생성
 	public async Task DotnetHelper()
 	{
-		await _jsRuntime.InvokeVoidAsync("dotnetHelper", DotNetObjectReference.Create(this), Camera.UserId, CameraId);
+		await _jsRuntime.InvokeVoidAsync("dotnetHelper", DotNetObjectReference.Create(this), CameraId);
 	}
 
 	//카메라

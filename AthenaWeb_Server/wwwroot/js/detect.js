@@ -16,7 +16,6 @@ window.setVideo = () => {
 let _client;   //전역변수로 mqtt client 할당
 let _characteristic;   //전역변수로 ble characteristic 할당
 let _Dotnet;  //전역변수로 dotnet 객체 할당
-let _userId;
 let _cameraId;
 let _isCamShift = false;
 let _isTfjs = false;
@@ -302,10 +301,9 @@ window.camShift = (isCamShift) => {
         // 이벤트 내용
         const event = {
             EventHeader: {
-                UserId: _userId,
                 CameraId: _cameraId,
                 Created: new Date().toLocaleString(),
-                Path: canvasOutput.toDataURL("image/jpeg", 0.9),
+                Path: canvasOutput.toDataURL("image/jpeg"),
                 IsRequiredObjectDetection: false
             }
         }
@@ -516,10 +514,9 @@ window.tfjs = (isTfjs) => {
 
         const objectEvent = {
             EventHeader: {
-                UserId: _userId,
                 CameraId: _cameraId,
                 Created: new Date().toLocaleString(),
-                Path: flippedCanvas.toDataURL('image/jpeg', 0.7),
+                Path: flippedCanvas.toDataURL('image/jpeg'),
                 IsRequiredObjectDetection: true
             },
             EventBodies: detections
@@ -608,9 +605,8 @@ window.SetBluetooth = () => {
 }
 
 //dotnet 객체를 가져온다.
-window.dotnetHelper = (objRef, userId, cameraId) => {
+window.dotnetHelper = (objRef, cameraId) => {
     _Dotnet = objRef;
-    _userId = userId;
     _cameraId = cameraId;
 }
 

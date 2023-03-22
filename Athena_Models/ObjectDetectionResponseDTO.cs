@@ -8,7 +8,7 @@ namespace Athena_Models
 {
 	public class ObjectDetectionResponseDTO
 	{
-		public string Error { get; set; }
+		public string ErrorMessage { get; set; }
 		public EventHeaderDTO EventHeader { get; set; }
 		public IEnumerable<EventBodyDTO>? EventBodies { get; set; }
 	}
