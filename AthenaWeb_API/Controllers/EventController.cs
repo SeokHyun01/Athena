@@ -64,7 +64,7 @@ namespace AthenaWeb_API.Controllers
 								System.IO.File.Delete(createEventHeader.Path);
 							}
 
-							return Ok();
+							return Ok(0);
 						}
 					}
 					else
