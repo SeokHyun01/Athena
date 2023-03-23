@@ -58,7 +58,7 @@ namespace Athena_Business.Repository
 
 		public async ValueTask<CameraDTO?> Get(int id)
 		{
-			var obj = await _db.Cameras.Include(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
+			var obj = await _db.Cameras.FirstOrDefaultAsync(x => x.Id == id);
 			if (obj != null)
 			{
 				return _mapper.Map<Camera, CameraDTO>(obj);
@@ -68,18 +68,18 @@ namespace Athena_Business.Repository
 
 		public async ValueTask<IEnumerable<CameraDTO>> GetAll()
 		{
-			return _mapper.Map<IEnumerable<Camera>, IEnumerable<CameraDTO>>(_db.Cameras.Include(x => x.User));
+			return _mapper.Map<IEnumerable<Camera>, IEnumerable<CameraDTO>>(_db.Cameras);
 		}
 
 		public async ValueTask<IEnumerable<CameraDTO>> GetAllByUserId(string? userId = null)
 		{
 			if (!string.IsNullOrEmpty(userId))
 			{
-				return _mapper.Map<IEnumerable<Camera>, IEnumerable<CameraDTO>>(_db.Cameras.Where(x => x.UserId == userId).Include(x => x.User));
+				return _mapper.Map<IEnumerable<Camera>, IEnumerable<CameraDTO>>(_db.Cameras.Where(x => x.UserId == userId));
 			}
 			else
 			{
-				return _mapper.Map<IEnumerable<Camera>, IEnumerable<CameraDTO>>(_db.Cameras.Include(x => x.User));
+				return _mapper.Map<IEnumerable<Camera>, IEnumerable<CameraDTO>>(_db.Cameras);
 			}
 		}
 

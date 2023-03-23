@@ -13,8 +13,6 @@ namespace Athena_DataAccess
 		[Key]
 		public int Id { get; set; }
 		public string UserId { get; set; }
-		[ForeignKey(nameof(UserId))]
-		public AppUser User { get; set; }
 		public string Name { get; set; }
 		public int Angle { get; set; }
 	}
