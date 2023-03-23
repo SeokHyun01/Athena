@@ -85,12 +85,7 @@ namespace AthenaWeb_API.Controllers
 			}
 			catch (Exception ex)
 			{
-				return new ContentResult
-				{
-					StatusCode = StatusCodes.Status500InternalServerError,
-					ContentType = "text/plain",
-					Content = $"타입 \'{ex.GetType().FullName}\'의 에러가 발생했습니다: {ex.Message}"
-				};
+				return Problem($"타입 \'{ex.GetType().FullName}\'의 에러가 발생했습니다: {ex.Message}");
 			}
 		}
 	}
