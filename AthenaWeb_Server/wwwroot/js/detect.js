@@ -532,12 +532,12 @@ window.tfjs = (isTfjs) => {
         if (!createObjectEventResponse.ok) {
             const result = await createObjectEventResponse.text();
             console.log(`받은 오류: ${result}`);
-        }
-
-        const checkOjbectId = await createObjectEventResponse.json();
-        if (checkOjbectId != 0) {
-            sendToVideo.push(checkOjbectId);
-            console.log(checkOjbectId);
+        } else {
+            const checkOjbectId = await createObjectEventResponse.json();
+            if (checkOjbectId != 0) {
+                sendToVideo.push(checkOjbectId);
+                console.log(checkOjbectId);
+            }
         }
     }
 
