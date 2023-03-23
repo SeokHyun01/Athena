@@ -119,6 +119,7 @@ namespace AthenaWeb_Server.Service
 												_logger.LogInformation(processOutput);
 											}
 
+											_logger.LogInformation($"Created video file path: {videoPath}");
 											var video = await _mqttMessageService.CreateEventVideo(new EventVideoDTO
 											{
 												Path = videoPath
