@@ -81,7 +81,7 @@ namespace AthenaWeb_Server.Service
 
 		public async ValueTask<CameraDTO> UpdateCamera(CameraDTO camera) => await _cameraRepository.Update(camera);
 
-		public async ValueTask<EventDTO> CreateEvent(EventDTO eventObj) => await _eventRepository.Create(eventObj);
+		public async ValueTask<EventHeaderDTO> CreateEvent(EventDTO eventObj) => await _eventRepository.Create(eventObj);
 		
 		public async ValueTask<IEnumerable<EventHeaderDTO>> GetEventHeaders(IEnumerable<int>? ids = null) => await _eventHeaderRepository.GetAll(ids);
 
