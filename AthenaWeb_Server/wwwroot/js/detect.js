@@ -529,10 +529,9 @@ window.tfjs = (isTfjs) => {
             body: JSON.stringify(objectEvent)
         });
 
-        console.log(`받은 이벤트 리스폰스: ${await createObjectEventResponse.text()}`);
         if (!createObjectEventResponse.ok) {
-            console.log("error");
-            throw new Error(await createObjectEventResponse.text());
+            const result = await createObjectEventResponse.text();
+            console.log(`받은 오류: ${result}`);
         }
 
         const checkOjbectId = await createObjectEventResponse.json();
