@@ -123,6 +123,7 @@ namespace AthenaWeb_Server.Service
 											{
 												Path = videoPath
 											});
+											_logger.LogInformation($"Created video ID: {video.Id}");
 
 											foreach (var header in headerList)
 											{
