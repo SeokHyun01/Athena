@@ -521,12 +521,13 @@ window.tfjs = (isTfjs) => {
             },
             EventBodies: detections
         };
-        console.log(`보낸 이벤트 리퀘스트: ${objectEvent}`);
+        const content = JSON.stringify(objectEvent);
+        console.log(`보낸 이벤트 리퀘스트: ${content}`);
 
         const createObjectEventResponse = await fetch("https://ictrobot.hknu.ac.kr:8097/api/Event/Create", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(objectEvent)
+            body: content
         });
 
         if (!createObjectEventResponse.ok) {
