@@ -31,7 +31,7 @@ namespace AthenaWeb_API.Controllers
 				var imageBytes = Convert.FromBase64String(request.EventHeader.Path.Replace("data:image/jpeg;base64,", string.Empty));
 				if (imageBytes == null || !imageBytes.Any())
 				{
-					return NotFound();
+					throw new ArgumentNullException(nameof(imageBytes));
 				}
 				using (var stream = new MemoryStream(imageBytes))
 				{
