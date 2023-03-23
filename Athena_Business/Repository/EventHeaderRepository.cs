@@ -35,6 +35,7 @@ namespace Athena_Business.Repository
 			if (obj != null)
 			{
 				// 업데이트
+				obj.EventVideoId = objDTO.EventVideoId;
 				_db.EventHeaders.Update(obj);
 				await _db.SaveChangesAsync();
 				return _mapper.Map<EventHeader, EventHeaderDTO>(obj);

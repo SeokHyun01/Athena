@@ -44,18 +44,6 @@ namespace Athena_Business.Repository
 			}
 		}
 
-		public async ValueTask<int> Delete(int id)
-		{
-			var obj = await _db.Cameras.FirstOrDefaultAsync(x => x.Id == id);
-			if (obj != null)
-			{
-				_db.Cameras.Remove(obj);
-
-				return await _db.SaveChangesAsync();
-			}
-			return 0;
-		}
-
 		public async ValueTask<CameraDTO?> Get(int id)
 		{
 			var obj = await _db.Cameras.FirstOrDefaultAsync(x => x.Id == id);
@@ -96,6 +84,18 @@ namespace Athena_Business.Repository
 			}
 
 			return null;
+		}
+
+		public async ValueTask<int> Delete(int id)
+		{
+			var obj = await _db.Cameras.FirstOrDefaultAsync(x => x.Id == id);
+			if (obj != null)
+			{
+				_db.Cameras.Remove(obj);
+
+				return await _db.SaveChangesAsync();
+			}
+			return 0;
 		}
 	}
 }
