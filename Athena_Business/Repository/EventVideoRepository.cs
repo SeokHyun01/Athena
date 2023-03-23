@@ -57,7 +57,7 @@ namespace Athena_Business.Repository
 
 		public async ValueTask<IEnumerable<EventVideoDTO>> GetAll()
 		{
-			return _mapper.Map<IEnumerable<EventVideo>, IEnumerable<EventVideoDTO>>(_db.EventVideos.Include(x => x.EventHeaders));
+			return _mapper.Map<IEnumerable<EventVideo>, IEnumerable<EventVideoDTO>>(_db.EventVideos);
 		}
 
 		public ValueTask<EventVideoDTO> Update(EventVideoDTO objDTO)

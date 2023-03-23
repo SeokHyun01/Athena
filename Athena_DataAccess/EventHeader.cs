@@ -20,7 +20,5 @@ namespace Athena_DataAccess
 		public Camera Camera { get; set; }
 		public IEnumerable<EventBody> EventBodies { get; set; }
 		public int EventVideoId { get; set; }
-		[ForeignKey(nameof(EventVideoId))]
-		public EventVideo EventVideo { get; set; }
 	}
 }

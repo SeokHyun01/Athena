@@ -1,6 +1,7 @@
 ﻿@page "/camera/{cameraId:int}/event"
 @using System.Text.RegularExpressions;
 
+@inject IEventHeaderRepository _eventHeaderRepository
 @inject IEventVideoRepository _eventVideoRepository
 
 @attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
@@ -71,7 +72,8 @@
 		var eventVideos = await _eventVideoRepository.GetAll();
 		if (eventVideos != null && eventVideos.Any())
 		{
-			var target = eventVideos.Where(eventVideo => eventVideo.EventHeaders.Any(eventHeader => eventHeader.CameraId == CameraId));
+			var events = await _eventHeaderRepository.GetAllByCameraId(CameraId);
+			var target = eventVideos.Where(video => events.Any(x => x.EventVideoId == video.Id));
 			EventVideos = Enumerable.Reverse<EventVideoDTO>(target);
 		}
 

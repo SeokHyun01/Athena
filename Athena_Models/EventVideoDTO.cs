@@ -12,6 +12,5 @@ namespace Athena_Models
 	{
 		public int Id { get; set; }
 		public string Path { get; set; }
-		public IEnumerable<EventHeaderDTO> EventHeaders { get; set; }
 	}
 }
