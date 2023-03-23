@@ -9,7 +9,7 @@ namespace Athena_Business.Repository.IRepository
 {
 	public interface IEventRepository
 	{
-		ValueTask<EventDTO> Create(EventDTO objDTO);
+		ValueTask<EventHeaderDTO> Create(EventDTO objDTO);
 		ValueTask<int> Delete(int id);
 	}
 }

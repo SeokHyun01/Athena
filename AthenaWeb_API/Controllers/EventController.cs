@@ -78,9 +78,9 @@ namespace AthenaWeb_API.Controllers
 					EventBodies = createEventBodies
 				};
 
-				var createdEvent = await _eventRepository.Create(createEvent);
+				var createdEventHeader = await _eventRepository.Create(createEvent);
 
-				return Ok(createdEvent.EventHeader.Id);
+				return Ok(createdEventHeader.Id);
 			}
 			catch (Exception ex)
 			{

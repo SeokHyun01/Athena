@@ -27,12 +27,12 @@ namespace Athena_Business.Repository
 			_logger = logger;
 		}
 
-		public async ValueTask<EventDTO> Create(EventDTO objDTO)
+		public async ValueTask<EventHeaderDTO> Create(EventDTO objDTO)
 		{
 			try
 			{
 				var obj = _mapper.Map<EventDTO, Event>(objDTO);
-				_db.EventHeaders.Add(obj.EventHeader);
+				var createdObj = _db.EventHeaders.Add(obj.EventHeader);
 				await _db.SaveChangesAsync();
 
 				if (obj.EventBodies != null && obj.EventBodies.Any())
@@ -43,15 +43,9 @@ namespace Athena_Business.Repository
 					}
 					_db.EventBodies.AddRange(obj.EventBodies);
 					await _db.SaveChangesAsync();
-
-					return new EventDTO()
-					{
-						EventHeader = _mapper.Map<EventHeader, EventHeaderDTO>(obj.EventHeader),
-						EventBodies = _mapper.Map<IEnumerable<EventBody>, IEnumerable<EventBodyDTO>>(obj.EventBodies)
-					};
 				}
 
-				return objDTO;
+				return _mapper.Map<EventHeader, EventHeaderDTO>(createdObj.Entity);
 			}
 
 			catch (Exception ex)
