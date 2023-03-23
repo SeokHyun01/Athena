@@ -16,8 +16,8 @@ namespace Athena_Models
 		public string? Path { get; set; }
 		public bool IsRequiredObjectDetection { get; set; }
 		public int CameraId { get; set; }
-		public Camera Camera { get; set; }
-		public IEnumerable<EventBody> EventBodies { get; set; }
+		public Camera? Camera { get; set; }
+		public IEnumerable<EventBody>? EventBodies { get; set; }
 		public int EventVideoId { get; set; }
 	}
 }
