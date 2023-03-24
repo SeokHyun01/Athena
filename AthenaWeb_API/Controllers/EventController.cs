@@ -41,42 +41,53 @@ namespace AthenaWeb_API.Controllers
 					request.EventHeader.Path = path;
 				}
 
-				var createEventHeader = request.EventHeader;
-				var createEventBodies = request.EventBodies;
-
 				if (request.EventHeader.IsRequiredObjectDetection)
 				{
-					var content = JsonConvert.SerializeObject(request.EventHeader);
-					_logger.LogInformation($"Event: {content}");
+					var objectDetectionRequest = new ObjectDetectionRequestDTO
+					{
+						Path = request.EventHeader.Path
+					};
+					var content = JsonConvert.SerializeObject(objectDetectionRequest);
 					var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
 					var response = await _client.PostAsync("http://localhost:8000/event/create/", bodyContent);
 					var contentTemp = await response.Content.ReadAsStringAsync();
-					var result = JsonConvert.DeserializeObject<ObjectDetectionResponseDTO>(contentTemp);
+					var objectDetectionResponse = JsonConvert.DeserializeObject<ObjectDetectionResponseDTO>(contentTemp);
 					if (response.IsSuccessStatusCode)
 					{
-						createEventHeader = result.EventHeader;
-						createEventBodies = result.EventBodies;
+						request.EventHeader.IsRequiredObjectDetection = false;
 
-						if (createEventBodies == null || !createEventBodies.Any())
+						if (!objectDetectionResponse.Results.Any())
 						{
-							if (System.IO.File.Exists(createEventHeader.Path))
+							if (System.IO.File.Exists(objectDetectionRequest.Path))
 							{
-								System.IO.File.Delete(createEventHeader.Path);
+								System.IO.File.Delete(objectDetectionRequest.Path);
 							}
 
 							return Ok(0);
 						}
+
+						foreach (var result in objectDetectionResponse.Results)
+						{
+							request.EventBodies.Append(new EventBodyDTO
+							{
+								Label = result.Label == 0 ? "fire" : "smoke",
+								Left = result.Left,
+								Right = result.Right,
+								Top = result.Top,
+								Bottom = result.Bottom,
+							});
+						}
 					}
 					else
 					{
-						throw new Exception(result.ErrorMessage);
+						throw new Exception(objectDetectionResponse.ErrorMessage);
 					}
 				}
 
 				var createEvent = new EventDTO
 				{
-					EventHeader = createEventHeader,
-					EventBodies = createEventBodies
+					EventHeader = request.EventHeader,
+					EventBodies = request.EventBodies
 				};
 
 				var createdEventHeader = await _eventRepository.Create(createEvent);

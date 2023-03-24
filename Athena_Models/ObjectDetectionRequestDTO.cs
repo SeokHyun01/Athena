@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Athena_Models
 {
-	public class ObjectDetectionResponseDTO
+	public class ObjectDetectionRequestDTO
 	{
-		public IEnumerable<PredictionResultDTO?> Results { get; set; }
-		public string ErrorMessage { get; set; }
+		public string Path { get; set; }
 	}
 }
