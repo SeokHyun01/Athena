@@ -102,7 +102,7 @@ namespace AthenaWeb_Server.Service
 
 		public async ValueTask<IEnumerable<FCMInfoDTO>> GetFCMInfos(string? userId = null) => await _fcmInfoRepository.GetAllByUserId(userId);
 
-		public async ValueTask NotifyUser(string token, IEnumerable<string?> labels, string content)
+		public async ValueTask NotifyUser(string token, IEnumerable<string> labels, string content)
 		{
 			var serverKey = "AAAAlAPqkMU:APA91bEpsixt1iwXs5ymw67EvF8urDy9Mi3gVbLEYYlgAit94zctOhQuO12pvsD2tuk5oJtzZ9eGAwblxebKyBM8WEQDhYm2ihhBuud5P7cESyFfAycI--IhY4jJ4m2Yr-lJ27qSGK7w";
 			
