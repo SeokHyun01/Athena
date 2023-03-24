@@ -71,6 +71,18 @@ namespace Athena_Business.Repository
 			return _mapper.Map<IEnumerable<FCMInfo>, IEnumerable<FCMInfoDTO>>(_db.FCMInfos);
 		}
 
+		public async ValueTask<IEnumerable<FCMInfoDTO>> GetAllByUserId(string? userId = null)
+		{
+			if (!string.IsNullOrEmpty(userId))
+			{
+				return _mapper.Map<IEnumerable<FCMInfo>, IEnumerable<FCMInfoDTO>>(_db.FCMInfos.Where(x => x.UserId == userId));
+			}
+			else
+			{
+				return Enumerable.Empty<FCMInfoDTO>();
+			}
+		}
+
 		public async ValueTask<FCMInfoDTO?> Update(FCMInfoDTO objDTO)
 		{
 			var objFromDb = await _db.FCMInfos.FirstOrDefaultAsync(x => x.Id == objDTO.Id);

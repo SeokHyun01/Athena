@@ -47,8 +47,11 @@ builder.Services.AddScoped<ICameraRepository, CameraRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IEventHeaderRepository, EventHeaderRepository>();
 builder.Services.AddScoped<IEventVideoRepository, EventVideoRepository>();
+builder.Services.AddScoped<IFCMInfoRepository, FCMInfoRepository>();
 
 builder.Services.AddHostedService<HostedMqttMessageService>();
+
+builder.Services.AddHttpClient();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

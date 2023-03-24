@@ -106,12 +106,12 @@
 				await _cameraRepository.Update(currentCamera);
 			}
 
-			var updateCamera = new UpdateCamera
+			var updateCamera = new UpdateCameraDTO
 				{
 					CameraId = cameraId,
 					Degree = angle
 				};
-			var updateCameraJson = JsonSerializer.Serialize<UpdateCamera>(updateCamera);
+			var updateCameraJson = JsonSerializer.Serialize<UpdateCameraDTO>(updateCamera);
 
 			if (MqttClient != null && MqttClient.IsConnected)
 			{

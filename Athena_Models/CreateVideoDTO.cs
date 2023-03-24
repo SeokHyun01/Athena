@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Athena_Models
 {
-	public class CallHeader
+	public class CreateVideoDTO
 	{
-		public string? UserId { get; set; }
-		public int CameraId { get; set; }
+		public IEnumerable<int> EventHeaderIds { get; set; }
 	}
 }

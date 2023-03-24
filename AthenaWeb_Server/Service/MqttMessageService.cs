@@ -6,6 +6,7 @@ using AthenaWeb_Server.Service.IService;
 using Microsoft.JSInterop;
 using MQTTnet;
 using MQTTnet.Client;
+using System.Net.Http.Headers;
 
 namespace AthenaWeb_Server.Service
 {
@@ -16,6 +17,8 @@ namespace AthenaWeb_Server.Service
 		private readonly IEventRepository _eventRepository;
 		private readonly IEventVideoRepository _eventVideoRepository;
 		private readonly IEventHeaderRepository _eventHeaderRepository;
+		private readonly IFCMInfoRepository _fcmInfoRepository;
+		private readonly HttpClient _client;
 
 		private bool _disposedValue;
 
@@ -25,7 +28,9 @@ namespace AthenaWeb_Server.Service
 			ICameraRepository cameraRepository,
 			IEventRepository eventRepository,
 			IEventVideoRepository eventVideoRepository,
-			IEventHeaderRepository eventHeaderRepository
+			IEventHeaderRepository eventHeaderRepository,
+			IFCMInfoRepository fcmInfoRepository,
+			HttpClient client
 			)
 		{
 			_mqttClient = mqttClient;
@@ -33,6 +38,8 @@ namespace AthenaWeb_Server.Service
 			_eventRepository = eventRepository;
 			_eventVideoRepository = eventVideoRepository;
 			_eventHeaderRepository = eventHeaderRepository;
+			_fcmInfoRepository = fcmInfoRepository;
+			_client = client;
 		}
 
 		public async ValueTask ConnectAsync(string brokerHost, int brokerPort)
@@ -88,7 +95,28 @@ namespace AthenaWeb_Server.Service
 		public async ValueTask<EventVideoDTO> CreateEventVideo(EventVideoDTO eventVideo) => await _eventVideoRepository.Create(eventVideo);
 
 		public async ValueTask<EventHeaderDTO?> UpdateEventHeader(EventHeaderDTO eventHeader) => await _eventHeaderRepository.Update(eventHeader);
-		
+
+		public async ValueTask<IEnumerable<FCMInfoDTO>> GetFCMInfos(string? userId = null) => await _fcmInfoRepository.GetAllByUserId(userId);
+
+		public async ValueTask NotifyUser(string token, string label, string content)
+		{
+			var serverKey = "AAAAlAPqkMU:APA91bEpsixt1iwXs5ymw67EvF8urDy9Mi3gVbLEYYlgAit94zctOhQuO12pvsD2tuk5oJtzZ9eGAwblxebKyBM8WEQDhYm2ihhBuud5P7cESyFfAycI--IhY4jJ4m2Yr-lJ27qSGK7w";
+			var fcmUrl = "https://fcm.googleapis.com/fcm/send";
+			var message = new
+			{
+				to = token,
+				data = new
+				{
+					title = label,
+					body = content
+				}
+			};
+
+			_client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+			_client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"key={serverKey}");
+			await _client.PostAsJsonAsync(fcmUrl, message);
+		}
+
 		public void Dispose() => Dispose(true);
 
 		protected virtual void Dispose(bool disposing)

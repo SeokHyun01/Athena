@@ -35,6 +35,7 @@ namespace Athena_Business.Repository
 			if (obj != null)
 			{
 				// 업데이트
+				obj.Path = objDTO.Path;
 				obj.EventVideoId = objDTO.EventVideoId;
 				_db.EventHeaders.Update(obj);
 				await _db.SaveChangesAsync();
@@ -54,10 +55,10 @@ namespace Athena_Business.Repository
 		{
 			if (ids != null && ids.Any())
 			{
-				return _mapper.Map<IEnumerable<EventHeader>, IEnumerable<EventHeaderDTO>>(_db.EventHeaders.Include(x => x.EventBodies).Where(x => ids.Contains(x.Id)));
+				return _mapper.Map<IEnumerable<EventHeader>, IEnumerable<EventHeaderDTO>>(_db.EventHeaders.Include(x => x.Camera).Include(x => x.EventBodies).Where(x => ids.Contains(x.Id)));
 			}
 
-			return _mapper.Map<IEnumerable<EventHeader>, IEnumerable<EventHeaderDTO>>(_db.EventHeaders.Include(x => x.EventBodies));
+			return _mapper.Map<IEnumerable<EventHeader>, IEnumerable<EventHeaderDTO>>(_db.EventHeaders.Include(x => x.Camera).Include(x => x.EventBodies));
 		}
 
 		public async ValueTask<IEnumerable<EventHeaderDTO>> GetAllByCameraId(int cameraId)

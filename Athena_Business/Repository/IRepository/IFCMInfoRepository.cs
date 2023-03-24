@@ -14,5 +14,6 @@ namespace Athena_Business.Repository.IRepository
 		ValueTask<int> Delete(int id);
 		ValueTask<FCMInfoDTO?> Get(int id);
 		ValueTask<IEnumerable<FCMInfoDTO>> GetAll();
+		ValueTask<IEnumerable<FCMInfoDTO>> GetAllByUserId(string? userId = null);
 	}
 }

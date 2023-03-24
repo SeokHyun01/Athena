@@ -47,7 +47,7 @@ namespace AthenaWeb_Server.Service
 						{
 							if (e.ApplicationMessage.Topic == "camera/update/degree/syn")
 							{
-								var updateCamera = JsonSerializer.Deserialize<UpdateCamera>(payload);
+								var updateCamera = JsonSerializer.Deserialize<UpdateCameraDTO>(payload);
 								if (updateCamera != null)
 								{
 									var camera = new CameraDTO
@@ -62,23 +62,23 @@ namespace AthenaWeb_Server.Service
 							}
 							else if (e.ApplicationMessage.Topic == "video/create")
 							{
-								var createVideo = JsonSerializer.Deserialize<CreateVideo>(payload);
+								var createVideo = JsonSerializer.Deserialize<CreateVideoDTO>(payload);
 								if (createVideo != null)
 								{
-									var headerList = (await _mqttMessageService.GetEventHeaders(createVideo.EventHeaderIds)).ToList();
+									var eventHeaders = (await _mqttMessageService.GetEventHeaders(createVideo.EventHeaderIds)).ToList();
 
-									if (headerList.Any())
+									if (eventHeaders.Any())
 									{
 										var imagePathList = new List<string>();
-										foreach (var header in headerList)
+										foreach (var eventHeader in eventHeaders)
 										{
-											if (header.Path != null)
+											if (eventHeader.Path != null)
 											{
-												imagePathList.Add(header.Path);
+												imagePathList.Add(eventHeader.Path);
 											}
 											else
 											{
-												throw new Exception($"EventHeader Id: {header.Id}, 이미지를 찾을 수 없습니다.");
+												throw new Exception($"EventHeader Id: {eventHeader.Id}, 이미지를 찾을 수 없습니다.");
 											}
 										}
 
@@ -94,6 +94,17 @@ namespace AthenaWeb_Server.Service
 												//	File.Delete(imagePathList[i]);
 												//}
 												//headerList[i].Path = null;
+											}
+
+											var header = eventHeaders.FirstOrDefault();
+											var userId = header.Camera.UserId;
+											var fcmInfos = await _mqttMessageService.GetFCMInfos(userId);
+											if (fcmInfos.Any())
+											{
+												foreach (var fcmInfo in fcmInfos)
+												{
+													_mqttMessageService.NotifyUser(token: fcmInfo.Token, label: "화재", content: "");
+												}
 											}
 
 											var videoPath = $"{Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "videos", Guid.NewGuid().ToString())}.mp4";
@@ -124,7 +135,7 @@ namespace AthenaWeb_Server.Service
 												Path = videoPath
 											});
 
-											foreach (var header in headerList)
+											foreach (var eventHeader in eventHeaders)
 											{
 												header.EventVideoId = video.Id;
 												await _mqttMessageService.UpdateEventHeader(header);

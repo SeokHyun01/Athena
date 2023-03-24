@@ -67,7 +67,7 @@ namespace Athena_Business.Repository
 			}
 			else
 			{
-				return _mapper.Map<IEnumerable<Camera>, IEnumerable<CameraDTO>>(_db.Cameras);
+				return Enumerable.Empty<CameraDTO>();
 			}
 		}
 
