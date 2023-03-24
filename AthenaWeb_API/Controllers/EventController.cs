@@ -43,7 +43,7 @@ namespace AthenaWeb_API.Controllers
 
 				if (request.EventHeader.IsRequiredObjectDetection)
 				{
-					var bodyContent = new StringContent(request.EventHeader.Path, Encoding.UTF8, "application/json");
+					var bodyContent = new StringContent(request.EventHeader.Path);
 					var response = await _client.PostAsync("http://localhost:8000/event/create/", bodyContent);
 					var contentTemp = await response.Content.ReadAsStringAsync();
 					var objectDetectionResponse = JsonConvert.DeserializeObject<ObjectDetectionResponseDTO>(contentTemp);
@@ -53,9 +53,9 @@ namespace AthenaWeb_API.Controllers
 
 						if (!objectDetectionResponse.Results.Any())
 						{
-							if (System.IO.File.Exists(objectDetectionRequest.Path))
+							if (System.IO.File.Exists(request.EventHeader.Path))
 							{
-								System.IO.File.Delete(objectDetectionRequest.Path);
+								System.IO.File.Delete(request.EventHeader.Path);
 							}
 
 							return Ok(0);
