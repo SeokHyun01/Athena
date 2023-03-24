@@ -118,12 +118,9 @@ class Camera {
             const connection = new signalR.HubConnectionBuilder().withUrl("/hubs/signaling").build();
             await connection.start();
 
-            console.log(data.candidate);
             const ice = JSON.stringify(data.candidate);
             connection.send("SendIce", ice, this.connectionId);
-            console.log("Connection Id:", this.connectionId);
-            console.log("Send ice");
-
+            
             await connection.stop();
         }
     }
@@ -179,7 +176,6 @@ async function sendOffer() {
     const offer = await camera.peerConnection.createOffer();
     camera.peerConnection.setLocalDescription(offer);
 
-    console.log("Send offer");
     return JSON.stringify(offer);
 }
 
@@ -188,12 +184,10 @@ async function sendAnswer(offer) {
     const receivedOffer = new RTCSessionDescription(jsonObject);
 
     camera.peerConnection.setRemoteDescription(receivedOffer);
-    console.log("Receive offer");
 
     const answer = await camera.peerConnection.createAnswer();
     camera.peerConnection.setLocalDescription(answer);
 
-    console.log("Send answer");
     return JSON.stringify(answer);
 }
 
@@ -202,13 +196,11 @@ function receiveAnswer(answer) {
     const receivedAnswer = new RTCSessionDescription(jsonObject);
 
     camera.peerConnection.setRemoteDescription(receivedAnswer);
-    console.log("Receive answer");
 }
 
 function receiveIce(ice) {
     const receivedIce = JSON.parse(ice);
     camera.peerConnection.addIceCandidate(receivedIce);
-    console.log("Receive ice");
 }
 
 function getCurrentTime() {
