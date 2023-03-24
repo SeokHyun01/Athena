@@ -43,13 +43,7 @@ namespace AthenaWeb_API.Controllers
 
 				if (request.EventHeader.IsRequiredObjectDetection)
 				{
-					var objectDetectionRequest = new ObjectDetectionRequestDTO
-					{
-						Path = request.EventHeader.Path
-					};
-					var content = JsonConvert.SerializeObject(objectDetectionRequest);
-					_logger.LogInformation(content);
-					var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+					var bodyContent = new StringContent(request.EventHeader.Path, Encoding.UTF8, "application/json");
 					var response = await _client.PostAsync("http://localhost:8000/event/create/", bodyContent);
 					var contentTemp = await response.Content.ReadAsStringAsync();
 					var objectDetectionResponse = JsonConvert.DeserializeObject<ObjectDetectionResponseDTO>(contentTemp);
