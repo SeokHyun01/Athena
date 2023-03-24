@@ -1,4 +1,5 @@
 ﻿using Athena_Business.Repository.IRepository;
+using Athena_DataAccess;
 using Athena_DataAccess.ViewModel;
 using Athena_Models;
 using AthenaWeb_Server.Service.IService;
@@ -98,11 +99,13 @@ namespace AthenaWeb_Server.Service
 
 											var header = eventHeaders.FirstOrDefault();
 											var userId = header.Camera.UserId;
+											_logger.LogInformation($"Notify User ID: {userId}");
 											var fcmInfos = await _mqttMessageService.GetFCMInfos(userId);
 											if (fcmInfos.Any())
 											{
 												foreach (var fcmInfo in fcmInfos)
 												{
+													_logger.LogInformation($"Notify Token: {fcmInfo.Token}");
 													_mqttMessageService.NotifyUser(token: fcmInfo.Token, label: "화재", content: "");
 												}
 											}
