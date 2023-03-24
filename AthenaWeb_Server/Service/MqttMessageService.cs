@@ -6,6 +6,7 @@ using AthenaWeb_Server.Service.IService;
 using Microsoft.JSInterop;
 using MQTTnet;
 using MQTTnet.Client;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Headers;
 
 namespace AthenaWeb_Server.Service
@@ -92,7 +93,7 @@ namespace AthenaWeb_Server.Service
 		public async ValueTask<CameraDTO> UpdateCamera(CameraDTO camera) => await _cameraRepository.Update(camera);
 
 		public async ValueTask<EventHeaderDTO> CreateEvent(EventDTO eventObj) => await _eventRepository.Create(eventObj);
-		
+
 		public async ValueTask<IEnumerable<EventHeaderDTO>> GetEventHeaders(IEnumerable<int>? ids = null) => await _eventHeaderRepository.GetAll(ids);
 
 		public async ValueTask<EventVideoDTO> CreateEventVideo(EventVideoDTO eventVideo) => await _eventVideoRepository.Create(eventVideo);
@@ -101,10 +102,18 @@ namespace AthenaWeb_Server.Service
 
 		public async ValueTask<IEnumerable<FCMInfoDTO>> GetFCMInfos(string? userId = null) => await _fcmInfoRepository.GetAllByUserId(userId);
 
-		public async ValueTask NotifyUser(string token, string label, string content)
+		public async ValueTask NotifyUser(string token, IEnumerable<string?> labels, string content)
 		{
 			var serverKey = "AAAAlAPqkMU:APA91bEpsixt1iwXs5ymw67EvF8urDy9Mi3gVbLEYYlgAit94zctOhQuO12pvsD2tuk5oJtzZ9eGAwblxebKyBM8WEQDhYm2ihhBuud5P7cESyFfAycI--IhY4jJ4m2Yr-lJ27qSGK7w";
+			
 			var fcmUrl = "https://fcm.googleapis.com/fcm/send";
+
+			var label = "motion";
+			if (labels.Any())
+			{
+				label = string.Join(", ", labels);
+			}
+
 			var message = new
 			{
 				to = token,

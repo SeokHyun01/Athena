@@ -17,6 +17,6 @@ namespace AthenaWeb_Server.Service.IService
 		ValueTask<EventVideoDTO> CreateEventVideo(EventVideoDTO eventVideo);
 		ValueTask<EventHeaderDTO?> UpdateEventHeader(EventHeaderDTO eventHeader);
 		ValueTask<IEnumerable<FCMInfoDTO>> GetFCMInfos(string? userId = null);
-		ValueTask NotifyUser(string token, string label, string content);
+		ValueTask NotifyUser(string token, IEnumerable<string> labels, string content);
 	}
 }

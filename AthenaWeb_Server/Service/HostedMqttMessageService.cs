@@ -99,14 +99,18 @@ namespace AthenaWeb_Server.Service
 
 											var header = eventHeaders.FirstOrDefault();
 											var userId = header.Camera.UserId;
-											_logger.LogInformation($"Notify User ID: {userId}");
 											var fcmInfos = await _mqttMessageService.GetFCMInfos(userId);
 											if (fcmInfos.Any())
 											{
+												var labels = Enumerable.Empty<string>();
+												if (header.EventBodies != null && header.EventBodies.Any())
+												{
+													labels = header.EventBodies.Select(x => x.Label).Distinct();
+												}
 												foreach (var fcmInfo in fcmInfos)
 												{
 													_logger.LogInformation($"Notify Token: {fcmInfo.Token}");
-													await _mqttMessageService.NotifyUser(token: fcmInfo.Token, label: "화재", content: "");
+													await _mqttMessageService.NotifyUser(token: fcmInfo.Token, label: labels, content: $"{header.Camera.Id}");
 												}
 											}
 
