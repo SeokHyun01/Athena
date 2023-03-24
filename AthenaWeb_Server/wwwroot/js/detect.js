@@ -1,6 +1,5 @@
 ﻿//카메라 On
 window.setVideo = () => {
-
     //비디오를 지정하고 화면에 보여준다.
     var video = document.getElementById("video");
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {

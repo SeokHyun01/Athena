@@ -9,6 +9,6 @@ namespace Athena_Models
 	public class EventDTO
 	{
 		public EventHeaderDTO EventHeader { get; set; }
-		public IEnumerable<EventBodyDTO>? EventBodies { get; set; }
+		public IEnumerable<EventBodyDTO?> EventBodies { get; set; }
 	}
 }
