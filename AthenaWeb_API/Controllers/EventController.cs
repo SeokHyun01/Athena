@@ -54,9 +54,9 @@ namespace AthenaWeb_API.Controllers
 
 						if (!objectDetectionResponse.Results.Any())
 						{
-							if (System.IO.File.Exists(objectDetectionRequest.Path))
+							if (System.IO.File.Exists(request.EventHeader.Path))
 							{
-								System.IO.File.Delete(objectDetectionRequest.Path);
+								System.IO.File.Delete(request.EventHeader.Path);
 							}
 
 							return Ok(0);
