@@ -521,8 +521,7 @@ window.tfjs = (isTfjs) => {
             EventBodies: detections
         };
         const content = JSON.stringify(objectEvent);
-        console.log(`보낸 이벤트 리퀘스트: ${content}`);
-
+        
         const createObjectEventResponse = await fetch("https://ictrobot.hknu.ac.kr:8097/api/Event/Create", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -531,7 +530,7 @@ window.tfjs = (isTfjs) => {
 
         if (!createObjectEventResponse.ok) {
             const result = await createObjectEventResponse.text();
-            console.log(`받은 오류: ${result}`);
+            console.log(result);
         } else {
             const checkOjbectId = await createObjectEventResponse.json();
             if (checkOjbectId != 0) {
