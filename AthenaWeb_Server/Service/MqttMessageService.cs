@@ -19,6 +19,7 @@ namespace AthenaWeb_Server.Service
 		private readonly IEventHeaderRepository _eventHeaderRepository;
 		private readonly IFCMInfoRepository _fcmInfoRepository;
 		private readonly HttpClient _client;
+		private readonly ILogger<MqttMessageService> _logger;
 
 		private bool _disposedValue;
 
@@ -30,7 +31,8 @@ namespace AthenaWeb_Server.Service
 			IEventVideoRepository eventVideoRepository,
 			IEventHeaderRepository eventHeaderRepository,
 			IFCMInfoRepository fcmInfoRepository,
-			HttpClient client
+			HttpClient client,
+			ILogger<MqttMessageService> logger
 			)
 		{
 			_mqttClient = mqttClient;
@@ -40,6 +42,7 @@ namespace AthenaWeb_Server.Service
 			_eventHeaderRepository = eventHeaderRepository;
 			_fcmInfoRepository = fcmInfoRepository;
 			_client = client;
+			_logger = logger;
 		}
 
 		public async ValueTask ConnectAsync(string brokerHost, int brokerPort)
@@ -114,7 +117,8 @@ namespace AthenaWeb_Server.Service
 
 			_client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 			_client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"key={serverKey}");
-			await _client.PostAsJsonAsync(fcmUrl, message);
+			var response = await _client.PostAsJsonAsync(fcmUrl, message);
+			_logger.LogInformation(await response.Content.ReadAsStringAsync());
 		}
 
 		public void Dispose() => Dispose(true);
