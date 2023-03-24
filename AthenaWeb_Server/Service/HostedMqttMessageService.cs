@@ -110,7 +110,7 @@ namespace AthenaWeb_Server.Service
 												foreach (var fcmInfo in fcmInfos)
 												{
 													_logger.LogInformation($"Notify Token: {fcmInfo.Token}");
-													await _mqttMessageService.NotifyUser(token: fcmInfo.Token, label: labels, content: $"{header.Camera.Id}");
+													await _mqttMessageService.NotifyUser(token: fcmInfo.Token, labels: labels, content: $"{header.Camera.Id}");
 												}
 											}
 
