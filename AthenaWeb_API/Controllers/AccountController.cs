@@ -63,11 +63,14 @@ namespace AthenaWeb_API.Controllers
 
 			var createdUser = await _userManager.FindByEmailAsync(signUpRequest.Email);
 			var createdUserId = createdUser?.Id;
-			await _fcmInfoRepository.Create(new FCMInfoDTO()
+			if (!string.IsNullOrEmpty(signUpRequest.FCMToken))
 			{
-				UserId = createdUserId,
-				Token = signUpRequest.FCMToken,
-			});
+				await _fcmInfoRepository.Create(new FCMInfoDTO()
+				{
+					UserId = createdUserId,
+					Token = signUpRequest.FCMToken,
+				});
+			}
 
 			var roleResult = await _userManager.AddToRoleAsync(user, SD.ROLE_CUSTOMER);
 			if (!roleResult.Succeeded)
@@ -98,15 +101,18 @@ namespace AthenaWeb_API.Controllers
 					});
 				}
 
-				var createFcmInfo = new FCMInfoDTO()
+				if (!string.IsNullOrEmpty(signInRequest.FCMToken))
 				{
-					UserId = user.Id,
-					Token = signInRequest.FCMToken,
-				};
-				var fcmInfos = await _fcmInfoRepository.GetAll();
-				if (fcmInfos != null && !fcmInfos.Any(x => x.Token == createFcmInfo.Token))
-				{
-					await _fcmInfoRepository.Create(createFcmInfo);
+					var createFcmInfo = new FCMInfoDTO()
+					{
+						UserId = user.Id,
+						Token = signInRequest.FCMToken,
+					};
+					var fcmInfos = await _fcmInfoRepository.GetAll();
+					if (fcmInfos != null && !fcmInfos.Any(x => x.Token == createFcmInfo.Token))
+					{
+						await _fcmInfoRepository.Create(createFcmInfo);
+					}
 				}
 				
 				var claims = await GetClaims(user);

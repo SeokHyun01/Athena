@@ -1,0 +1,105 @@
+﻿@page "/profile"
+
+@inject UserManager<AppUser> _userManager
+@inject IFCMInfoRepository _fcmInfoRepository
+
+@attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
+
+
+<div class="container my-5">
+	<div class="form-group">
+		<h1 class="text-center">마이페이지</h1>
+	</div>
+	@if (FCMInfos.Any())
+	{
+		<table class="table">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>User ID</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var fcmInfo in FCMInfos)
+				{
+					<tr>
+						<td>@($"{fcmInfo.Id}")</td>
+						<td>@(fcmInfo.UserId)</td>
+						<td>
+							<button class="btn btn-danger mt-2" @onclick="()=>HandleDelete(fcmInfo.Id)">삭제</button>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+	else
+	{
+		@if (IsLoading)
+		{
+			<div class="spinner-border text-primary" role="status"></div>
+		}
+
+		else
+		{
+			<p>No recrods found.</p>
+		}
+	}
+</div>
+
+
+@code {
+	[CascadingParameter]
+	public Task<AuthenticationState> _authState { get; set; }
+
+	private string UserId { get; set; } = string.Empty;
+	private string UserName { get; set; } = string.Empty;
+
+	private IEnumerable<FCMInfoDTO> FCMInfos { get; set; }
+
+	private bool IsLoading { get; set; } = false;
+
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		IsLoading = true;
+		StateHasChanged();
+
+		var authState = await _authState;
+		UserName = authState?.User?.Identity?.Name;
+		if (string.IsNullOrEmpty(UserName))
+		{
+			throw new ArgumentNullException(nameof(UserName));
+		}
+		var user = await _userManager.FindByNameAsync(UserName);
+		UserId = user.Id;
+		FCMInfos = await _fcmInfoRepository.GetAllByUserId(UserId);
+
+		IsLoading = false;
+		StateHasChanged();
+	}
+
+	private async ValueTask LoadFCMInfos(string userId)
+	{
+		IsLoading = true;
+		StateHasChanged();
+
+		FCMInfos = await _fcmInfoRepository.GetAllByUserId(UserId);
+
+		IsLoading = false;
+		StateHasChanged();
+	}
+
+	private async ValueTask HandleDelete(int id)
+	{
+		if (id <= 0)
+		{
+			await Task.CompletedTask;
+		}
+
+		await _fcmInfoRepository.Delete(id);
+
+		await LoadFCMInfos(UserId);
+	}
+}
