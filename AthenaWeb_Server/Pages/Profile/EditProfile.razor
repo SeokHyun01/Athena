@@ -5,8 +5,6 @@
 
 @attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
 
-@implements IAsyncDisposable
-
 
 <div class="container my-5">
 	<div class="form-group">
@@ -76,7 +74,7 @@
 		}
 		var user = await _userManager.FindByNameAsync(UserName);
 		UserId = user.Id;
-		FCMInfos = await _fcmInfoRepository.GetAllByUserId(UserId);
+		await LoadFCMInfos(UserId);
 
 		IsLoading = false;
 		StateHasChanged();
@@ -85,12 +83,12 @@
 	private async ValueTask LoadFCMInfos(string userId)
 	{
 		IsLoading = true;
-		StateHasChanged();
+		await InvokeAsync(StateHasChanged);
 
 		FCMInfos = await _fcmInfoRepository.GetAllByUserId(UserId);
 
 		IsLoading = false;
-		StateHasChanged();
+		await InvokeAsync(StateHasChanged);
 	}
 
 	private async ValueTask HandleDelete(int id)
@@ -103,10 +101,5 @@
 		await _fcmInfoRepository.Delete(id);
 
 		await LoadFCMInfos(UserId);
-	}
-
-	public async ValueTask DisposeAsync()
-	{
-		_userManager.Dispose();
 	}
 }
