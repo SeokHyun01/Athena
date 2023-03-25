@@ -75,14 +75,17 @@ namespace AthenaWeb_API.Controllers
 			var roleResult = await _userManager.AddToRoleAsync(user, SD.ROLE_CUSTOMER);
 			if (!roleResult.Succeeded)
 			{
-				return BadRequest(new SignUpResponseDTO()
+				return BadRequest(new SignUpResponseDTO
 				{
 					IsSucceeded = false,
 					Errors = result.Errors.Select(u => u.Description)
 				});
 			}
 
-			return Ok(201);
+			return Created(new SignUpResponseDTO
+			{
+				IsSucceeded = true
+			});
 		}
 
 		[HttpPost]
