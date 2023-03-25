@@ -18,5 +18,6 @@ namespace Athena_Models
 		[DataType(DataType.Password)]
 		public string Password { get; set; }
 		public string? FCMToken { get; set; }
+		public string? FCMTokenName { get; set; }
 	}
 }

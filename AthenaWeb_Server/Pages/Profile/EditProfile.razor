@@ -8,7 +8,7 @@
 
 <div class="container my-5">
 	<div class="form-group">
-		<h1 class="text-center">마이페이지</h1>
+		<h1 class="text-center">알람 등록기기 관리</h1>
 	</div>
 	@if (FCMInfos.Any())
 	{
@@ -25,7 +25,7 @@
 				{
 					<tr>
 						<td>@($"{fcmInfo.Id}")</td>
-						<td>@(fcmInfo.UserId)</td>
+						<td>@(fcmInfo.Name)</td>
 						<td>
 							<button class="btn btn-danger mt-2" @onclick="()=>HandleDelete(fcmInfo.Id)">삭제</button>
 						</td>
