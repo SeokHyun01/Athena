@@ -83,18 +83,10 @@ namespace AthenaWeb_API.Controllers
 				});
 			}
 
-			return CreatedAtAction(
-				nameof(SignIn),
-				new SignInRequestDTO()
-			{
-				Email = signUpRequest.Email,
-				Password = signUpRequest.Password,
-			},
-				new SignUpResponseDTO()
+			return new OkObjectResult(new SignUpResponseDTO()
 			{
 				IsSucceeded = true
-			}
-			);
+			}) { StatusCode = 201 };
 		}
 
 		[HttpPost]
