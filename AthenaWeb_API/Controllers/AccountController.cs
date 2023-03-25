@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -82,10 +83,18 @@ namespace AthenaWeb_API.Controllers
 				});
 			}
 
-			return Created(new SignUpResponseDTO
+			return CreatedAtAction(
+				nameof(SignIn),
+				new SignInRequestDTO()
+			{
+				Email = signUpRequest.Email,
+				Password = signUpRequest.Password,
+			},
+				new SignUpResponseDTO()
 			{
 				IsSucceeded = true
-			});
+			}
+			);
 		}
 
 		[HttpPost]
@@ -117,7 +126,7 @@ namespace AthenaWeb_API.Controllers
 						await _fcmInfoRepository.Create(createFcmInfo);
 					}
 				}
-				
+
 				var claims = await GetClaims(user);
 				var signInCredentials = GetSigningCredentials();
 				var tokenOptions = new JwtSecurityToken(
