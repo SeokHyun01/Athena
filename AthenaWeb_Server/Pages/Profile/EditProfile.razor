@@ -5,6 +5,8 @@
 
 @attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
 
+@implements IAsyncDisposable
+
 
 <div class="container my-5">
 	<div class="form-group">
@@ -101,5 +103,10 @@
 		await _fcmInfoRepository.Delete(id);
 
 		await LoadFCMInfos(UserId);
+	}
+
+	public async ValueTask DisposeAsync()
+	{
+		_userManager.Dispose();
 	}
 }

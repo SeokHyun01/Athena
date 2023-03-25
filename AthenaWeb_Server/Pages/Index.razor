@@ -5,6 +5,8 @@
 
 @attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
 
+@implements IAsyncDisposable
+
 
 <NavLink href=@($"camera") class="btn btn-primary my-2">내 카메라</NavLink>
 
@@ -27,5 +29,10 @@
 				_navigationManager.NavigateTo("admin");
 			}
 		}
+	}
+
+	public async ValueTask DisposeAsync()
+	{
+		_userManager.Dispose();
 	}
 }
