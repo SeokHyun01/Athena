@@ -63,21 +63,24 @@
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
-		IsLoading = true;
-		StateHasChanged();
-
-		var authState = await _authState;
-		UserName = authState?.User?.Identity?.Name;
-		if (string.IsNullOrEmpty(UserName))
+		if (firstRender)
 		{
-			throw new ArgumentNullException(nameof(UserName));
-		}
-		var user = await _userManager.FindByNameAsync(UserName);
-		UserId = user.Id;
-		await LoadFCMInfos(UserId);
+			IsLoading = true;
+			StateHasChanged();
 
-		IsLoading = false;
-		StateHasChanged();
+			var authState = await _authState;
+			UserName = authState?.User?.Identity?.Name;
+			if (string.IsNullOrEmpty(UserName))
+			{
+				throw new ArgumentNullException(nameof(UserName));
+			}
+			var user = await _userManager.FindByNameAsync(UserName);
+			UserId = user.Id;
+			await LoadFCMInfos(UserId);
+
+			IsLoading = false;
+			StateHasChanged();
+		}
 	}
 
 	private async ValueTask LoadFCMInfos(string userId)
