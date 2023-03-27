@@ -268,6 +268,7 @@ window.camShift = (isCamShift) => {
                 sendMakeVideo();
                 sendToVideo = [];
                 isFirst = false;
+                size++;
             } else if (sendToVideo.length < (10 * size) && !isFirst) {
                 isFirst = true;
             }
@@ -521,7 +522,7 @@ window.tfjs = (isTfjs) => {
             EventBodies: detections
         };
         const content = JSON.stringify(objectEvent);
-        
+
         const createObjectEventResponse = await fetch("https://ictrobot.hknu.ac.kr:8097/api/Event/Create", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -626,4 +627,3 @@ window.onbeforeunload = function () {
         _client.disconnect();
     }
 }
-

@@ -17,7 +17,7 @@ namespace Athena_Models
 		[Required(ErrorMessage = "비밀번호를 입력해 주세요.")]
 		[DataType(DataType.Password)]
 		public string Password { get; set; }
-		public string? FCMToken { get; set; }
-		public string? FCMTokenName { get; set; }
+		public string FCMToken { get; set; }
+		public string FCMTokenName { get; set; }
 	}
 }
