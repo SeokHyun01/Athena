@@ -6,7 +6,13 @@
 @attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
 
 
-<NavLink href=@($"camera") class="btn btn-primary my-2">내 카메라</NavLink>
+<header class="masthead">
+	<div class="container">
+		<div class="masthead-subheading">Welcome To Our Studio!</div>
+		<div class="masthead-heading text-uppercase">It's Nice To Meet You</div>
+		<a class="btn btn-primary btn-xl text-uppercase" href="camera">Enjoy Our Services</a>
+	</div>
+</header>
 
 
 @code {
