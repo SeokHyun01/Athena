@@ -1,11 +1,15 @@
 ﻿<AuthorizeView>
 	<Authorized>
-		Hello, @context.User.Identity.Name
-		<a href="profile">Profile</a>
-		<a href="Identity/Account/Logout">Logout</a>
+		<li class="nav-item">
+			<a class="nav-link" href="#">
+				Hello, @context.User.Identity.Name
+			</a>
+		</li>
+		<li class="nav-item"><a class="nav-link" href="profile">Profile</a></li>
+		<li class="nav-item"><a class="nav-link" href="Identity/Account/Logout">Logout</a></li>
 	</Authorized>
 	<NotAuthorized>
-		<a href="Identity/Account/Register">Register</a>
-		<a href="Identity/Account/Login">Login</a>
+		<li class="nav-item"><a class="nav-link" href="Identity/Account/Register">Register</a></li>
+		<li class="nav-item"><a class="nav-link" href="Identity/Account/Login">Login</a></li>
 	</NotAuthorized>
 </AuthorizeView>

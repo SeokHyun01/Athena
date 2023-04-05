@@ -4,9 +4,16 @@
 
 <div class="page">
     <main>
-        <div class="top-row px-4">
-            <LoginDisplay></LoginDisplay>
-        </div>
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+            <div class="container">
+                @*<a class="navbar-brand" href="#page-top"><img src="assets/img/navbar-logo.svg" alt="..." /></a>*@
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                        <LoginDisplay></LoginDisplay>
+                    </ul>
+                </div>
+            </div>
+        </nav>
 
         <article class="content px-4">
             @Body
