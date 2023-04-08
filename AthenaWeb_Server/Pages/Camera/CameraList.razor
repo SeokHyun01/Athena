@@ -26,11 +26,11 @@
 							<div class="card-body text-center">
 								<div class="p-4 border radius-15">
 									<img id=@($"thumbnailImage{camera.Id}") />
-									<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}camera/{camera.Id}/thumbnail")>
+									<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}camera/{camera.Id}/thumbnail") class="shadow">
 										<QRCodeGeneratorDisplayText Text=@(camera.Name)></QRCodeGeneratorDisplayText>
 									</SfQRCodeGenerator>
 									<div class="list-inline contacts-social mt-3 mb-3">
-										<a href=@($"camera/{camera.Id}") class="list-inline-item bg-facebook text-white border-0"><i class="bx bxl-facebook"></i></a>
+										<a href=@($"camera/{camera.Id}") class="list-inline-item bg-facebook text-white border-0"><i class="bi bi-eye"></i></a>
 										<a href=@($"camera/{camera.Id}/event") class="list-inline-item bg-twitter text-white border-0"><i class="bx bxl-twitter"></i></a>
 										<button class="btn btn-danger mt-2" @onclick="()=>HandleDelete(camera.Id)">삭제</button>
 									</div>
@@ -112,11 +112,6 @@
 
 
 <style>
-	body {
-		background-color: #f7f7ff;
-		margin-top: 20px;
-	}
-
 	.radius-15 {
 		border-radius: 15px;
 	}
@@ -132,7 +127,6 @@
 		border: 0px solid rgba(0, 0, 0, 0);
 		border-radius: .25rem;
 		margin-bottom: 1.5rem;
-		box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
 	}
 
 	element.style {
