@@ -30,9 +30,9 @@
 										<QRCodeGeneratorDisplayText Text=@(camera.Name)></QRCodeGeneratorDisplayText>
 									</SfQRCodeGenerator>
 									<div class="list-inline contacts-social mt-3 mb-3">
-										<a href=@($"camera/{camera.Id}") class="list-inline-item btn btn-outline-primary">View</a>
-										<a href=@($"camera/{camera.Id}/event") class="list-inline-item btn btn-outline-primary">Events</a>
-										<button class="list-inline btn btn-outline-danger" @onclick="()=>HandleDelete(camera.Id)">Delete</button>
+										<a href=@($"camera/{camera.Id}") class="btn btn-outline-primary">View</a>
+										<a href=@($"camera/{camera.Id}/event") class="btn btn-outline-primary">Events</a>
+										<button class="btn btn-outline-danger" @onclick="()=>HandleDelete(camera.Id)">Delete</button>
 									</div>
 									<div class="d-grid">
 										<input id=@($"angleInput{camera.Id}") type="range" value=@(camera.Angle) min="0" max="180" step="1" @onchange="(args)=>SetCameraAngle(args, camera.Id)" />
