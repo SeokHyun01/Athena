@@ -35,7 +35,7 @@
 										<button type="button" class="btn btn-outline-danger" @onclick="()=>HandleDelete(camera.Id)">Delete</button>
 									</div>
 									<div class="d-grid">
-										<input id=@($"angleInput{camera.Id}") type="range" value=@(camera.Angle) min="0" max="180" step="1" @onchange="(args)=>SetCameraAngle(args, camera.Id)" />
+										<input id=@($"angleInput{camera.Id}") type="range" class="form-range" value=@(camera.Angle) min="0" max="180" step="1" @onchange="(args)=>SetCameraAngle(args, camera.Id)" />
 									</div>
 								</div>
 							</div>
@@ -44,7 +44,7 @@
 				}
 			}
 		</div>
-		<a type="button" href=@($"camera/create") class="btn btn-outline-primary">Create A New Camera</a>
+		<a type="button" href=@($"camera/create") class="btn btn-outline-primary mt-5">Create A New Camera</a>
 	</div>
 </header>
 
