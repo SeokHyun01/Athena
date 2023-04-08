@@ -27,9 +27,8 @@
 								<div class="p-4 border radius-15">
 									<img id=@($"thumbnailImage{camera.Id}") />
 									<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}camera/{camera.Id}/thumbnail")>
-										<QRCodeGeneratorDisplayText Text=""></QRCodeGeneratorDisplayText>
+										<QRCodeGeneratorDisplayText Text=@(camera.Name)></QRCodeGeneratorDisplayText>
 									</SfQRCodeGenerator>
-									<h5 class="mb-0 mt-3">@(camera.Name)</h5>
 									<div class="list-inline contacts-social mt-3 mb-3">
 										<a href=@($"camera/{camera.Id}") class="list-inline-item bg-facebook text-white border-0"><i class="bx bxl-facebook"></i></a>
 										<a href=@($"camera/{camera.Id}/event") class="list-inline-item bg-twitter text-white border-0"><i class="bx bxl-twitter"></i></a>
