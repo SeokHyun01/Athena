@@ -14,7 +14,9 @@
 <!-- Masthead-->
 <header class="masthead">
 	<div class="container">
-		<a type="button" href=@($"camera/create") class="btn btn-outline-primary">Create A New Camera</a>
+		<div class="justify-content-start">
+			<a type="button" href=@($"camera/create") class="btn btn-outline-primary">Create A New Camera</a>
+		</div>
 
 		<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
 			@if (Cameras.Any())
@@ -30,8 +32,8 @@
 										<QRCodeGeneratorDisplayText Text=@(camera.Name)></QRCodeGeneratorDisplayText>
 									</SfQRCodeGenerator>
 									<div class="mt-3 mb-3">
-										<a type="button" href=@($"camera/{camera.Id}") class="btn btn-outline-primary">View</a>
-										<a type="button" href=@($"camera/{camera.Id}/event") class="btn btn-outline-primary">Events</a>
+										<a type="button" href=@($"camera/{camera.Id}") class="btn btn-outline-secondary">View</a>
+										<a type="button" href=@($"camera/{camera.Id}/event") class="btn btn-outline-secondary">Events</a>
 										<button type="button" class="btn btn-outline-danger" @onclick="()=>HandleDelete(camera.Id)">Delete</button>
 									</div>
 									<div class="d-grid">
