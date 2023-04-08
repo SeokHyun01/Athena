@@ -25,11 +25,11 @@
 						<div class="card radius-15">
 							<div class="card-body text-center">
 								<div class="p-4 border radius-15">
-									<img id=@($"thumbnailImage{camera.Id}") />
+									<img class="mb=3" id=@($"thumbnailImage{camera.Id}") />
 									<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}camera/{camera.Id}/thumbnail")>
 										<QRCodeGeneratorDisplayText Text=@(camera.Name)></QRCodeGeneratorDisplayText>
 									</SfQRCodeGenerator>
-									<div class="mt-3 mb-3">
+									<div class="mt-5 mb-3">
 										<a type="button" href=@($"camera/{camera.Id}") class="btn btn-outline-primary">View</a>
 										<a type="button" href=@($"camera/{camera.Id}/event") class="btn btn-outline-secondary">Events</a>
 										<button type="button" class="btn btn-outline-danger" @onclick="()=>HandleDelete(camera.Id)">Delete</button>
