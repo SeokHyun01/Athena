@@ -14,7 +14,7 @@
 <!-- Masthead-->
 <header class="masthead">
 	<div class="container">
-		<a class="btn btn-primary btn-xl text-uppercase" href=@($"camera/create")>카메라 생성</a>
+		<a type="button" href=@($"camera/create") class="btn btn-outline-primary">Create A New Camera</a>
 
 		<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
 			@if (Cameras.Any())
