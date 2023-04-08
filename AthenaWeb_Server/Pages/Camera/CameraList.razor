@@ -14,6 +14,8 @@
 <!-- Masthead-->
 <header class="masthead">
 	<div class="container">
+		<a class="btn btn-primary btn-xl text-uppercase" href=@($"camera/create")>카메라 생성</a>
+
 		<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
 			@if (Cameras.Any())
 			{
@@ -24,8 +26,10 @@
 							<div class="card-body text-center">
 								<div class="p-4 border radius-15">
 									<img id=@($"thumbnailImage{camera.Id}") />
-									<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}camera/{camera.Id}/thumbnail") />
-									<h5 class="mb-0 mt-5">camera.Name</h5>
+									<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}camera/{camera.Id}/thumbnail")>
+										<QRCodeGeneratorDisplayText Text=""></QRCodeGeneratorDisplayText>
+									</SfQRCodeGenerator>
+									<h5 class="mb-0 mt-3">@(camera.Name)</h5>
 									<div class="list-inline contacts-social mt-3 mb-3">
 										<a href=@($"camera/{camera.Id}") class="list-inline-item bg-facebook text-white border-0"><i class="bx bxl-facebook"></i></a>
 										<a href=@($"camera/{camera.Id}/event") class="list-inline-item bg-twitter text-white border-0"><i class="bx bxl-twitter"></i></a>
@@ -231,8 +235,8 @@
 			await MqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
 
 			var mqttSubscribeOptions = mqttFactory.CreateSubscribeOptionsBuilder()
-				.WithTopicFilter( f => { f.WithTopic("camera/update/thumbnail"); })
-				.WithTopicFilter( f => { f.WithTopic("camera/update/degree/ack"); })
+				.WithTopicFilter(f => { f.WithTopic("camera/update/thumbnail"); })
+				.WithTopicFilter(f => { f.WithTopic("camera/update/degree/ack"); })
 				.Build();
 			await MqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
 		}
