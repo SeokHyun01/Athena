@@ -26,7 +26,7 @@
 							<div class="card-body text-center">
 								<div class="p-4 border radius-15">
 									<img id=@($"thumbnailImage{camera.Id}") />
-									<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}camera/{camera.Id}/thumbnail") class="shadow">
+									<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}camera/{camera.Id}/thumbnail")>
 										<QRCodeGeneratorDisplayText Text=@(camera.Name)></QRCodeGeneratorDisplayText>
 									</SfQRCodeGenerator>
 									<div class="list-inline contacts-social mt-3 mb-3">
