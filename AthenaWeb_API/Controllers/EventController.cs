@@ -49,7 +49,7 @@ namespace AthenaWeb_API.Controllers
 					};
 					var content = JsonConvert.SerializeObject(objectDetectionRequest);
 					var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-					var response = await _client.PostAsync("http://localhost:8000/event/create/", bodyContent);
+					var response = await _client.PostAsync("http://localhost:8000/event/create", bodyContent);
 					var objectDetectionResponse = await response.Content.ReadFromJsonAsync<ObjectDetectionResponseDTO>();
 					if (response.IsSuccessStatusCode)
 					{

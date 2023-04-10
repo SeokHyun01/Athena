@@ -27,11 +27,13 @@
 						<div class="card radius-15">
 							<div class="card-body text-center">
 								<div class="p-4 border radius-15">
-									<img width="320" class="mb=3" id=@($"thumbnailImage{camera.Id}") />
 									<div class="d-flex justify-content-center">
 										<SfQRCodeGenerator Value=@($"{_navigationManager.BaseUri}camera/{camera.Id}/thumbnail")>
 											<QRCodeGeneratorDisplayText Text=@(camera.Name)></QRCodeGeneratorDisplayText>
 										</SfQRCodeGenerator>
+									</div>
+									<div class="d-flex justify-content-center">
+										<img width="320" class="mb=3" id=@($"thumbnailImage{camera.Id}") />
 									</div>
 									<div class="mt-5 mb-3">
 										<a type="button" href=@($"camera/{camera.Id}") class="btn btn-outline-primary">View</a>
