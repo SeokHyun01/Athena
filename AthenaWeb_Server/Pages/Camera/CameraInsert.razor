@@ -20,12 +20,14 @@
 					<p class="text-danger text-center">@Error</p>
 				</div>
 			}
-			<form style="width: 26rem;">
-				<div class="form-group">
-					<InputText @bind-Value="Camera.Name" class="form-control" id="cameraName" placeholder="Camera Name" />
-					<ValidationMessage For="(()=>Camera.Name)"></ValidationMessage>
-				</div>
-			</form>
+			<div class="d-flex justify-content-center">
+				<form style="width: 26rem;">
+					<div class="form-group">
+						<InputText @bind-Value="Camera.Name" class="form-control" id="cameraName" placeholder="Camera Name" />
+						<ValidationMessage For="(()=>Camera.Name)"></ValidationMessage>
+					</div>
+				</form>
+			</div>
 			<div class="list-inline mt-3">
 				<button type="submit" class="btn btn btn-outline-primary btn-lg list-inline-item">생성하기</button>
 				<a class="btn btn btn-outline-secondary btn-lg list-inline-item" href="camera">돌아가기</a>
