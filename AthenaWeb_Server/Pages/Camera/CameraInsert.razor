@@ -7,40 +7,40 @@
 @attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
 
 
-<EditForm Model="Camera" OnValidSubmit="InsertCamera">
-	<DataAnnotationsValidator />
-	<div class="container mt-5">
-		@if (ShowError)
-		{
-			<div>
-				<p class="text-danger text-center">@Error</p>
+<!-- Masthead-->
+<header class="masthead">
+	<div class="container">
+		<div class="masthead-subheading">페이지 설명.</div>
+		<div class="masthead-heading">카메라 생성하기</div>
+		<EditForm Model="Camera" OnValidSubmit="InsertCamera">
+			<DataAnnotationsValidator />
+			<div class="container">
+				@if (ShowError)
+				{
+					<div>
+						<p class="text-danger text-center">@Error</p>
+					</div>
+				}
+				<div class="form-group">
+					<label for="cameraName">카메라 이름</label>
+					<InputText @bind-Value="Camera.Name" class="form-control" id="cameraName" />
+					<ValidationMessage For="(()=>Camera.Name)"></ValidationMessage>
+				</div>
+
+				<button type="submit" class="btn btn btn-outline-primary btn-xl">생성하기</button>
+				<a class="btn btn btn-outline-secondary btn-xl" href="camera">돌아가기</a>
 			</div>
-		}
-		<div class="form-group">
-			<label for="cameraName">카메라 이름</label>
-			<InputText @bind-Value="Camera.Name" class="form-control" id="cameraName" />
-			<ValidationMessage For="(()=>Camera.Name)"></ValidationMessage>
-		</div>
-		<button type="submit" class="btn btn-primary">카메라 @Action</button>
-		<NavLink href=@($"camera") class="btn btn-secondary">돌아가기</NavLink>
+		</EditForm>
 	</div>
-</EditForm>
-
-
-<style>
-	.form-group {
-		margin-bottom: 1rem;
-	}
-</style>
+</header>
 
 
 @code {
 	[CascadingParameter]
 	public Task<AuthenticationState> _authState { get; set; }
 
-	private string Action { get; set; } = "생성";
 	private string Error { get; set; } = string.Empty;
-	
+
 	private bool IsLoading { get; set; }
 	private bool ShowError { get; set; }
 
