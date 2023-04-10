@@ -14,25 +14,33 @@
 		<div class="masthead-heading">카메라 생성하기</div>
 		<EditForm Model="Camera" OnValidSubmit="InsertCamera">
 			<DataAnnotationsValidator />
-			<div class="container">
-				@if (ShowError)
-				{
-					<div>
-						<p class="text-danger text-center">@Error</p>
-					</div>
-				}
+			@if (ShowError)
+			{
+				<div>
+					<p class="text-danger text-center">@Error</p>
+				</div>
+			}
+			<form>
 				<div class="form-group">
 					<label for="cameraName">카메라 이름</label>
 					<InputText @bind-Value="Camera.Name" class="form-control" id="cameraName" />
 					<ValidationMessage For="(()=>Camera.Name)"></ValidationMessage>
 				</div>
-
-				<button type="submit" class="btn btn btn-outline-primary btn-xl">생성하기</button>
-				<a class="btn btn btn-outline-secondary btn-xl" href="camera">돌아가기</a>
+			</form>
+			<div class="list-inline mt-3">
+				<button type="submit" class="btn btn btn-outline-primary btn-xl list-inline-item">생성하기</button>
+				<a class="btn btn btn-outline-secondary btn-xl list-inline-item" href="camera">돌아가기</a>
 			</div>
 		</EditForm>
 	</div>
 </header>
+
+
+<style>
+	.list-inline-item:not(:last-child) {
+		margin-right: .5rem;
+	}
+</style>
 
 
 @code {
