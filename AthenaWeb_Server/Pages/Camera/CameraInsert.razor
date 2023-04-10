@@ -22,8 +22,10 @@
 			}
 			<form>
 				<div class="form-group">
-					<label for="cameraName">카메라 이름</label>
-					<InputText @bind-Value="Camera.Name" class="form-control" id="cameraName" />
+					<label for="cameraName" class="col-sm-2 col-form-label mb-1">카메라 이름</label>
+					<div class="col-sm-10">
+						<InputText @bind-Value="Camera.Name" class="form-control" id="cameraName" placeholder="Camera Name" />
+					</div>
 					<ValidationMessage For="(()=>Camera.Name)"></ValidationMessage>
 				</div>
 			</form>
