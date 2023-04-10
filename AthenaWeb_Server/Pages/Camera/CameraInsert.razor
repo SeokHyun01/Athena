@@ -22,16 +22,16 @@
 			}
 			<form>
 				<div class="form-group">
-					<label for="cameraName" class="col-sm-2 col-form-label mb-1">카메라 이름</label>
-					<div class="col-sm-10">
+					<label for="cameraName" class="col-sm-3 col-form-label">카메라 이름</label>
+					<div class="col-sm-9">
 						<InputText @bind-Value="Camera.Name" class="form-control" id="cameraName" placeholder="Camera Name" />
 					</div>
 					<ValidationMessage For="(()=>Camera.Name)"></ValidationMessage>
 				</div>
 			</form>
 			<div class="list-inline mt-3">
-				<button type="submit" class="btn btn btn-outline-primary btn-xl list-inline-item">생성하기</button>
-				<a class="btn btn btn-outline-secondary btn-xl list-inline-item" href="camera">돌아가기</a>
+				<button type="submit" class="btn btn btn-outline-primary list-inline-item">생성하기</button>
+				<a class="btn btn btn-outline-secondary list-inline-item" href="camera">돌아가기</a>
 			</div>
 		</EditForm>
 	</div>
