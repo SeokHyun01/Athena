@@ -69,31 +69,30 @@
 			{
 				ConnectionId = senderId;
 				await _jsRuntime.InvokeVoidAsync("initializeCamera", ConnectionId, UserId.ToString(), CameraId);
-				_logger.LogInformation("OnConnected");
 			});
 
 			hubConnection.On("Welcome", async () =>
 			{
 				var offer = await _jsRuntime.InvokeAsync<string>("sendOffer");
 				await hubConnection.SendAsync("SendOffer", offer, RoomName);
-				_logger.LogInformation("welcome");
 			});
 
 			hubConnection.On<string>("ReceiveOffer", async (receivedOffer) =>
 			{
 				var answer = await _jsRuntime.InvokeAsync<string>("sendAnswer", receivedOffer);
 				await hubConnection.SendAsync("SendAnswer", answer, RoomName);
-				_logger.LogInformation("ReceiveOffer");
 			});
 
 			hubConnection.On<string>("ReceiveAnswer", async (receivedAnswer) =>
 			{
 				await _jsRuntime.InvokeVoidAsync("receiveAnswer", receivedAnswer);
+				_logger.LogInformation("ReceiveAnswer");
 			});
 
 			hubConnection.On<string>("ReceiveIce", async (receivedIce) =>
 			{
 				await _jsRuntime.InvokeVoidAsync("receiveIce", receivedIce);
+				_logger.LogInformation("ReceiveIce");
 			});
 
 			await hubConnection.StartAsync();
