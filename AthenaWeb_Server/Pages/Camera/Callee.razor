@@ -26,6 +26,9 @@
 	[Parameter]
 	public string UserIdToThumbnail { get; set; }
 
+	[Parameter]
+	public bool fromThumbnail { get; set; } = false;
+
 	private HubConnection? hubConnection;
 
 	private string ConnectionId { get; set; } = string.Empty;
@@ -36,13 +39,13 @@
 	{
 		if (firstRander)
 		{
-			////웹: thumbnail 페이지에서 넘어온 경우 앱: webRTC 페이지 직접 접속한 경우
-			//if (string.IsNullOrEmpty(UserId))
-			//{
-			//	// thumbnail 페이지에서 넘어온 경우
-			//	UserId = UserIdToThumbnail;
-			//	CameraId = CameraIdToThumbnail;
-			//}
+			//웹: thumbnail 페이지에서 넘어온 경우 앱: webRTC 페이지 직접 접속한 경우
+			if (fromThumbnail)
+			{
+				// thumbnail 페이지에서 넘어온 경우
+				UserId = UserIdToThumbnail;
+				CameraId = CameraIdToThumbnail;
+			}
 
 			// SignalR
 			hubConnection = new HubConnectionBuilder()
