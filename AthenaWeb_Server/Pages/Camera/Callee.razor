@@ -116,6 +116,8 @@
 	[JSInvokable]
 	public async ValueTask DisposeAsyncFromJs()
 	{
+		_logger.LogInformation("DisposeAsyncFromJs 호출!");
+		
 		if(hubConnection != null){
 			await hubConnection.StopAsync();
 			await hubConnection.DisposeAsync();

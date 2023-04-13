@@ -618,6 +618,7 @@ window.dotnetHelperCallee = (objRef) =>{
 
 //dotnet에서 callee 종료 요청
 window.stopCallee = () => {
+    console.log("stopCallee 호출!")
     _DotnetCallee.invokeMethodAsync("DisposeAsyncFromJs");
 }
 
