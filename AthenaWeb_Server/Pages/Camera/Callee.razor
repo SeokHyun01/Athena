@@ -105,14 +105,27 @@
 	// Dispose
 	public async ValueTask DisposeAsync()
 	{
-		_logger.LogInformation("DisposeAsync 1");
-
 		if (hubConnection != null)
 		{
-			_logger.LogInformation("DisposeAsync 2");
-			
 				await hubConnection.StopAsync();
 				await hubConnection.DisposeAsync();
 		}
 	}
+
+	//js에서 호출
+	[JSInvokable]
+	public async ValueTask DisposeAsyncFromJs()
+	{
+		if(hubConnection != null){
+			await hubConnection.StopAsync();
+			await hubConnection.DisposeAsync();
+		}
+	}
+
+	//dotnet helper 생성
+	public async Task DotnetHelperCallee()
+	{
+		await _jsRuntime.InvokeVoidAsync("dotnetHelperCallee", DotNetObjectReference.Create(this));
+	}
+
 }
