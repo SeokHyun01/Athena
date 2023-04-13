@@ -33,16 +33,20 @@ namespace AthenaWeb_Server.Hubs
 				await Clients.Group(roomName).SendAsync("Welcome");
 			}
 
-			if (!(Rooms[roomName].Count >= 2))
-			{
-				Rooms[roomName].Add(Context.ConnectionId);
-				await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
-				_logger.LogInformation($"클라이언트 {Context.ConnectionId}가 방 {roomName}에 입장했습니다.");
-			}
-			else
-			{
-				throw new Exception($"Room {Rooms[roomName]}.Count = {Rooms[roomName].Count}, 정원 초과입니다.");
-			}
+			Rooms[roomName].Add(Context.ConnectionId);
+			await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
+			_logger.LogInformation($"클라이언트 {Context.ConnectionId}가 방 {roomName}에 입장했습니다.");
+			
+			// if (!(Rooms[roomName].Count >= 2))
+			// {
+			// 	Rooms[roomName].Add(Context.ConnectionId);
+			// 	await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
+			// 	_logger.LogInformation($"클라이언트 {Context.ConnectionId}가 방 {roomName}에 입장했습니다.");
+			// }
+			// else
+			// {
+			// 	throw new Exception($"Room {Rooms[roomName]}.Count = {Rooms[roomName].Count}, 정원 초과입니다.");
+			// }
 		}
 
 		public override async Task OnDisconnectedAsync(Exception? exception)
