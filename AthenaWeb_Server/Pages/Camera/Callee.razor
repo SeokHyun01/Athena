@@ -39,7 +39,7 @@
 	{
 		if (firstRander)
 		{
-			await DotnetHelperCallee();
+			//await DotnetHelperCallee();
 
 			//웹: thumbnail 페이지에서 넘어온 경우 앱: webRTC 페이지 직접 접속한 경우
 			if (fromThumbnail)
@@ -104,7 +104,7 @@
 		}
 	}
 
-	// Dispose
+	@* // Dispose
 	public async ValueTask DisposeAsync()
 	{
 		if (hubConnection != null && fromThumbnail)
@@ -130,6 +130,6 @@
 	public async Task DotnetHelperCallee()
 	{
 		await _jsRuntime.InvokeVoidAsync("dotnetHelperCallee", DotNetObjectReference.Create(this));
-	}
+	} *@
 
 }

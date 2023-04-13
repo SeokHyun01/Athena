@@ -15,7 +15,7 @@ window.setVideo = () => {
 let _client;   //전역변수로 mqtt client 할당
 let _characteristic;   //전역변수로 ble characteristic 할당
 let _Dotnet;  //전역변수로 dotnet 객체 할당
-let _DotnetCallee;  //전역변수로 dotnet callee 객체 할당
+//let _DotnetCallee;  //전역변수로 dotnet callee 객체 할당
 let _cameraId;
 let _isCamShift = false;
 let _isTfjs = false;
@@ -611,16 +611,16 @@ window.dotnetHelper = (objRef, cameraId) => {
     _cameraId = cameraId;
 }
 
-//dotnet 객체를 가져온다.
-window.dotnetHelperCallee = (objRef) =>{
-   _DotnetCallee = objRef;
-}
+// //dotnet 객체를 가져온다.
+// window.dotnetHelperCallee = (objRef) =>{
+//    _DotnetCallee = objRef;
+// }
 
-//dotnet에서 callee 종료 요청
-window.stopCallee = () => {
-    console.log("stopCallee 호출!")
-    _DotnetCallee.invokeMethodAsync("DisposeAsyncFromJs");
-}
+// //dotnet에서 callee 종료 요청
+// window.stopCallee = () => {
+//     console.log("stopCallee 호출!")
+//     _DotnetCallee.invokeMethodAsync("DisposeAsyncFromJs");
+// }
 
 //만약 페이지를 닫으면 mqtt 연결을 끊는다.
 window.onbeforeunload = function () {
