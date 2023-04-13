@@ -107,10 +107,10 @@
 	// Dispose
 	public async ValueTask DisposeAsync()
 	{
-		if (hubConnection != null)
+		if (hubConnection != null && fromThumbnail)
 		{
-				await hubConnection.StopAsync();
-				await hubConnection.DisposeAsync();
+			await hubConnection.StopAsync();
+			await hubConnection.DisposeAsync();
 		}
 	}
 
