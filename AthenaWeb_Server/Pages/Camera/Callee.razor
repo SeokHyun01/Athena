@@ -39,6 +39,8 @@
 	{
 		if (firstRander)
 		{
+			await DotnetHelperCallee();
+
 			//웹: thumbnail 페이지에서 넘어온 경우 앱: webRTC 페이지 직접 접속한 경우
 			if (fromThumbnail)
 			{
@@ -117,7 +119,7 @@
 	public async ValueTask DisposeAsyncFromJs()
 	{
 		_logger.LogInformation("DisposeAsyncFromJs 호출!");
-		
+
 		if(hubConnection != null){
 			await hubConnection.StopAsync();
 			await hubConnection.DisposeAsync();
