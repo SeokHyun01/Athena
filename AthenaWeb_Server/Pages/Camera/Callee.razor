@@ -105,13 +105,14 @@
 	// Dispose
 	public async ValueTask DisposeAsync()
 	{
+		_logger.LogInformation("DisposeAsync 1");
+
 		if (hubConnection != null)
 		{
-			if (hubConnection != null)
-			{
+			_logger.LogInformation("DisposeAsync 2");
+			
 				await hubConnection.StopAsync();
 				await hubConnection.DisposeAsync();
-			}
 		}
 	}
 }
