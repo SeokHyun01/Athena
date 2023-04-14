@@ -82,18 +82,21 @@
 
 			hubConnection.On<string>("ReceiveOffer", async (receivedOffer) =>
 			{
+				_logger.LogInformation("ReceiveOffer 받았디");
 				var answer = await _jsRuntime.InvokeAsync<string>("sendAnswer", receivedOffer);
 				await hubConnection.SendAsync("SendAnswer", answer, RoomName);
 			});
 
 			hubConnection.On<string>("ReceiveAnswer", async (receivedAnswer) =>
 			{
+				_logger.LogInformation("ReceiveAnswer 받았디");
 				await _jsRuntime.InvokeVoidAsync("receiveAnswer", receivedAnswer);
 				_logger.LogInformation("ReceiveAnswer");
 			});
 
 			hubConnection.On<string>("ReceiveIce", async (receivedIce) =>
 			{
+				_logger.LogInformation("ReceiveIce 받았디");
 				await _jsRuntime.InvokeVoidAsync("receiveIce", receivedIce);
 				_logger.LogInformation("ReceiveIce");
 			});
