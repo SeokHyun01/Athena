@@ -31,6 +31,7 @@ namespace AthenaWeb_Server.Hubs
 			else
 			{
 				await Clients.Group(roomName).SendAsync("Welcome");
+				_logger.LogInformation("welcome 보냈디");
 			}
 
 			if (!(Rooms[roomName].Count >= 2))
