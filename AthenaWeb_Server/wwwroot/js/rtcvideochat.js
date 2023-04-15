@@ -155,9 +155,9 @@ class Camera {
             ],
         });
 
-        this.peerConnection.addEventListener("icecandidate", (event) => this.handleIce(event));
-        this.peerConnection.addEventListener("addstream", (event) => this.handleAddStream(event));
-        this.mediaStream.getTracks().forEach((track) => this.peerConnection.addTrack(track, this.mediaStream));
+        this.peerConnection.addEventListener("icecandidate", (event) => {this.handleIce(event), console.log("icecandidate")});
+        this.peerConnection.addEventListener("addstream", (event) => {this.handleAddStream(event), console.log("addstream")});
+        this.mediaStream.getTracks().forEach((track) => {this.peerConnection.addTrack(track, this.mediaStream), console.log("addTrack")});
     }
 }
 
@@ -201,8 +201,7 @@ function receiveAnswer(answer) {
 function receiveIce(ice) {
     const receivedIce = JSON.parse(ice);
     console.log(receivedIce)
-    const bool = camera.peerConnection.addIceCandidate(receivedIce);
-    console.log(bool)
+    camera.peerConnection.addIceCandidate(receivedIce);
 }
 
 function getCurrentTime() {
