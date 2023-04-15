@@ -186,10 +186,12 @@ async function sendAnswer(offer) {
     const jsonObject = JSON.parse(offer);
     const receivedOffer = new RTCSessionDescription(jsonObject);
 
+    console.log(offer + "offer")
     camera.peerConnection.setRemoteDescription(receivedOffer);
 
     const answer = await camera.peerConnection.createAnswer();
     camera.peerConnection.setLocalDescription(answer);
+    console.log(answer + "answer")
 
     return JSON.stringify(answer);
 }
