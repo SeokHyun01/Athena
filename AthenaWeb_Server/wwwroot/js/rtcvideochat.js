@@ -201,7 +201,8 @@ function receiveAnswer(answer) {
 function receiveIce(ice) {
     const receivedIce = JSON.parse(ice);
     console.log(receivedIce)
-    camera.peerConnection.addIceCandidate(receivedIce);
+    const bool = camera.peerConnection.addIceCandidate(receivedIce);
+    console.log(bool)
 }
 
 function getCurrentTime() {
