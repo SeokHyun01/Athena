@@ -155,8 +155,11 @@ class Camera {
             ],
         });
 
+        // receive Ice가 끝나고 바로 실행됨
         this.peerConnection.addEventListener("icecandidate", (event) => {this.handleIce(event), console.log("icecandidate")});
+        // 이후 add stream이 1번
         this.peerConnection.addEventListener("addstream", (event) => {this.handleAddStream(event), console.log("addstream")});
+        // add track 이 2번 
         this.mediaStream.getTracks().forEach((track) => {this.peerConnection.addTrack(track, this.mediaStream), console.log("addTrack")});
     }
 }
@@ -182,7 +185,7 @@ async function sendOffer() {
 async function sendAnswer(offer) {
     const jsonObject = JSON.parse(offer);
     const receivedOffer = new RTCSessionDescription(jsonObject);
-
+    console.log(receivedOffer +" 이게 뭐냐?");
     camera.peerConnection.setRemoteDescription(receivedOffer);
 
     const answer = await camera.peerConnection.createAnswer();
