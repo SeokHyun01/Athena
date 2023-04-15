@@ -191,7 +191,7 @@ async function sendAnswer(offer) {
 
     const answer = await camera.peerConnection.createAnswer();
     camera.peerConnection.setLocalDescription(answer);
-    console.log(answer + "answer")
+    console.log(JSON.stringify(answer) + "answer")
 
     return JSON.stringify(answer);
 }
