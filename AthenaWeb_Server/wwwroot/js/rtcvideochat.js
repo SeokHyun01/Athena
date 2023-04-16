@@ -134,6 +134,16 @@ class Camera {
 
         }
     }
+    
+    // 안드로이드에서는 stream 메서드가 삭제됨 각각의 track을 가져와야함
+    handleAddTrack(data) {
+        if (data && data.streams[0]) {
+            this.remoteVideo = document.getElementById("remoteVideo");
+            this.remoteVideo.srcObject = data.streams[0];
+            //좌우 반전
+            this.remoteVideo.style.transform = "scaleX(-1)";
+        }
+    }
 
     createRTCPeerConnection() {
         this.peerConnection = new RTCPeerConnection({
@@ -162,7 +172,7 @@ class Camera {
         // 이후 add stream이 1번
         this.peerConnection.addEventListener("addstream", (event) => {this.handleAddStream(event), console.log("addstream")});
         // 어쩌면 track으로 전달해서 그럴지도
-        this.peerConnection.addEventListener("track", (event) => { console.log("track")});
+        this.peerConnection.addEventListener("track", (event) => { this.handleAddTrack(event), console.log("track")});
         // add track 이 2번 
         this.mediaStream.getTracks().forEach((track) => {this.peerConnection.addTrack(track, this.mediaStream), console.log("addTrack")});
     }
