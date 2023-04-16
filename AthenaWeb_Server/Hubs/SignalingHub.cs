@@ -88,7 +88,6 @@ namespace AthenaWeb_Server.Hubs
 			var roomNames = Rooms.Where(x => x.Value.Contains(senderId)).Select(x => x.Key);
 			foreach (var roomName in roomNames)
 			{
-				_logger.LogInformation(ice + " ,!!!!!");
 				var group = Clients.GroupExcept(roomName, senderId);
 				await group.SendAsync("ReceiveIce", ice);
 				_logger.LogInformation($"방 {roomName}으로 ICE를 전송했습니다.");
