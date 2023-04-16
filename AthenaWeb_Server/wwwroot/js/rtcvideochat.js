@@ -137,16 +137,22 @@ class Camera {
     
     // 안드로이드에서는 stream 메서드가 삭제됨 각각의 track을 가져와야함
     handleAddTrack(data) {
-        if (data && data.streams) {
-            console.log("handleAddTrack 비디오 가져오기");
-            this.remoteVideo = document.getElementById("remoteVideo");
-            this.remoteVideo.srcObject = data.streams[0];
-            //좌우 반전
-            this.remoteVideo.style.transform = "scaleX(-1)";
-        }else{
-            console.log(data);
-            console.log(data.streams[0])
-        }
+        if (data && data.track) {
+            if (data.track.kind === "video") {
+              // 비디오 스트림 처리
+              console.log("비디오 스트림 처리");
+              this.remoteVideo = document.getElementById("remoteVideo");
+              this.remoteVideo.srcObject = new MediaStream([data.track]);
+              //좌우 반전
+              this.remoteVideo.style.transform = "scaleX(-1)";
+              
+            } else if (data.track.kind === "audio") {
+              // 오디오 스트림 처리
+              console.log("오디오 스트림 처리");
+              this.remoteAudio = document.getElementById("remoteAudio");
+              this.remoteAudio.srcObject = new MediaStream([data.track]);
+            }
+          }
     }
 
     createRTCPeerConnection() {
