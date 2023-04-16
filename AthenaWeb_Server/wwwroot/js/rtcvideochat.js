@@ -120,7 +120,7 @@ class Camera {
 
             const ice = JSON.stringify(data.candidate);
             connection.send("SendIce", ice, this.connectionId);
-            console.log("SendIce" + ice);
+            console.log("SendIce");
             await connection.stop();
         }
     }
@@ -191,7 +191,6 @@ async function sendAnswer(offer) {
 
     const answer = await camera.peerConnection.createAnswer();
     camera.peerConnection.setLocalDescription(answer);
-    console.log(JSON.stringify(answer) + "answer")
 
     return JSON.stringify(answer);
 }
@@ -206,7 +205,13 @@ function receiveAnswer(answer) {
 function receiveIce(ice) {
     const receivedIce = JSON.parse(ice);
     console.log(receivedIce)
-    camera.peerConnection.addIceCandidate(receivedIce);
+    camera.peerConnection.addIceCandidate(receivedIce)
+    .then(() => {
+        console.log("IceCandidate added successfully");
+      })
+      .catch((error) => {
+        console.log("Error adding IceCandidate:", error);
+      });
 }
 
 function getCurrentTime() {
