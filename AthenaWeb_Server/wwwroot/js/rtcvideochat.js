@@ -205,7 +205,12 @@ function receiveAnswer(answer) {
     const jsonObject = JSON.parse(answer);
     const receivedAnswer = new RTCSessionDescription(jsonObject);
 
-    camera.peerConnection.setRemoteDescription(receivedAnswer);
+    camera.peerConnection.setRemoteDescription(receivedAnswer).then(() => {
+        console.log("Remote description set successfully");
+      })
+      .catch((error) => {
+        console.log("Error setting remote description:", error);
+      });
 }
 
 function receiveIce(ice) {
