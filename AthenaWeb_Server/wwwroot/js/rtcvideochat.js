@@ -187,7 +187,13 @@ async function sendAnswer(offer) {
     const receivedOffer = new RTCSessionDescription(jsonObject);
 
     console.log(offer + "offer")
-    camera.peerConnection.setRemoteDescription(receivedOffer);
+    camera.peerConnection.setRemoteDescription(receivedOffer)
+    .then(() => {
+        console.log("IceCandidate added successfully");
+      })
+      .catch((error) => {
+        console.log("Error adding IceCandidate:", error);
+      });
 
     const answer = await camera.peerConnection.createAnswer();
     camera.peerConnection.setLocalDescription(answer);
