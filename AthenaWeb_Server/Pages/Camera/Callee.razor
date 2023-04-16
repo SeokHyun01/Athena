@@ -94,7 +94,7 @@
 				_logger.LogInformation("ReceiveAnswer 받았디");
 				await _jsRuntime.InvokeVoidAsync("receiveAnswer", receivedAnswer);
 				_logger.LogInformation("ReceiveAnswer");
-			}); 
+			}); *@
 
 			hubConnection.On<string>("ReceiveIce", async (receivedIce) =>
 			{
