@@ -161,6 +161,8 @@ class Camera {
         this.peerConnection.addEventListener("icecandidate", (event) => {this.handleIce(event), console.log("icecandidate")});
         // 이후 add stream이 1번
         this.peerConnection.addEventListener("addstream", (event) => {this.handleAddStream(event), console.log("addstream")});
+        // 어쩌면 track으로 전달해서 그럴지도
+        this.peerConnection.addEventListener("track", (event) => { console.log("track")});
         // add track 이 2번 
         this.mediaStream.getTracks().forEach((track) => {this.peerConnection.addTrack(track, this.mediaStream), console.log("addTrack")});
     }
