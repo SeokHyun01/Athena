@@ -189,10 +189,10 @@ async function sendAnswer(offer) {
     console.log(offer + "offer")
     camera.peerConnection.setRemoteDescription(receivedOffer)
     .then(() => {
-        console.log("IceCandidate added successfully");
+        console.log("Remote description set successfully");
       })
       .catch((error) => {
-        console.log("Error adding IceCandidate:", error);
+        console.log("Error setting remote description:", error);
       });
 
     const answer = await camera.peerConnection.createAnswer();
