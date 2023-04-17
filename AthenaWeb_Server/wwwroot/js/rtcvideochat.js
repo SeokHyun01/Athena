@@ -119,9 +119,9 @@ class Camera {
             await connection.start();
 
             const ice = JSON.stringify(data.candidate);
-            console.log(ice);
+        
             connection.send("SendIce", ice, this.connectionId);
-            console.log("SendIce");
+        
             await connection.stop();
         }
     }
@@ -212,7 +212,7 @@ async function sendAnswer(offer) {
     const jsonObject = JSON.parse(offer);
     const receivedOffer = new RTCSessionDescription(jsonObject);
 
-    console.log(offer + "offer")
+
     camera.peerConnection.setRemoteDescription(receivedOffer);
     
     const answer = await camera.peerConnection.createAnswer();
@@ -235,8 +235,6 @@ function receiveAnswer(answer) {
 
 function receiveIce(ice) {
     const receivedIce = JSON.parse(ice);
-
-    console.log(receivedIce);
 
     camera.peerConnection.addIceCandidate(receivedIce)
     .then(() => {
