@@ -6,36 +6,37 @@
 @implements IAsyncDisposable
 
 
-<div>
-	<button class="btn btn-info btn-sm" @onclick="bluetooth">블루투스 켜기</button>
-	<input type="checkbox" id="CamShiftCheckbox" @onchange="@(e => CamShift(e))" />
-	<label for="CamShiftCheckbox">움직임 감지</label>
-	<input type="checkbox" id="tfjsCheckbox" @onchange="@(e => tfjs(e))" />
-	<label for="tfjsCheckbox">화재 검출</label>
-</div>
-<div class="col">
+<section class="page-section">
+	<div class="container">
+		<div class="bg-white border rounded-5">
+			<section class="p-4 text-center w-100">
+				<video class="w-100" autoplay id="video"></video>
 
-	<div class="video-wrapper">
-		<video id="video" autoplay width="@width" height="@height"></video>
-	</div>
+				@* opencv.js 를 이용한 움직임 감지 *@
+				<canvas id="canvasOutput" hidden></canvas>
 
-	@if (isWebRTC)
-	{
-		<div id="displayWebRTC">
-			<Callee UserIdToThumbnail=@Camera.UserId CameraIdToThumbnail=@CameraId />
+				@* tfjs 를 이용한 화재 감지 *@
+				<canvas id="fireCanvas" hidden></canvas>
+			</section>
+
+			<div class="p-4 text-center border-top">
+				<button class="btn btn-outline-primary" @onclick="bluetooth">블루투스 켜기</button>
+				<label class="radio-inline"><input type="radio" name="option" @onchange="@(e => CamShift(e))" id="CamShiftCheckbox">Motion</label>
+				<label class="radio-inline"><input type="radio" name="option" @onchange="@(e => tfjs(e))" id="tfjsCheckbox">Fire</label>
+			</div>
 		</div>
-	}
 
-	@* opencv.js 를 이용한 움직임 감지 *@
-	<canvas id="canvasOutput" hidden></canvas>
-
-	@* tfjs 를 이용한 화재 감지 *@
-	<canvas id="fireCanvas" hidden></canvas>
+		@if (isWebRTC)
+		{
+			<div class="bg-white border rounded-5" id="displayWebRTC">
+				<Callee UserIdToThumbnail=@Camera.UserId CameraIdToThumbnail=@CameraId />
+			</div>
+		}
+	</div>
 
 	@* 썸네일 전송하는 캔버스 *@
 	<canvas hidden id="canvas_image"></canvas>
-
-</div>
+</section>
 
 
 @code {
@@ -43,9 +44,6 @@
 	public int CameraId { get; set; }
 
 	static bool isWebRTC = false;
-
-	private int width = 360;
-	private int height = 270;
 
 	private CameraDTO Camera { get; set; } = new();
 
