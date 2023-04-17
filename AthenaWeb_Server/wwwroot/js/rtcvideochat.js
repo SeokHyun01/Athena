@@ -137,7 +137,7 @@ class Camera {
     
     // 안드로이드에서는 stream 메서드가 삭제됨 각각의 track을 가져와야함
     handleAddTrack(data) {
-        if (data && data.track) {
+        if (data && data.streams) {
             // 모든 트랙 처리
             this.remoteVideo = document.getElementById("remoteVideo");
             if (this.remoteVideo) {
@@ -146,7 +146,7 @@ class Camera {
                 remoteStream = new MediaStream();
                 this.remoteVideo.srcObject = remoteStream;
               }
-              remoteStream.addTrack(data.track);
+              remoteStream.addTrack(data.streams[0]);
               //좌우 반전
               this.remoteVideo.style.transform = "scaleX(-1)";
             }
