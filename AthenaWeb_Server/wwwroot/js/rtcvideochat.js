@@ -119,6 +119,7 @@ class Camera {
             await connection.start();
 
             const ice = JSON.stringify(data.candidate);
+            console.log(ice);
             connection.send("SendIce", ice, this.connectionId);
             console.log("SendIce");
             await connection.stop();
