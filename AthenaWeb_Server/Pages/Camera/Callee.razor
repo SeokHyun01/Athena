@@ -110,7 +110,7 @@
 		}
 	}
 
-	@* // Dispose
+	 // Dispose
 	public async ValueTask DisposeAsync()
 	{
 		if (hubConnection != null && fromThumbnail)
@@ -120,7 +120,9 @@
 		}
 	}
 
-	//js에서 호출
+
+
+	@* //js에서 호출
 	[JSInvokable]
 	public async ValueTask DisposeAsyncFromJs()
 	{
@@ -136,6 +138,6 @@
 	public async Task DotnetHelperCallee()
 	{
 		await _jsRuntime.InvokeVoidAsync("dotnetHelperCallee", DotNetObjectReference.Create(this));
-	} *@
+	}  *@
 
 }
