@@ -176,6 +176,8 @@ class Camera {
         this.peerConnection.addEventListener("icegatheringstatechange", (event) =>{ console.log("icegatheringstatechange"),
     console.log(this.peerConnection.iceGatheringState)});
 
+        this.peerConnection.addEventListener("icecandidateerror", (event) =>{ console.log("icecandidateerror", event.errorText)});
+
         // receive Ice가 끝나고 바로 실행됨
         this.peerConnection.addEventListener("icecandidate", (event) => {this.handleIce(event), console.log("icecandidate")});
         // 이후 add stream이 1번
