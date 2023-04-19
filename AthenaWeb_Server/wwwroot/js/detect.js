@@ -31,9 +31,17 @@ const TOPIC_MAKE_VIDEO = "video/create";
 
 //MQTT On
 window.SetMqtt = () => {
+
+    //   /* MQTT 설정 */
+    //   var client_id = Math.random().toString(36).substring(2, 12);                    // Random client id
+    //   const client = new Paho.MQTT.Client(SERV_ADDR, Number(SERV_PORT), client_id);   // Create a client instance
+    //   client.onConnectionLost = onConnectionLost; // set callback handlers
+    //   client.onMessageArrived = onMessageArrived;
+    //   client.connect({ useSSL: true, onSuccess: onConnect });   // connect the client using SSL 
+
     let client_id = Math.random().toString(36).substring(2, 12); //random한 id 
     //connection **************************
-    let client = new Paho.MQTT.Client("hawkai.hknu.ac.kr", Number(8090), client_id);
+    const client = new Paho.MQTT.Client("hawkai.hknu.ac.kr", Number(8090), client_id);
     client.onConnectionLost = onConnectionLost; // set callback handlers
     client.connect({ useSSL: true, onSuccess: onConnect }); //connect the client using SSL 
 
@@ -43,7 +51,7 @@ window.SetMqtt = () => {
 
     function onConnect() {
         //구독할 각종 토픽들을 구독한다
-
+        console.log("onConnect!!");
         //mqtt client를 전역변수로 할당한다.
         _client = client;
 
