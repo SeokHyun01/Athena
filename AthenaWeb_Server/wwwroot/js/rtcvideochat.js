@@ -119,8 +119,9 @@ class Camera {
             await connection.start();
 
             const ice = JSON.stringify(data.candidate);
+        
             connection.send("SendIce", ice, this.connectionId);
-            console.log("SendIce");
+        
             await connection.stop();
         }
     }
@@ -137,7 +138,7 @@ class Camera {
     
     // 안드로이드에서는 stream 메서드가 삭제됨 각각의 track을 가져와야함
     handleAddTrack(data) {
-        if (data && data.track) {
+        if (data && data.streams) {
             // 모든 트랙 처리
             this.remoteVideo = document.getElementById("remoteVideo");
             if (this.remoteVideo) {
@@ -146,7 +147,7 @@ class Camera {
                 remoteStream = new MediaStream();
                 this.remoteVideo.srcObject = remoteStream;
               }
-              remoteStream.addTrack(data.track);
+              remoteStream.addTrack(data.streams[0]);
               //좌우 반전
               this.remoteVideo.style.transform = "scaleX(-1)";
             }
@@ -159,15 +160,15 @@ class Camera {
                 {
                     urls: [
                         "stun:stun.l.google.com:19302",
-                        "stun:stun1.l.google.com:19302",
-                        "stun:stun2.l.google.com:19302",
-                        "stun:stun3.l.google.com:19302",
-                        "stun:stun4.l.google.com:19302",
-                        "stun:stun.stunprotocol.org:3478",
-                        "stun:stun.voiparound.com:3478",
-                        "stun:stun.voipbuster.com:3478",
-                        "stun:stun.voipstunt.com:3478",
-                        "stun:stun.voxgratia.org:3478"
+                        // "stun:stun1.l.google.com:19302",
+                        // "stun:stun2.l.google.com:19302",
+                        // "stun:stun3.l.google.com:19302",
+                        // "stun:stun4.l.google.com:19302",
+                        // "stun:stun.stunprotocol.org:3478",
+                        // "stun:stun.voiparound.com:3478",
+                        // "stun:stun.voipbuster.com:3478",
+                        // "stun:stun.voipstunt.com:3478",
+                        // "stun:stun.voxgratia.org:3478"
                     ],
                 },
             ],
@@ -211,7 +212,7 @@ async function sendAnswer(offer) {
     const jsonObject = JSON.parse(offer);
     const receivedOffer = new RTCSessionDescription(jsonObject);
 
-    console.log(offer + "offer")
+
     camera.peerConnection.setRemoteDescription(receivedOffer);
     
     const answer = await camera.peerConnection.createAnswer();
@@ -234,8 +235,6 @@ function receiveAnswer(answer) {
 
 function receiveIce(ice) {
     const receivedIce = JSON.parse(ice);
-
-    console.log(receivedIce);
 
     camera.peerConnection.addIceCandidate(receivedIce)
     .then(() => {

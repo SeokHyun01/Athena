@@ -76,7 +76,6 @@
 			@*
 			hubConnection.On("Welcome", async () =>
 			{
-				_logger.LogInformation("Welcome 받았디");
 				var offer = await _jsRuntime.InvokeAsync<string>("sendOffer");
 				await hubConnection.SendAsync("SendOffer", offer, RoomName);
 			});
@@ -93,7 +92,6 @@
 			@*
 			hubConnection.On<string>("ReceiveAnswer", async (receivedAnswer) =>
 			{
-				_logger.LogInformation("ReceiveAnswer 받았디");
 				await _jsRuntime.InvokeVoidAsync("receiveAnswer", receivedAnswer);
 				_logger.LogInformation("ReceiveAnswer");
 			});
@@ -117,7 +115,7 @@
 	// Dispose
 	public async ValueTask DisposeAsync()
 	{
-		if (hubConnection != null && fromThumbnail)
+		if (hubConnection != null)
 		{
 			await hubConnection.StopAsync();
 			await hubConnection.DisposeAsync();
