@@ -41,7 +41,7 @@ window.SetMqtt = () => {
     //   client.onMessageArrived = onMessageArrived;
     //   client.connect({ useSSL: true, onSuccess: onConnect });   // connect the client using SSL 
 
-    const client_id = Math.random().toString(36).substring(2, 12); //random한 id 
+    var client_id = Math.random().toString(36).substring(2, 12); //random한 id 
     //connection **************************
     const client = new Paho.MQTT.Client(SERV_ADDR, Number(SERV_PORT), client_id);
     client.connect({ useSSL: true, onSuccess: onConnect, onFailure: onFailure}); //connect the client using SSL 
