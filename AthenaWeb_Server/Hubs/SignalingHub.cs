@@ -90,7 +90,7 @@ namespace AthenaWeb_Server.Hubs
 			{
 				var group = Clients.GroupExcept(roomName, senderId);
 				await group.SendAsync("ReceiveIce", ice);
-				_logger.LogInformation($"방 {roomName}으로 ICE를 전송했습니다.");
+				_logger.LogInformation($"방 {roomName}으로 {senderId}가 ICE를 전송했습니다.");
 			}
 		}
 	}

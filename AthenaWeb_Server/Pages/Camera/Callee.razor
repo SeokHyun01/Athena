@@ -26,6 +26,9 @@
 	[Parameter]
 	public string UserIdToThumbnail { get; set; }
 
+	[Parameter]
+	public bool fromThumbnail { get; set; } = false;
+
 	private HubConnection? hubConnection;
 
 	private string ConnectionId { get; set; } = string.Empty;
@@ -36,13 +39,15 @@
 	{
 		if (firstRander)
 		{
-			////웹: thumbnail 페이지에서 넘어온 경우 앱: webRTC 페이지 직접 접속한 경우
-			//if (string.IsNullOrEmpty(UserId))
-			//{
-			//	// thumbnail 페이지에서 넘어온 경우
-			//	UserId = UserIdToThumbnail;
-			//	CameraId = CameraIdToThumbnail;
-			//}
+			//await DotnetHelperCallee();
+
+			//웹: thumbnail 페이지에서 넘어온 경우 앱: webRTC 페이지 직접 접속한 경우
+			if (fromThumbnail)
+			{
+				// thumbnail 페이지에서 넘어온 경우
+				UserId = UserIdToThumbnail;
+				CameraId = CameraIdToThumbnail;
+			}
 
 			// SignalR
 			hubConnection = new HubConnectionBuilder()
@@ -68,26 +73,34 @@
 				await _jsRuntime.InvokeVoidAsync("initializeCamera", ConnectionId, UserId.ToString(), CameraId);
 			});
 
-			hubConnection.On("Welcome", async () =>
+			@* hubConnection.On("Welcome", async () =>
 			{
+				_logger.LogInformation("Welcome 받았디");
 				var offer = await _jsRuntime.InvokeAsync<string>("sendOffer");
 				await hubConnection.SendAsync("SendOffer", offer, RoomName);
-			});
+			}); *@
 
 			hubConnection.On<string>("ReceiveOffer", async (receivedOffer) =>
 			{
+				@*  OnConnected 이후 1번 *@
+				_logger.LogInformation("ReceiveOffer 받았디");
 				var answer = await _jsRuntime.InvokeAsync<string>("sendAnswer", receivedOffer);
 				await hubConnection.SendAsync("SendAnswer", answer, RoomName);
 			});
 
-			hubConnection.On<string>("ReceiveAnswer", async (receivedAnswer) =>
+			@* hubConnection.On<string>("ReceiveAnswer", async (receivedAnswer) =>
 			{
+				_logger.LogInformation("ReceiveAnswer 받았디");
 				await _jsRuntime.InvokeVoidAsync("receiveAnswer", receivedAnswer);
-			});
+				_logger.LogInformation("ReceiveAnswer");
+			}); *@
 
 			hubConnection.On<string>("ReceiveIce", async (receivedIce) =>
 			{
+				@*  OnConnected 이후 2번  반복 *@
+				_logger.LogInformation("ReceiveIce 받았디");
 				await _jsRuntime.InvokeVoidAsync("receiveIce", receivedIce);
+				_logger.LogInformation("ReceiveIce");
 			});
 
 			await hubConnection.StartAsync();
@@ -100,13 +113,31 @@
 	// Dispose
 	public async ValueTask DisposeAsync()
 	{
-		if (hubConnection != null)
+		if (hubConnection != null && fromThumbnail)
 		{
-			if (hubConnection != null)
-			{
-				await hubConnection.StopAsync();
-				await hubConnection.DisposeAsync();
-			}
+			await hubConnection.StopAsync();
+			await hubConnection.DisposeAsync();
 		}
 	}
+
+
+	@*
+	//js에서 호출
+	[JSInvokable]
+	public async ValueTask DisposeAsyncFromJs()
+	{
+		_logger.LogInformation("DisposeAsyncFromJs 호출!");
+
+		if(hubConnection != null){
+			await hubConnection.StopAsync();
+			await hubConnection.DisposeAsync();
+		}
+	}
+
+	//dotnet helper 생성
+	public async Task DotnetHelperCallee()
+	{
+		await _jsRuntime.InvokeVoidAsync("dotnetHelperCallee", DotNetObjectReference.Create(this));
+	}
+	*@
 }
