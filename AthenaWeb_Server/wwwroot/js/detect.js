@@ -137,8 +137,8 @@ window.SetMqtt = (width, height) => {
         async function sendThumbnail() {
             let video = document.getElementById("video");
             let canvas = document.getElementById('canvas_image');
-            canvas.width = _width;
-            canvas.height = _height;
+            canvas.width = width;
+            canvas.height = height;
             let context = canvas.getContext('2d');
             context.drawImage(video, 0, 0, canvas.width, canvas.height); // 비디오 그리기
             result64 = canvas.toDataURL("image/jpeg", 0.8);
@@ -158,11 +158,6 @@ window.SetMqtt = (width, height) => {
             setTimeout(sendThumbnail, 500);
         }
     }
-}
-
-//썸네일 전송
-window.SendThumbnail = (_width, _height) => {
-
 }
 
 window.reload = () => {

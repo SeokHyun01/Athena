@@ -61,7 +61,6 @@
 			await SetVideo();
 			await SetMqtt();
 		}
-	//	await SendThumbnail();
 	}
 
 	//dotnet helper 생성
@@ -80,12 +79,6 @@
 	public async Task SetMqtt()
 	{
 		await _jsRuntime.InvokeVoidAsync("SetMqtt", width, height);
-	}
-
-	//MQTT로 썸네일 전송
-	public async Task SendThumbnail()
-	{
-		await _jsRuntime.InvokeVoidAsync("SendThumbnail", width, height);
 	}
 
 	//버튼을 누를시 모터제어를 할 기기와 블루투스 연동을 시작한다.
