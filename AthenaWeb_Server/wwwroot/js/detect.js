@@ -33,7 +33,7 @@ const TOPIC_MAKE_VIDEO = "video/create";
 window.SetMqtt = () => {
     let client_id = Math.random().toString(36).substring(2, 12); //random한 id 
     //connection **************************
-    let client = new Paho.MQTT.Client("ictrobot.hknu.ac.kr", Number(8090), client_id);
+    let client = new Paho.MQTT.Client("hawkai.hknu.ac.kr", Number(8090), client_id);
     client.connect({ useSSL: true, onSuccess: onConnect }); //connect the client using SSL 
 
     let video = document.getElementById("video");
