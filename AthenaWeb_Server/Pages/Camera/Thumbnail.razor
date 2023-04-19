@@ -10,7 +10,7 @@
 	<div class="container">
 		<div class="bg-white border rounded-5">
 			<section class="p-4 text-center w-100">
-				<video class="w-100" autoplay id="video"></video>
+				<video width="360" height="270" autoplay id="video"></video>
 
 				@* opencv.js 를 이용한 움직임 감지 *@
 				<canvas id="canvasOutput" hidden></canvas>
@@ -20,9 +20,9 @@
 			</section>
 
 			<div class="p-4 text-center border-top">
-				<button class="btn btn-outline-primary" @onclick="bluetooth">블루투스 켜기</button>
 				<label class="radio-inline"><input type="radio" name="option" @onchange="@(e => CamShift(e))" id="CamShiftCheckbox">Motion</label>
 				<label class="radio-inline"><input type="radio" name="option" @onchange="@(e => tfjs(e))" id="tfjsCheckbox">Fire</label>
+				<button class="btn btn-outline-primary mx-3" @onclick="bluetooth">블루투스 켜기</button>
 			</div>
 		</div>
 
