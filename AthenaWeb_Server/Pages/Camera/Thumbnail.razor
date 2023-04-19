@@ -10,7 +10,7 @@
 	<div class="container">
 		<div class="bg-white border rounded-5">
 			<section class="p-4 text-center w-100">
-				<video width="360" height="270" autoplay id="video"></video>
+				<video width="@width" height="@height" autoplay id="video"></video>
 
 				@* opencv.js 를 이용한 움직임 감지 *@
 				<canvas id="canvasOutput" hidden></canvas>
@@ -20,8 +20,8 @@
 			</section>
 
 			<div class="p-4 text-center border-top">
-				<label class="radio-inline"><input type="radio" name="option" @onchange="@(e => CamShift(e))" id="CamShiftCheckbox">Motion</label>
-				<label class="radio-inline"><input type="radio" name="option" @onchange="@(e => tfjs(e))" id="tfjsCheckbox">Fire</label>
+				<label class="radio-inline"><input class="mx-1" type="radio" name="option" @onchange="@(e => CamShift(e))" id="CamShiftCheckbox">Motion</label>
+				<label class="radio-inline"><input class="mx-1" type="radio" name="option" @onchange="@(e => tfjs(e))" id="tfjsCheckbox">Fire</label>
 				<button class="btn btn-outline-primary mx-3" @onclick="bluetooth">블루투스 켜기</button>
 			</div>
 		</div>
@@ -47,6 +47,8 @@
 
 	private CameraDTO Camera { get; set; } = new();
 
+	private int width = 360;
+	private int height = 270;
 
 	//순서 1.비디오를 킨다 2. MQTT 접속을한다 3. 썸네일 전송을 시작한다
 	protected override async Task OnAfterRenderAsync(bool firstRander)
@@ -83,7 +85,7 @@
 	//MQTT로 썸네일 전송
 	public async Task SendThumbnail()
 	{
-		await _jsRuntime.InvokeVoidAsync("SendThumbnail", 360, 270);
+		await _jsRuntime.InvokeVoidAsync("SendThumbnail", width, height);
 	}
 
 	//버튼을 누를시 모터제어를 할 기기와 블루투스 연동을 시작한다.
