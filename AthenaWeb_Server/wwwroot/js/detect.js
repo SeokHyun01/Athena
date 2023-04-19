@@ -42,15 +42,15 @@ window.SetMqtt = () => {
     const client_id = Math.random().toString(36).substring(2, 12); //random한 id 
     //connection **************************
     const client = new Paho.MQTT.Client("hawkai.hknu.ac.kr", Number(8090), client_id);
-    client.connect({ useSSL: true, onSuccess: onConnect, onFailure: onFailure}); //connect the client using SSL 
+    client.connect({ useSSL: false, onSuccess: onConnect, onFailure: onFailure}); //connect the client using SSL 
 
     let video = document.getElementById("video");
     let canvasOutput = document.getElementById('canvasOutput');
     let fireCanvas = document.getElementById('fireCanvas');
-    console.log("test1")
+
     function onConnect() {
         //구독할 각종 토픽들을 구독한다
-        console.log("test2");
+
         //mqtt client를 전역변수로 할당한다.
         _client = client;
 
