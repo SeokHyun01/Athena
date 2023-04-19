@@ -42,7 +42,6 @@ window.SetMqtt = () => {
     var client_id = Math.random().toString(36).substring(2, 12); //random한 id 
     //connection **************************
     const client = new Paho.MQTT.Client("hawkai.hknu.ac.kr", Number(8090), client_id);
-    client.onConnectionLost = onConnectionLost; // set callback handlers
     client.connect({ useSSL: true, onSuccess: onConnect }); //connect the client using SSL 
 
     let video = document.getElementById("video");
@@ -60,14 +59,6 @@ window.SetMqtt = () => {
         _client.subscribe(TOPIC_WEBRTC_FIN);
         _client.onMessageArrived = onMessageArrived;
     }
-
-    // called when the client loses its connection
-    function onConnectionLost(responseObject) {
-        if (responseObject.errorCode !== 0) {
-            console.log("onConnectionLost:" + responseObject.errorMessage);
-        }
-    }
-
 
     //콜백 메서드로 메시지가 도착하면 호출 됨.
     function onMessageArrived(message) {
