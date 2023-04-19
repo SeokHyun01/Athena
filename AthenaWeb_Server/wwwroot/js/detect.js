@@ -47,10 +47,10 @@ window.SetMqtt = () => {
     let video = document.getElementById("video");
     let canvasOutput = document.getElementById('canvasOutput');
     let fireCanvas = document.getElementById('fireCanvas');
-
+    console.log("test1")
     function onConnect() {
         //구독할 각종 토픽들을 구독한다
-        console.log("onConnect!!");
+        console.log("test2");
         //mqtt client를 전역변수로 할당한다.
         _client = client;
 
@@ -58,6 +58,7 @@ window.SetMqtt = () => {
         _client.subscribe(TOPIC_WEBRTC);
         _client.subscribe(TOPIC_WEBRTC_FIN);
         _client.onMessageArrived = onMessageArrived;
+
     }
 
     //콜백 메서드로 메시지가 도착하면 호출 됨.
