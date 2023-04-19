@@ -61,7 +61,7 @@
 			await SetVideo();
 			await SetMqtt();
 		}
-		await SendThumbnail();
+	//	await SendThumbnail();
 	}
 
 	//dotnet helper 생성
@@ -79,7 +79,7 @@
 	//MQTT client 생성, 토픽 구독
 	public async Task SetMqtt()
 	{
-		await _jsRuntime.InvokeVoidAsync("SetMqtt");
+		await _jsRuntime.InvokeVoidAsync("SetMqtt", width, height);
 	}
 
 	//MQTT로 썸네일 전송
