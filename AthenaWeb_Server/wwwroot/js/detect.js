@@ -44,7 +44,8 @@ window.SetMqtt = () => {
     var client_id = Math.random().toString(36).substring(2, 12); //random한 id 
     //connection **************************
     const client = new Paho.MQTT.Client(SERV_ADDR, Number(SERV_PORT), client_id);
-    client.connect({ useSSL: true, onSuccess: onConnect, onFailure: onFailure}); //connect the client using SSL 
+    client.connect({onSuccess: onConnect})
+    // client.connect({ useSSL: true, onSuccess: onConnect, onFailure: onFailure}); //connect the client using SSL 
 
     let video = document.getElementById("video");
     let canvasOutput = document.getElementById('canvasOutput');
