@@ -39,9 +39,9 @@ window.SetMqtt = () => {
     //   client.onMessageArrived = onMessageArrived;
     //   client.connect({ useSSL: true, onSuccess: onConnect });   // connect the client using SSL 
 
-    let client_id = Math.random().toString(36).substring(2, 12); //random한 id 
+    var client_id = Math.random().toString(36).substring(2, 12); //random한 id 
     //connection **************************
-    const client = new Paho.MQTT.Client("wss://hawkai.hknu.ac.kr", Number(8090), client_id);
+    const client = new Paho.MQTT.Client("hawkai.hknu.ac.kr", Number(8090), client_id);
     client.onConnectionLost = onConnectionLost; // set callback handlers
     client.connect({ useSSL: true, onSuccess: onConnect }); //connect the client using SSL 
 
