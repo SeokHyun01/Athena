@@ -32,7 +32,7 @@ const TOPIC_MAKE_VIDEO = "video/create";
 //MQTT On
 window.SetMqtt = () => {
 
-    const SERV_ADDR = "hawkai.hknu.ac.kr";
+    const SERV_ADDR = "ictrobot.hknu.ac.kr";
     const SERV_PORT = 8090;
 
     var client_id = Math.random().toString(36).substring(2, 12); //random한 id 
@@ -138,7 +138,7 @@ window.SendThumbnail = (_width, _height) => {
         let context = canvas.getContext('2d');
         context.drawImage(video, 0, 0, canvas.width, canvas.height); // 비디오 그리기
         result64 = canvas.toDataURL("image/jpeg", 0.8);
-        console.log(result64)
+     
         let data = new Object();
         data.CameraId = _cameraId;
         data.Thumbnail = result64;
