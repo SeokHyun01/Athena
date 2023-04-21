@@ -141,7 +141,8 @@ class Camera {
         if (data && data.streams) {
             // 모든 트랙 처리
             this.remoteVideo = document.getElementById("remoteVideo");
-            if (this.remoteVideo) {
+            console.log(typeof(data.streams[0]))
+            if (data.streams[0]) {
               let remoteStream = this.remoteVideo.srcObject;
               if (!remoteStream) {
                 remoteStream = new MediaStream();
