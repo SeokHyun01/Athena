@@ -180,9 +180,9 @@ class Camera {
 
         this.peerConnection.addEventListener("iceconnectionstatechange", (event) => { console.log("iceconnectionstatechange", event) });
 
-        this.peerConnection.addEventListener("icecandidateerror", (event) => { console.log("icecandidateerror", event.errorText) });
+        // this.peerConnection.addEventListener("icecandidateerror", (event) => { console.log("icecandidateerror", event.errorText) });
 
-        this.peerConnectionaddEventListener("icegatheringstatechange", (event) => { console.log("gatheringstatechange", event) });
+        // this.peerConnectionaddEventListener("icegatheringstatechange", (event) => { console.log("gatheringstatechange", event) });
 
         // receive Ice가 끝나고 바로 실행됨
         this.peerConnection.addEventListener("icecandidate", (event) => { this.handleIce(event), console.log("icecandidate") });
