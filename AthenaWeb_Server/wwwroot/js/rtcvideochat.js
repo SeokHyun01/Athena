@@ -235,7 +235,7 @@ function receiveAnswer(answer) {
 
 function receiveIce(ice) {
     const receivedIce = JSON.parse(ice);
-    console.log(ice.data.candidate);
+    console.log(ice);
     camera.peerConnection.addIceCandidate(receivedIce)
     .then(() => {
         console.log("IceCandidate added successfully");
