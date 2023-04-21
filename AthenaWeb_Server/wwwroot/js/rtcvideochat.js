@@ -173,10 +173,8 @@ createRTCPeerConnection() {
         ],
     });
 
-    this.peerConnection.addEventListener("icegatheringstatechange", (event) => {
-        console.log("icegatheringstatechange"),
-            console.log(this.peerConnection.iceGatheringState)
-    });
+
+    this.peerConnection.addEventListener("iceconnectionstatechange", (event) => {console.log("iceconnectionstatechange", event)});
 
     this.peerConnection.addEventListener("icecandidateerror", (event) => { console.log("icecandidateerror", event.errorText) });
 
