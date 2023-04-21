@@ -141,54 +141,54 @@ class Camera {
         if (data && data.streams) {
             const stream = new MediaStream();
             for (const track of data.streams[0].getTracks()) {
-              if (track.kind === "video" || track.kind === "audio") {
-                stream.addTrack(track);
-              }
+                if (track.kind === "video" || track.kind === "audio") {
+                    stream.addTrack(track);
+                }
             }
             this.remoteVideo = document.getElementById("remoteVideo");
             this.remoteVideo.srcObject = stream;
             // 좌우 반전
             this.remoteVideo.style.transform = "scaleX(-1)";
-          }
         }
     }
 
-    createRTCPeerConnection() {
-        this.peerConnection = new RTCPeerConnection({
-            iceServers: [
-                {
-                    urls: [
-                        "stun:stun.l.google.com:19302",
-                        // "stun:stun1.l.google.com:19302",
-                        // "stun:stun2.l.google.com:19302",
-                        // "stun:stun3.l.google.com:19302",
-                        // "stun:stun4.l.google.com:19302",
-                        // "stun:stun.stunprotocol.org:3478",
-                        // "stun:stun.voiparound.com:3478",
-                        // "stun:stun.voipbuster.com:3478",
-                        // "stun:stun.voipstunt.com:3478",
-                        // "stun:stun.voxgratia.org:3478"
-                    ],
-                },
-            ],
-        });
 
-        this.peerConnection.addEventListener("icegatheringstatechange", (event) => {
-            console.log("icegatheringstatechange"),
+createRTCPeerConnection() {
+    this.peerConnection = new RTCPeerConnection({
+        iceServers: [
+            {
+                urls: [
+                    "stun:stun.l.google.com:19302",
+                    // "stun:stun1.l.google.com:19302",
+                    // "stun:stun2.l.google.com:19302",
+                    // "stun:stun3.l.google.com:19302",
+                    // "stun:stun4.l.google.com:19302",
+                    // "stun:stun.stunprotocol.org:3478",
+                    // "stun:stun.voiparound.com:3478",
+                    // "stun:stun.voipbuster.com:3478",
+                    // "stun:stun.voipstunt.com:3478",
+                    // "stun:stun.voxgratia.org:3478"
+                ],
+            },
+        ],
+    });
+
+    this.peerConnection.addEventListener("icegatheringstatechange", (event) => {
+        console.log("icegatheringstatechange"),
             console.log(this.peerConnection.iceGatheringState)
-        });
+    });
 
-        this.peerConnection.addEventListener("icecandidateerror", (event) => { console.log("icecandidateerror", event.errorText) });
+    this.peerConnection.addEventListener("icecandidateerror", (event) => { console.log("icecandidateerror", event.errorText) });
 
-        // receive Ice가 끝나고 바로 실행됨
-        this.peerConnection.addEventListener("icecandidate", (event) => { this.handleIce(event), console.log("icecandidate") });
-        // 이후 add stream이 1번
-        this.peerConnection.addEventListener("addstream", (event) => { this.handleAddStream(event), console.log("addstream") });
-        // 어쩌면 track으로 전달해서 그럴지도
-        this.peerConnection.addEventListener("track", (event) => { this.handleAddTrack(event), console.log("track") });
-        // add track 이 2번 
-        this.mediaStream.getTracks().forEach((track) => { this.peerConnection.addTrack(track, this.mediaStream), console.log("addTrack") });
-    }
+    // receive Ice가 끝나고 바로 실행됨
+    this.peerConnection.addEventListener("icecandidate", (event) => { this.handleIce(event), console.log("icecandidate") });
+    // 이후 add stream이 1번
+    this.peerConnection.addEventListener("addstream", (event) => { this.handleAddStream(event), console.log("addstream") });
+    // 어쩌면 track으로 전달해서 그럴지도
+    this.peerConnection.addEventListener("track", (event) => { this.handleAddTrack(event), console.log("track") });
+    // add track 이 2번 
+    this.mediaStream.getTracks().forEach((track) => { this.peerConnection.addTrack(track, this.mediaStream), console.log("addTrack") });
+}
 }
 
 let camera;
