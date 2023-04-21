@@ -142,7 +142,7 @@ window.SendThumbnail = (_width, _height) => {
         let data = new Object();
         data.CameraId = _cameraId;
         data.Thumbnail = result64;
-        console.log(JONS.stringify(data));
+        console.log(JSON.stringify(data));
         message = new Paho.MQTT.Message(JSON.stringify(data));  //썸네일 내용 CameraId, Thumbnail
         message.destinationName = TOPIC_PREVIEW;    //보낼 토픽
         if (_client != null) {
