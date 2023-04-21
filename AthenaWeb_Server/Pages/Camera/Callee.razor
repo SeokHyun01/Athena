@@ -84,7 +84,6 @@
 			hubConnection.On<string>("ReceiveOffer", async (receivedOffer) =>
 			{
 				@* OnConnected 이후 1번 *@
-				_logger.LogInformation("ReceiveOffer 받았디");
 				var answer = await _jsRuntime.InvokeAsync<string>("sendAnswer", receivedOffer);
 				await hubConnection.SendAsync("SendAnswer", answer, RoomName);
 			});
@@ -100,7 +99,6 @@
 			hubConnection.On<string>("ReceiveIce", async (receivedIce) =>
 			{
 				@* OnConnected 이후 2번 반복 *@
-				_logger.LogInformation("ReceiveIce 받았디");
 				await _jsRuntime.InvokeVoidAsync("receiveIce", receivedIce);
 				_logger.LogInformation("ReceiveIce");
 			});

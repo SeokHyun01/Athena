@@ -140,8 +140,8 @@ class Camera {
     handleAddTrack(data) {
         if (data && data.streams) {
             const stream = new MediaStream();
-         
-            if(data.track.kind === "video" || data.track.kind === "audio"){
+
+            if (data.track.kind === "video" || data.track.kind === "audio") {
                 stream.addTrack(data.track);
             }
             // for (const track of data.streams[0].getTracks()) {
@@ -157,42 +157,42 @@ class Camera {
     }
 
 
-createRTCPeerConnection() {
-    this.peerConnection = new RTCPeerConnection({
-        iceServers: [
-            {
-                urls: [
-                    "stun:stun.l.google.com:19302",
-                    // "stun:stun1.l.google.com:19302",
-                    // "stun:stun2.l.google.com:19302",
-                    // "stun:stun3.l.google.com:19302",
-                    // "stun:stun4.l.google.com:19302",
-                    // "stun:stun.stunprotocol.org:3478",
-                    // "stun:stun.voiparound.com:3478",
-                    // "stun:stun.voipbuster.com:3478",
-                    // "stun:stun.voipstunt.com:3478",
-                    // "stun:stun.voxgratia.org:3478"
-                ],
-            },
-        ],
-    });
+    createRTCPeerConnection() {
+        this.peerConnection = new RTCPeerConnection({
+            iceServers: [
+                {
+                    urls: [
+                        "stun:stun.l.google.com:19302",
+                        // "stun:stun1.l.google.com:19302",
+                        // "stun:stun2.l.google.com:19302",
+                        // "stun:stun3.l.google.com:19302",
+                        // "stun:stun4.l.google.com:19302",
+                        // "stun:stun.stunprotocol.org:3478",
+                        // "stun:stun.voiparound.com:3478",
+                        // "stun:stun.voipbuster.com:3478",
+                        // "stun:stun.voipstunt.com:3478",
+                        // "stun:stun.voxgratia.org:3478"
+                    ],
+                },
+            ],
+        });
 
 
-    this.peerConnection.addEventListener("iceconnectionstatechange", (event) => {console.log("iceconnectionstatechange", event)});
+        this.peerConnection.addEventListener("iceconnectionstatechange", (event) => { console.log("iceconnectionstatechange", event) });
 
-    this.peerConnection.addEventListener("icecandidateerror", (event) => { console.log("icecandidateerror", event.errorText) });
+        this.peerConnection.addEventListener("icecandidateerror", (event) => { console.log("icecandidateerror", event.errorText) });
 
-    this.peerConnection.addEventListener("gatheringstatechange", (event) => {console.log("gatheringstatechange", event)});
+        this.peerConnectionaddEventListener("icegatheringstatechange", (event) => { console.log("gatheringstatechange", event) });
 
-    // receive Ice가 끝나고 바로 실행됨
-    this.peerConnection.addEventListener("icecandidate", (event) => { this.handleIce(event), console.log("icecandidate") });
-    // 이후 add stream이 1번
-    this.peerConnection.addEventListener("addstream", (event) => { this.handleAddStream(event), console.log("addstream") });
-    // 어쩌면 track으로 전달해서 그럴지도
-    this.peerConnection.addEventListener("track", (event) => { this.handleAddTrack(event), console.log("track") });
-    // add track 이 2번 
-    this.mediaStream.getTracks().forEach((track) => { this.peerConnection.addTrack(track, this.mediaStream), console.log("addTrack") });
-}
+        // receive Ice가 끝나고 바로 실행됨
+        this.peerConnection.addEventListener("icecandidate", (event) => { this.handleIce(event), console.log("icecandidate") });
+        // 이후 add stream이 1번
+        this.peerConnection.addEventListener("addstream", (event) => { this.handleAddStream(event), console.log("addstream") });
+        // 어쩌면 track으로 전달해서 그럴지도
+        this.peerConnection.addEventListener("track", (event) => { this.handleAddTrack(event), console.log("track") });
+        // add track 이 2번 
+        this.mediaStream.getTracks().forEach((track) => { this.peerConnection.addTrack(track, this.mediaStream), console.log("addTrack") });
+    }
 }
 
 let camera;
