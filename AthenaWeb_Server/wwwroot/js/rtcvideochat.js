@@ -140,7 +140,7 @@ class Camera {
     handleAddTrack(data) {
         if (data && data.streams) {
             const stream = new MediaStream();
-            console.log(data)
+            console.log("data", data)
             for (const track of data.streams[0].getTracks()) {
                 if (track.kind === "video" || track.kind === "audio") {
                     stream.addTrack(track);
