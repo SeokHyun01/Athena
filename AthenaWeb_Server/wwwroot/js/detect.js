@@ -126,11 +126,11 @@ window.SetMqtt = () => {
 
 //썸네일 전송
 window.SendThumbnail = (_width, _height) => {
-    console.log("test1");
+   
     //연결이 되었다면, 썸네일 전송을 시작한다.
     setTimeout(sendThumbnail, 500);
     async function sendThumbnail() {
-        console.log("test2");
+    
         let video = document.getElementById("video");
         let canvas = document.getElementById('canvas_image');
         canvas.width = _width;
@@ -142,7 +142,7 @@ window.SendThumbnail = (_width, _height) => {
         let data = new Object();
         data.CameraId = _cameraId;
         data.Thumbnail = result64;
-
+        console.log(JONS.stringify(data));
         message = new Paho.MQTT.Message(JSON.stringify(data));  //썸네일 내용 CameraId, Thumbnail
         message.destinationName = TOPIC_PREVIEW;    //보낼 토픽
         if (_client != null) {
