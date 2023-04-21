@@ -140,12 +140,15 @@ class Camera {
     handleAddTrack(data) {
         if (data && data.streams) {
             const stream = new MediaStream();
-            console.log("data", data)
-            for (const track of data.streams[0].getTracks()) {
-                if (track.kind === "video" || track.kind === "audio") {
-                    stream.addTrack(track);
-                }
+         
+            if(data.track.kind === "video" || data.track.kind === "audio"){
+                stream.addTrack(data.track);
             }
+            // for (const track of data.streams[0].getTracks()) {
+            //     if (track.kind === "video" || track.kind === "audio") {
+            //         stream.addTrack(track);
+            //     }
+            // }
             this.remoteVideo = document.getElementById("remoteVideo");
             this.remoteVideo.srcObject = stream;
             // 좌우 반전
