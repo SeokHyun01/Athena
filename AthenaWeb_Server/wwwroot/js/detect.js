@@ -126,9 +126,11 @@ window.SetMqtt = () => {
 
 //썸네일 전송
 window.SendThumbnail = (_width, _height) => {
+    console.log("test1");
     //연결이 되었다면, 썸네일 전송을 시작한다.
     setTimeout(sendThumbnail, 500);
     async function sendThumbnail() {
+        console.log("test2");
         let video = document.getElementById("video");
         let canvas = document.getElementById('canvas_image');
         canvas.width = _width;
