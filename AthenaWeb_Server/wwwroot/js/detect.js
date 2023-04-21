@@ -138,11 +138,11 @@ window.SendThumbnail = (_width, _height) => {
         let context = canvas.getContext('2d');
         context.drawImage(video, 0, 0, canvas.width, canvas.height); // 비디오 그리기
         result64 = canvas.toDataURL("image/jpeg", 0.8);
-
+        console.log(result64)
         let data = new Object();
         data.CameraId = _cameraId;
         data.Thumbnail = result64;
-        console.log(JSON.stringify(data));
+    
         message = new Paho.MQTT.Message(JSON.stringify(data));  //썸네일 내용 CameraId, Thumbnail
         message.destinationName = TOPIC_PREVIEW;    //보낼 토픽
         if (_client != null) {
