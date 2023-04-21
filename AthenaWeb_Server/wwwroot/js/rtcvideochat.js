@@ -139,11 +139,17 @@ class Camera {
     // 안드로이드에서는 stream 메서드가 삭제됨 각각의 track을 가져와야함
     handleAddTrack(data) {
         if (data && data.streams) {
-            // 모든 트랙 처리
+            const stream = new MediaStream();
+            for (const track of data.streams[0].getTracks()) {
+              if (track.kind === "video" || track.kind === "audio") {
+                stream.addTrack(track);
+              }
+            }
             this.remoteVideo = document.getElementById("remoteVideo");
-            remoteStream.addTrack(data.streams[0]);
-            //좌우 반전
+            this.remoteVideo.srcObject = stream;
+            // 좌우 반전
             this.remoteVideo.style.transform = "scaleX(-1)";
+          }
         }
     }
 
