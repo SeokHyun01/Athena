@@ -119,9 +119,9 @@ class Camera {
             await connection.start();
 
             const ice = JSON.stringify(data.candidate);
-        
+
             connection.send("SendIce", ice, this.connectionId);
-        
+
             await connection.stop();
         }
     }
@@ -135,24 +135,27 @@ class Camera {
 
         }
     }
-    
+
     // 안드로이드에서는 stream 메서드가 삭제됨 각각의 track을 가져와야함
     handleAddTrack(data) {
         if (data && data.streams) {
-            // 모든 트랙 처리
-            this.remoteVideo = document.getElementById("remoteVideo");
-            if (this.remoteVideo) {
-              let remoteStream = this.remoteVideo.srcObject;
-              if (!remoteStream) {
-                remoteStream = new MediaStream();
-                this.remoteVideo.srcObject = remoteStream;
-              }
-              remoteStream.addTrack(data.streams[0]);
-              //좌우 반전
-              this.remoteVideo.style.transform = "scaleX(-1)";
+            const stream = new MediaStream();
+
+            if (data.track.kind === "video" || data.track.kind === "audio") {
+                stream.addTrack(data.track);
             }
+            // for (const track of data.streams[0].getTracks()) {
+            //     if (track.kind === "video" || track.kind === "audio") {
+            //         stream.addTrack(track);
+            //     }
+            // }
+            this.remoteVideo = document.getElementById("remoteVideo");
+            this.remoteVideo.srcObject = stream;
+            // 좌우 반전
+            this.remoteVideo.style.transform = "scaleX(-1)";
         }
     }
+
 
     createRTCPeerConnection() {
         this.peerConnection = new RTCPeerConnection({
@@ -174,19 +177,21 @@ class Camera {
             ],
         });
 
-        this.peerConnection.addEventListener("icegatheringstatechange", (event) =>{ console.log("icegatheringstatechange"),
-    console.log(this.peerConnection.iceGatheringState)});
 
-        this.peerConnection.addEventListener("icecandidateerror", (event) =>{ console.log("icecandidateerror", event.errorText)});
+        this.peerConnection.addEventListener("iceconnectionstatechange", (event) => { console.log("iceconnectionstatechange", event) });
+
+        // this.peerConnection.addEventListener("icecandidateerror", (event) => { console.log("icecandidateerror", event.errorText) });
+
+         this.peerConnection.addEventListener("icegatheringstatechange", (event) => { console.log("gatheringstatechange", event) });
 
         // receive Ice가 끝나고 바로 실행됨
-        this.peerConnection.addEventListener("icecandidate", (event) => {this.handleIce(event), console.log("icecandidate")});
+        this.peerConnection.addEventListener("icecandidate", (event) => { this.handleIce(event), console.log("icecandidate") });
         // 이후 add stream이 1번
-        this.peerConnection.addEventListener("addstream", (event) => {this.handleAddStream(event), console.log("addstream")});
+        this.peerConnection.addEventListener("addstream", (event) => { this.handleAddStream(event), console.log("addstream") });
         // 어쩌면 track으로 전달해서 그럴지도
-        this.peerConnection.addEventListener("track", (event) => { this.handleAddTrack(event), console.log("track")});
+        this.peerConnection.addEventListener("track", (event) => { this.handleAddTrack(event), console.log("track") });
         // add track 이 2번 
-        this.mediaStream.getTracks().forEach((track) => {this.peerConnection.addTrack(track, this.mediaStream), console.log("addTrack")});
+        this.mediaStream.getTracks().forEach((track) => { this.peerConnection.addTrack(track, this.mediaStream), console.log("addTrack") });
     }
 }
 
@@ -214,7 +219,7 @@ async function sendAnswer(offer) {
 
 
     camera.peerConnection.setRemoteDescription(receivedOffer);
-    
+
     const answer = await camera.peerConnection.createAnswer();
     camera.peerConnection.setLocalDescription(answer);
 
@@ -227,22 +232,22 @@ function receiveAnswer(answer) {
 
     camera.peerConnection.setRemoteDescription(receivedAnswer).then(() => {
         console.log("Remote description set successfully");
-      })
-      .catch((error) => {
-        console.log("Error setting remote description:", error);
-      });
+    })
+        .catch((error) => {
+            console.log("Error setting remote description:", error);
+        });
 }
 
 function receiveIce(ice) {
     const receivedIce = JSON.parse(ice);
-
+    console.log(ice);
     camera.peerConnection.addIceCandidate(receivedIce)
-    .then(() => {
-        console.log("IceCandidate added successfully");
-      })
-      .catch((error) => {
-        console.log("Error adding IceCandidate:", error);
-      });
+        .then(() => {
+            console.log("IceCandidate added successfully");
+        })
+        .catch((error) => {
+            console.log("Error adding IceCandidate:", error);
+        });
 }
 
 function getCurrentTime() {
@@ -268,7 +273,7 @@ function getCurrentTime() {
 }
 
 function disposeVideo() {
-    if(camera != null)
-    //카메라 종료
-    camera.localVideo.srcObject.getTracks().forEach(track => track.stop());   
+    if (camera != null)
+        //카메라 종료
+        camera.localVideo.srcObject.getTracks().forEach(track => track.stop());
 }

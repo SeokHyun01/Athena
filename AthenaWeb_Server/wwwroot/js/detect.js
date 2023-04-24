@@ -31,9 +31,13 @@ const TOPIC_MAKE_VIDEO = "video/create";
 
 //MQTT On
 window.SetMqtt = () => {
-    let client_id = Math.random().toString(36).substring(2, 12); //random한 id 
+
+    const SERV_ADDR = "ictrobot.hknu.ac.kr";
+    const SERV_PORT = 8090;
+
+    var client_id = Math.random().toString(36).substring(2, 12); //random한 id 
     //connection **************************
-    let client = new Paho.MQTT.Client("ictrobot.hknu.ac.kr", Number(8090), client_id);
+    const client = new Paho.MQTT.Client(SERV_ADDR, Number(SERV_PORT), client_id);
     client.connect({ useSSL: true, onSuccess: onConnect }); //connect the client using SSL 
 
     let video = document.getElementById("video");
@@ -51,6 +55,7 @@ window.SetMqtt = () => {
         _client.subscribe(TOPIC_WEBRTC_FIN);
         _client.onMessageArrived = onMessageArrived;
     }
+
     //콜백 메서드로 메시지가 도착하면 호출 됨.
     function onMessageArrived(message) {
         //메시지 구분 
@@ -116,13 +121,16 @@ window.SetMqtt = () => {
             }
         }
     }
+
 }
 
 //썸네일 전송
 window.SendThumbnail = (_width, _height) => {
+   
     //연결이 되었다면, 썸네일 전송을 시작한다.
     setTimeout(sendThumbnail, 500);
     async function sendThumbnail() {
+    
         let video = document.getElementById("video");
         let canvas = document.getElementById('canvas_image');
         canvas.width = _width;
@@ -130,11 +138,11 @@ window.SendThumbnail = (_width, _height) => {
         let context = canvas.getContext('2d');
         context.drawImage(video, 0, 0, canvas.width, canvas.height); // 비디오 그리기
         result64 = canvas.toDataURL("image/jpeg", 0.8);
-
+     
         let data = new Object();
         data.CameraId = _cameraId;
         data.Thumbnail = result64;
-
+    
         message = new Paho.MQTT.Message(JSON.stringify(data));  //썸네일 내용 CameraId, Thumbnail
         message.destinationName = TOPIC_PREVIEW;    //보낼 토픽
         if (_client != null) {

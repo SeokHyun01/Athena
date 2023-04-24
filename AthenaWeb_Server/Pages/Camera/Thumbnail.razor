@@ -18,7 +18,7 @@
 				@* tfjs 를 이용한 화재 감지 *@
 				<canvas id="fireCanvas" hidden></canvas>
 			</section>
-
+ 
 			<div class="p-4 text-center border-top">
 				<input type="checkbox" id="CamShiftCheckbox" @onchange="@(e => CamShift(e))" />
 				<label for="CamShiftCheckbox">Motion</label>
@@ -85,10 +85,10 @@
 	}
 
 	//MQTT로 썸네일 전송
-	public async Task SendThumbnail()
-	{
-		await _jsRuntime.InvokeVoidAsync("SendThumbnail", width, height);
-	}
+    public async Task SendThumbnail()
+    {
+        await _jsRuntime.InvokeVoidAsync("SendThumbnail", width, height);
+    }
 
 	//버튼을 누를시 모터제어를 할 기기와 블루투스 연동을 시작한다.
 	public async Task bluetooth()
