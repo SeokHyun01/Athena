@@ -20,10 +20,13 @@
 			</section>
  
 			<div class="p-4 text-center border-top">
-				<input type="checkbox" id="CamShiftCheckbox" @onchange="@(e => CamShift(e))" />
-				<label for="CamShiftCheckbox">Motion</label>
-				<input type="checkbox" id="tfjsCheckbox" @onchange="@(e => tfjs(e))" />
-				<label for="tfjsCheckbox">Fire</label>
+				<label for="CamShiftCheckbox">
+					<input type="checkbox" id="CamShiftCheckbox" @onchange="@(e => CamShift(e))" />
+					Motion
+				</label>
+				<label class="mx-1" for="tfjsCheckbox">
+					<input type="checkbox" id="tfjsCheckbox" @onchange="@(e => tfjs(e))" />
+					Fire</label>
 				<button class="btn btn-outline-primary mx-3" @onclick="bluetooth">블루투스 켜기</button>
 			</div>
 		</div>
