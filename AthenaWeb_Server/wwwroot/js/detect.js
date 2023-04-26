@@ -386,7 +386,7 @@ window.tfjs = (isTfjs) => {
     fireCanvas.width = video.width; fireCanvas.height = video.height; flippedCanvas.width = video.width; flippedCanvas.height = video.height; //캔버스 크기 설정
 
 
-    tf.loadGraphModel('v8model/model.json').then(model => {
+    tf.loadGraphModel('model/model.json').then(model => {
         setInterval(() => {
             tf.engine().startScope(); //메모리 관리를 위한 스코프 시작
             detect(model);
