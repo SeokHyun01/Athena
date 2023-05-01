@@ -46,10 +46,7 @@
 			{
 				// thumbnail 페이지에서 넘어온 경우
 				UserId = UserIdToThumbnail;
-				Console.WriteLine($"cameraIdToThumnail: {CameraIdToThumbnail}");
-				Console.WriteLine($"CameraId: {CameraId}");
 				CameraId = CameraIdToThumbnail;
-				Console.WriteLine($"CameraId: {CameraId}");
 			}
 
 			// SignalR
@@ -68,12 +65,12 @@
 				};
 			}).Build();
 
-			_logger.LogInformation($"Camera Id: {CameraIdToThumbnail}");
+			_logger.LogInformation($"Camera Id: {CameraId}");
 			// SignalR Handler
 			hubConnection.On<string>("OnConnected", async (senderId) =>
 			{
 				ConnectionId = senderId;
-				await _jsRuntime.InvokeVoidAsync("initializeCamera", ConnectionId, UserId.ToString(), CameraIdToThumbnail);
+				await _jsRuntime.InvokeVoidAsync("initializeCamera", ConnectionId, UserId.ToString(), CameraId);
 			});
 
 			hubConnection.On("Welcome", async () =>
@@ -102,7 +99,7 @@
 
 			await hubConnection.StartAsync();
 
-			RoomName = $"{CameraIdToThumbnail.ToString()}";
+			RoomName = $"{CameraId.ToString()}";
 			await hubConnection.SendAsync("JoinRoom", RoomName);
 		}
 	}
