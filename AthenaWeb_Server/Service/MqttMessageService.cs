@@ -124,10 +124,14 @@ namespace AthenaWeb_Server.Service
 				}
 			};
 
-			_client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-			_client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"key={serverKey}");
-			var response = await _client.PostAsJsonAsync(fcmUrl, message);
-			_logger.LogInformation(await response.Content.ReadAsStringAsync());
+			using (var client = new HttpClient())
+			{
+				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+				client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"key={serverKey}");
+
+				var response = await client.PostAsJsonAsync(fcmUrl, message);
+				_logger.LogInformation(await response.Content.ReadAsStringAsync());
+			}
 		}
 
 		public void Dispose() => Dispose(true);
