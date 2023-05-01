@@ -71,6 +71,7 @@
 				throw new ArgumentNullException(nameof(UserName));
 			}
 
+			_logger.LogInformation($"Camera Id: {CameraId}");
 			Camera = await _cameraRepository.Get(CameraId);
 
 			hubConnection = new HubConnectionBuilder()
