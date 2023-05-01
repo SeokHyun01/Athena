@@ -432,10 +432,10 @@ window.tfjs = (isTfjs) => {
                 const width = x2 - x1; //박스의 넓이
                 const height = y2 - y1; //박스의 높이
                 let klass = ""; //박스의 클래스
-                if (classes_data[i] == 1) {
-                    klass = "smoke";
-                } else {
+                if (classes_data[i] == 0) {
                     klass = "fire";
+                } else {
+                    klass = "smoke";
                 }
                 const score = (scores_data[i] * 100).toFixed() + "%"; //박스의 점수
 
