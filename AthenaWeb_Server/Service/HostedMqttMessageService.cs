@@ -110,6 +110,8 @@ namespace AthenaWeb_Server.Service
 												foreach (var fcmInfo in fcmInfos)
 												{
 													await _mqttMessageService.NotifyUser(token: fcmInfo.Token, labels: labels, content: $"{header.Camera.Id}");
+													_logger.LogInformation($"FCM Info의 User Id: {fcmInfo.UserId}");
+													_logger.LogInformation($"Eveent Header의 User Id: {header.Camera.UserId}");
 												}
 											}
 
