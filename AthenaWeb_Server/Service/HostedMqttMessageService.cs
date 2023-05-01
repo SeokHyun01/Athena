@@ -111,7 +111,12 @@ namespace AthenaWeb_Server.Service
 												}
 												foreach (var fcmInfo in fcmInfos)
 												{
-													await _mqttMessageService.NotifyUser(token: fcmInfo.Token, labels: labels, content: $"{header.Camera.Id}");
+													var content = new
+													{
+														cameraId = 3,
+														task = "화재"
+													};
+													await _mqttMessageService.NotifyUser(token: fcmInfo.Token, labels: labels, content: $"{content}");
 													_logger.LogInformation($"FCM Info의 User Id: {fcmInfo.UserId}");
 													_logger.LogInformation($"Eveent Header의 User Id: {header.Camera.UserId}");
 												}
