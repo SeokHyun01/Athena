@@ -18,6 +18,9 @@
 
 @code {
 	[Parameter]
+	public int CameraId { get; set; }
+
+	[Parameter]
 	public int CameraIdToThumbnail { get; set; }
 
 	[Parameter]
@@ -43,6 +46,7 @@
 			{
 				// thumbnail 페이지에서 넘어온 경우
 				UserId = UserIdToThumbnail;
+				CameraId = CameraIdToThumbnail;
 			}
 
 			// SignalR
@@ -61,12 +65,12 @@
 				};
 			}).Build();
 
-			_logger.LogInformation($"Camera Id: {CameraIdToThumbnail}");
+			_logger.LogInformation($"Camera Id: {CameraId}");
 			// SignalR Handler
 			hubConnection.On<string>("OnConnected", async (senderId) =>
 			{
 				ConnectionId = senderId;
-				await _jsRuntime.InvokeVoidAsync("initializeCamera", ConnectionId, UserId.ToString(), CameraIdToThumbnail);
+				await _jsRuntime.InvokeVoidAsync("initializeCamera", ConnectionId, UserId.ToString(), CameraId);
 			});
 
 			hubConnection.On("Welcome", async () =>
@@ -95,7 +99,7 @@
 
 			await hubConnection.StartAsync();
 
-			RoomName = $"{CameraIdToThumbnail.ToString()}";
+			RoomName = $"{CameraId.ToString()}";
 			await hubConnection.SendAsync("JoinRoom", RoomName);
 		}
 	}
@@ -109,25 +113,4 @@
 			await hubConnection.DisposeAsync();
 		}
 	}
-
-
-	@*
-	//js에서 호출
-	[JSInvokable]
-	public async ValueTask DisposeAsyncFromJs()
-	{
-		_logger.LogInformation("DisposeAsyncFromJs 호출!");
-
-		if(hubConnection != null){
-			await hubConnection.StopAsync();
-			await hubConnection.DisposeAsync();
-		}
-	}
-
-	//dotnet helper 생성
-	public async Task DotnetHelperCallee()
-	{
-		await _jsRuntime.InvokeVoidAsync("dotnetHelperCallee", DotNetObjectReference.Create(this));
-	}
-	*@
 }
