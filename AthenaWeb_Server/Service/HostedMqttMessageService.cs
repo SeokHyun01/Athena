@@ -99,7 +99,9 @@ namespace AthenaWeb_Server.Service
 
 											var header = eventHeaders.FirstOrDefault();
 											var userId = header.Camera.UserId;
+											_logger.LogInformation($"User Id: {userId}");
 											var fcmInfos = await _mqttMessageService.GetFCMInfos(userId);
+											_logger.LogInformation($"fcmInfos.Count: {fcmInfos.Count()}");
 											if (fcmInfos.Any())
 											{
 												var labels = Enumerable.Empty<string>();
