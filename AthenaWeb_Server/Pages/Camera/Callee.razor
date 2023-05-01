@@ -18,6 +18,9 @@
 
 @code {
 	[Parameter]
+	public int CameraId { get; set; }
+
+	[Parameter]
 	public int CameraIdToThumbnail { get; set; }
 
 	[Parameter]
@@ -43,6 +46,10 @@
 			{
 				// thumbnail 페이지에서 넘어온 경우
 				UserId = UserIdToThumbnail;
+				Console.WriteLine($"cameraIdToThumnail: {CameraIdToThumbnail}");
+				Console.WriteLine($"CameraId: {CameraId}");
+				CameraId = CameraIdToThumbnail;
+				Console.WriteLine($"CameraId: {CameraId}");
 			}
 
 			// SignalR
