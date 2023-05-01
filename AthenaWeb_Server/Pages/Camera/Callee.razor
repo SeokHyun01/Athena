@@ -65,7 +65,6 @@
 				};
 			}).Build();
 
-			_logger.LogInformation($"Camera Id: {CameraId}");
 			// SignalR Handler
 			hubConnection.On<string>("OnConnected", async (senderId) =>
 			{
@@ -88,13 +87,11 @@
 			hubConnection.On<string>("ReceiveAnswer", async (receivedAnswer) =>
 			{
 				await _jsRuntime.InvokeVoidAsync("receiveAnswer", receivedAnswer);
-				_logger.LogInformation("ReceiveAnswer");
 			});
 
 			hubConnection.On<string>("ReceiveIce", async (receivedIce) =>
 			{
 				await _jsRuntime.InvokeVoidAsync("receiveIce", receivedIce);
-				_logger.LogInformation("ReceiveIce");
 			});
 
 			await hubConnection.StartAsync();

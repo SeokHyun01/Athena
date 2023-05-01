@@ -97,8 +97,6 @@
 
 			hubConnection.On("Welcome", async () =>
 			{
-				_logger.LogInformation("누군가 방에 입장했습니다. 어서오세요.");
-
 				var offer = await _jsRuntime.InvokeAsync<string>("sendOffer");
 				await hubConnection.SendAsync("SendOffer", offer, RoomName);
 			});
