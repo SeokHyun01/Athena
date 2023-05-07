@@ -22,14 +22,14 @@
 			<div class="p-4 text-center border-top">
 				<button id="muteButton" class="btn btn-primary mx-1">음소거</button>
 				<button id="cameraButton" class="btn btn-primary">카메라 끄기</button>
-				<select id="camerasSelect" class="form-control-sm mx-1"></select>
+				<select id="camerasSelect" class="form-control-sm mx-3"></select>
 				@if (IsLoading)
 				{
-					<div class="spinner-border text-primary mx-2" role="status"></div>
+					<div class="spinner-border text-primary" role="status"></div>
 				}
 				else
 				{
-					<input id=@($"angleInput{Camera.Id}") type="range" class="mx-2" value=@(Camera.Angle) min="0" max="180" step="1" @onchange="(args)=>SetCameraAngle(args)" />
+					<input id=@($"angleInput{Camera.Id}") type="range" value=@(Camera.Angle) min="0" max="180" step="1" @onchange="(args)=>SetCameraAngle(args)" />
 				}
 			</div>
 		</div>
