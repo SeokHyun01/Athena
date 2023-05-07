@@ -30,17 +30,17 @@
 				</label>
 				<button class="btn btn-outline-primary mx-2" @onclick="bluetooth">블루투스 켜기</button>
 			</div>
-
-			@if (isWebRTC)
-			{
-				<Callee UserIdToThumbnail=@Camera.UserId CameraIdToThumbnail=@CameraId fromThumbnail=@true />
-			}
 		</div>
 	</div>
 
 	@* 썸네일 전송하는 캔버스 *@
 	<canvas hidden id="canvas_image"></canvas>
 </section>
+
+@if (isWebRTC)
+{
+	<Callee UserIdToThumbnail=@Camera.UserId CameraIdToThumbnail=@CameraId fromThumbnail=@true />
+}
 
 
 @code {
