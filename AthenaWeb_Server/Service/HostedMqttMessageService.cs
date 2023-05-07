@@ -99,9 +99,7 @@ namespace AthenaWeb_Server.Service
 
 											var header = eventHeaders.FirstOrDefault();
 											var userId = header.Camera.UserId;
-											_logger.LogInformation($"User Id: {userId}");
 											var fcmInfos = await _mqttMessageService.GetFCMInfos(userId);
-											_logger.LogInformation($"fcmInfos.Count: {fcmInfos.Count()}");
 											if (fcmInfos.Any())
 											{
 												var labels = Enumerable.Empty<string>();
@@ -111,14 +109,7 @@ namespace AthenaWeb_Server.Service
 												}
 												foreach (var fcmInfo in fcmInfos)
 												{
-													var content = new
-													{
-														cameraId = 3,
-														task = "화재"
-													};
-													await _mqttMessageService.NotifyUser(token: fcmInfo.Token, labels: labels, content: $"{content}");
-													_logger.LogInformation($"FCM Info의 User Id: {fcmInfo.UserId}");
-													_logger.LogInformation($"Eveent Header의 User Id: {header.Camera.UserId}");
+													await _mqttMessageService.NotifyUser(token: fcmInfo.Token, labels: labels, content: $"{header.Camera.Id}");
 												}
 											}
 

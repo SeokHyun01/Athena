@@ -68,7 +68,7 @@ namespace AthenaWeb_API.Controllers
 			{
 				UserId = createdUserId,
 				Token = signUpRequest.FCMToken,
-				Name = signUpRequest.FCMTokenName,
+				Name = string.IsNullOrEmpty(signUpRequest.FCMTokenName) ? $"{user.UserName}의 기기" : signUpRequest.FCMTokenName,
 			});
 
 			var roleResult = await _userManager.AddToRoleAsync(user, SD.ROLE_CUSTOMER);
@@ -107,12 +107,13 @@ namespace AthenaWeb_API.Controllers
 				{
 					UserId = user.Id,
 					Token = signInRequest.FCMToken,
-					Name = signInRequest.FCMTokenName,
+					Name = string.IsNullOrEmpty(signInRequest.FCMTokenName) ? $"{user.UserName}의 기기" : signInRequest.FCMTokenName,
 				};
-				var fcmInfos = await _fcmInfoRepository.GetAll();
+				var fcmInfos = await _fcmInfoRepository.GetAllByUserId(user.Id);
 				if (fcmInfos != null && !fcmInfos.Any(x => x.Token == createFcmInfo.Token))
 				{
 					await _fcmInfoRepository.Create(createFcmInfo);
+					_logger.LogInformation($"토큰 {createFcmInfo.Token}의 기기가 등록됐습니다.");
 				}
 
 				var claims = await GetClaims(user);

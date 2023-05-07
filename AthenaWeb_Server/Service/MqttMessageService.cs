@@ -105,7 +105,7 @@ namespace AthenaWeb_Server.Service
 		public async ValueTask NotifyUser(string token, IEnumerable<string> labels, string content)
 		{
 			var serverKey = "AAAAlAPqkMU:APA91bEpsixt1iwXs5ymw67EvF8urDy9Mi3gVbLEYYlgAit94zctOhQuO12pvsD2tuk5oJtzZ9eGAwblxebKyBM8WEQDhYm2ihhBuud5P7cESyFfAycI--IhY4jJ4m2Yr-lJ27qSGK7w";
-			
+
 			var fcmUrl = "https://fcm.googleapis.com/fcm/send";
 
 			var label = "motion";
@@ -120,7 +120,11 @@ namespace AthenaWeb_Server.Service
 				data = new
 				{
 					title = label,
-					body = content
+					body = new
+					{
+						cameraId = content,
+						task = $"{content}번 카메라에서 {label}가 발생했습니다."
+					}
 				}
 			};
 
