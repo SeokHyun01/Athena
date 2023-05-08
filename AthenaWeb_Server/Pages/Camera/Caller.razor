@@ -11,7 +11,9 @@
 <section class="page-section">
 	<div class="container">
 		<div class="bg-white border rounded-5">
-			<video id="video" autoplay width="360" height="270"></video>
+			<section class="p-4 text-center w-100">
+				<video id="video" autoplay width="360" height="270"></video>
+			</section>
 
 			<section class="p-4 text-center w-100">
 				<video id="remoteVideo" autoplay width="360" height="270"></video>
@@ -61,8 +63,6 @@
 		{
 			IsLoading = true;
 			StateHasChanged();
-
-			await _jsRuntime.InvokeVoidAsync("hideVideo");
 
 			var authState = await _authState;
 			UserName = authState?.User?.Identity?.Name;
