@@ -22,11 +22,11 @@ class Camera {
             .forEach((track) => (track.enabled = !track.enabled));
 
         if (!this.muted) {
-            this.muteButton.innerText = "Unmute";
+            this.muteButton.innerText = "음소거 해제";
             this.muted = true;
 
         } else {
-            this.muteButton.innerText = "Mute";
+            this.muteButton.innerText = "음소거";
             this.muted = false;
         }
     }
@@ -41,13 +41,13 @@ class Camera {
                 this.localVideo.style.display = "block";
             }
 
-            this.cameraButton.innerText = "Turn Camera Off";
+            this.cameraButton.innerText = "카메라 끄기";
             this.cameraOff = false;
 
         } else {
             this.localVideo.style.display = "none";
 
-            this.cameraButton.innerText = "Turn Camera On";
+            this.cameraButton.innerText = "카메라 켜기";
             this.cameraOff = true;
         }
     }
