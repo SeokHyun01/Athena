@@ -7,6 +7,7 @@ class Camera {
 
     constructor(connectionId, userId, cameraId) {
         this.localVideo = document.getElementById("video");
+        this.localVideo.style.display = "none";
         this.muteButton = document.getElementById("muteButton");
         this.cameraButton = document.getElementById("cameraButton");
         this.camerasSelect = document.getElementById("camerasSelect");
