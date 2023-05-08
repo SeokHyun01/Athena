@@ -11,13 +11,18 @@
 <section class="page-section">
 	<div class="container">
 		<div class="bg-white border rounded-5">
-			<video id="video" autoplay width="360" height="270"></video>
+			<section class="p-4 text-center w-100">
+				<video id="video" autoplay width="360" height="270"></video>
+			</section>
 
 			<section class="p-4 text-center w-100">
 				<video id="remoteVideo" autoplay width="360" height="270"></video>
 			</section>
 
 			<div class="p-4 text-center border-top">
+				<button id="muteButton" class="btn btn-primary mx-1">음소거</button>
+				<button id="cameraButton" class="btn btn-primary">카메라 끄기</button>
+				<select id="camerasSelect" class="form-control-sm mx-3"></select>
 				@if (IsLoading)
 				{
 					<div class="spinner-border text-primary" role="status"></div>
