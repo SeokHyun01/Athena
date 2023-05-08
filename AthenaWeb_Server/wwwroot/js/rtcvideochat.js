@@ -266,6 +266,6 @@ function disposeVideo() {
 }
 
 function hideVideo() {
-    const video = document.getElementById("localVideo");
+    const video = document.getElementById("video");
     video.style.display = "none";
 }
