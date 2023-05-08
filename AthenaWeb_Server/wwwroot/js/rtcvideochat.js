@@ -264,3 +264,8 @@ function disposeVideo() {
         //카메라 종료
         camera.localVideo.srcObject.getTracks().forEach(track => track.stop());
 }
+
+function hideVideo() {
+    const video = document.getElementById("localVideo");
+    video.style.display = "none";
+}
