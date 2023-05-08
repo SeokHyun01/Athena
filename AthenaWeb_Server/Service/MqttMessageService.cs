@@ -122,7 +122,7 @@ namespace AthenaWeb_Server.Service
 					title = label,
 					body = new
 					{
-						cameraId = int.TryParse(content),
+						cameraId = int.Parse(content),
 						task = $"{content}번 카메라에서 {label}가 발생했습니다."
 					}
 				}
