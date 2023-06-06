@@ -20,14 +20,17 @@
 			</section>
 
 			<div class="p-4 text-center border-top">
-				<label for="CamShiftCheckbox">
-					<input type="checkbox" id="CamShiftCheckbox" @onchange="@(e => CamShift(e))" />
+
+				<label for="motionRadio">
+					<input type="radio" name="detectRadio" id="motionRadio" @onchange="@CamShift" />
 					Motion
 				</label>
-				<label class="mx-1" for="tfjsCheckbox">
-					<input type="checkbox" id="tfjsCheckbox" @onchange="@(e => tfjs(e))" />
+
+				<label class="mx-1" for="tfjsRadio">
+					<input type="radio" name="detectRadio" id="tfjsRadio" @onchange="@tfjs" />
 					Fire
 				</label>
+
 				<button class="btn btn-outline-primary mx-2" @onclick="bluetooth">블루투스 켜기</button>
 			</div>
 		</div>
@@ -53,6 +56,8 @@
 
 	private int width = 360;
 	private int height = 270;
+    private bool isMotion = false;
+    private bool isTfjs = false;
 
 	//순서 1.비디오를 킨다 2. MQTT 접속을한다 3. 썸네일 전송을 시작한다
 	protected override async Task OnAfterRenderAsync(bool firstRander)
@@ -107,38 +112,32 @@
 	}
 
 	//opencv.js를 사용한 움직임 감지
-	public async Task CamShift(ChangeEventArgs eventArgs)
+	public async Task CamShift()
 	{
-		if (eventArgs.Value == null) return;
+		isMotion = true;
 
-		bool isChecked = (bool)eventArgs.Value;
-
-		if (isChecked)
+		if (isTfjs)
 		{
-			await _jsRuntime.InvokeVoidAsync("camShift", true);
+			await _jsRuntime.InvokeVoidAsync("tfjs_off");
+			await _jsRuntime.InvokeVoidAsync("tfjs", false);
+			isTfjs = false;
 		}
-		else
-		{
-			await _jsRuntime.InvokeVoidAsync("reload");
-		}
+		await _jsRuntime.InvokeVoidAsync("camShift", true);
 	}
 
-	//tensorflow.js를 사용한 화재 감지
-	public async Task tfjs(ChangeEventArgs eventArgs)
-	{
-		if (eventArgs.Value == null) return;
+    //tensorflow.js를 사용한 화재 감지
+    public async Task tfjs()
+    {
+        isTfjs = true;
+        if (isMotion)
+        {
+            await _jsRuntime.InvokeVoidAsync("camShift_off");
+            await _jsRuntime.InvokeVoidAsync("camShift", false);
+            isMotion = false;
+        }
+        await _jsRuntime.InvokeVoidAsync("tfjs", true);
+    }
 
-		bool isChecked = (bool)eventArgs.Value;
-
-		if (isChecked)
-		{
-			await _jsRuntime.InvokeVoidAsync("tfjs", true);
-		}
-		else
-		{
-			await _jsRuntime.InvokeVoidAsync("reload");
-		}
-	}
 
 	public async ValueTask DisposeAsync()
 	{
