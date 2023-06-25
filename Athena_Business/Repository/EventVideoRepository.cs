@@ -45,7 +45,7 @@ namespace Athena_Business.Repository
 			}
 		}
 
-		public ValueTask<int> Delete(int id)
+		public async ValueTask<int> Delete(int id)
 		{
 			var obj = await _db.EventVideos.FirstOrDefaultAsync(x => x.Id == id);
 			if (obj != null)
