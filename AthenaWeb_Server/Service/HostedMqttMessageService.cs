@@ -90,11 +90,10 @@ namespace AthenaWeb_Server.Service
 											{
 												var destinationPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", $"{identifier}_{i + 1}.jpeg");
 												File.Copy(imagePathList[i], destinationPath);
-												//if (File.Exists(imagePathList[i]))
-												//{
-												//	File.Delete(imagePathList[i]);
-												//}
-												//headerList[i].Path = null;
+												if (File.Exists(imagePathList[i]))
+												{
+													File.Delete(imagePathList[i]);
+												}
 											}
 
 											var header = eventHeaders.FirstOrDefault();

@@ -5,48 +5,49 @@
 
 @attribute [Authorize(Roles = SD.ROLE_CUSTOMER)]
 
-
-<div class="container my-5">
-	<div class="form-group">
-		<h1 class="text-center">알람 등록기기 관리</h1>
-	</div>
-	@if (FCMInfos.Any())
-	{
-		<table class="table">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Action</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (var fcmInfo in FCMInfos)
-				{
-					<tr>
-						<td>@($"{fcmInfo.Id}")</td>
-						<td>@(fcmInfo.Name)</td>
-						<td>
-							<button class="btn btn-danger mt-2" @onclick="()=>HandleDelete(fcmInfo.Id)">삭제</button>
-						</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-	}
-	else
-	{
-		@if (IsLoading)
+<header class="masthead">
+	<div class="container my-5">
+		<div class="form-group">
+			<h1 class="text-center">알람 등록기기 관리</h1>
+		</div>
+		@if (FCMInfos.Any())
 		{
-			<div class="spinner-border text-primary" role="status"></div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var fcmInfo in FCMInfos)
+					{
+						<tr>
+							<td>@($"{fcmInfo.Id}")</td>
+							<td>@(fcmInfo.Name)</td>
+							<td>
+								<button class="btn btn-danger mt-2" @onclick="()=>HandleDelete(fcmInfo.Id)">삭제</button>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
 		}
-
 		else
 		{
-			<p>No recrods found.</p>
+			@if (IsLoading)
+			{
+				<div class="spinner-border text-primary" role="status"></div>
+			}
+
+			else
+			{
+				<p>No recrods found.</p>
+			}
 		}
-	}
-</div>
+	</div>
+</header>
 
 
 @code {

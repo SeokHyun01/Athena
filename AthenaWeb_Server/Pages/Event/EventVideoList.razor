@@ -16,6 +16,7 @@
 				<tr>
 					<th>ID</th>
 					<th>Video</th>
+					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -27,6 +28,9 @@
 							<video controls>
 								<source src=@(Regex.Match(video.Path, @"videos/[\w-]+\.mp4").Value) type="video/mp4">
 							</video>
+						</td>
+						<td>
+							<button class="btn-primary" @onclick="()=>HandleDelete(video.Id)">Delete</button>
 						</td>
 					</tr>
 				}
@@ -79,5 +83,18 @@
 
 		IsLoading = false;
 		StateHasChanged();
+	}
+
+	private async Task HandleDelete(int videoId)
+	{
+		if (videoId > 0)
+		{
+			var video = await _eventVideoRepository.Get(videoId);
+			if (video != null && File.Exists(video.Path))
+			{
+				File.Delete(video.Path);
+			}
+			await _eventVideoRepository.Delete(videoId);
+		}
 	}
 }

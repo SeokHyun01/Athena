@@ -47,7 +47,14 @@ namespace Athena_Business.Repository
 
 		public ValueTask<int> Delete(int id)
 		{
-			throw new NotImplementedException();
+			var obj = await _db.EventVideos.FirstOrDefaultAsync(x => x.Id == id);
+			if (obj != null)
+			{
+				_db.EventVideos.Remove(obj);
+
+				return await _db.SaveChangesAsync();
+			}
+			return 0;
 		}
 
 		public ValueTask<EventVideoDTO?> Get(int id)

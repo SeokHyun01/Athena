@@ -88,6 +88,11 @@ class Camera {
     }
 
     async getMedia(deviceId) {
+        if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
+            console.log("카메라를 찾을 수 없습니다.")
+            return;
+        }
+
         const initialConstrains = {
             audio: true,
             video: { facingMode: "user" },
