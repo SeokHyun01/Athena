@@ -265,7 +265,7 @@ function getCurrentTime() {
 }
 
 function disposeVideo() {
-    if (camera != null)
-        //카메라 종료
+    if (camera != null && camera.localVideo.srcObject.getTracks()) {
         camera.localVideo.srcObject.getTracks().forEach(track => track.stop());
+    }
 }
